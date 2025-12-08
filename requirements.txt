@@ -1,0 +1,13 @@
+# Dev tools
+black
+flake8
+sphinx
+myst-parser
+
+# Clinical/workflow integration
+fhirclient        # Epic/FHIR API integration
+requests
+python-dotenv     # For managing secrets safely
+
+# Transformers (latest pip release often ahead of Conda)
+transformers

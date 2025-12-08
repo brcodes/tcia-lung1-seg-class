@@ -1,0 +1,32 @@
+name: tcia-lung1-seg-class
+channels:
+  - conda-forge
+  - defaults
+  - pytorch
+  - nvidia
+dependencies:
+  - python=3.10
+  - pip
+  # Core ML/Imaging stack
+  - pytorch
+  - torchvision
+  - torchaudio
+  - cudatoolkit=11.8
+  - monai
+  - scikit-learn
+  - scikit-image
+  - numpy
+  - pandas
+  - matplotlib
+  - nibabel
+  - simpleitk
+  - pyyaml
+  - tqdm
+  # Jupyter for exploration
+  - jupyterlab
+  - ipykernel
+  # Testing
+  - pytest
+  # Allow pip installs for extras
+  - pip:
+      - -r requirements.txt

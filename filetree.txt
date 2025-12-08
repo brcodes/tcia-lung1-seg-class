@@ -1,0 +1,53 @@
+tcia-lung1-seg-class/
+│
+├── README.md                # High-level overview, compliance notes, workflow diagram
+├── LICENSE                  # Explicit license (important for medical repos)
+├── environment.yml          # Conda env for ML stack
+├── requirements.txt         # Pip-only lightweight deps
+├── pyproject.toml           # Packaging (pip modules)
+├── .gitignore               # Ignore large data, logs, PHI
+├── configs/                 # YAML/JSON configs for preprocessing, training, deployment
+│   ├── preprocessing.yaml
+│   ├── nnunet_train.yaml
+│   └── transformer_class.yaml
+│
+├── data/                    # Local data staging (never PHI, only TCIA public)
+│   ├── raw/                 # Original TCIA NSCLC-Radiomics CT scans
+│   ├── interim/             # Preprocessed (resampled, normalized)
+│   └── processed/           # Final ready-to-train datasets
+│
+├── src/                     # Core Python source code (Pythonic convention)
+│   ├── preprocessing/       # Scripts for cleaning, resampling, normalization
+│   ├── segmentation/        # nnU-Net training/inference modules
+│   ├── classification/      # Transformer fine-tuning modules
+│   ├── evaluation/          # Metrics, ROC, confusion matrices
+│   └── utils/               # Shared helpers (logging, config parsing, compliance checks)
+│
+├── notebooks/               # Jupyter notebooks for exploration, visualization
+│   ├── 01_data_exploration.ipynb
+│   ├── 02_preprocessing_demo.ipynb
+│   └── 03_model_results.ipynb
+│
+├── tests/                   # Unit/integration tests (pytest)
+│   ├── test_preprocessing.py
+│   ├── test_segmentation.py
+│   └── test_classification.py
+│
+├── docs/                    # Documentation (Sphinx/Markdown)
+│   ├── env_setup.md         # Step-by-step reproducibility instructions
+│   ├── compliance.md        # HIPAA/FDA notes, PHI handling policy
+│   ├── workflow.md          # Epic Sandbox integration, FHIR endpoints
+│   └── api_reference.md     # Auto-generated from code
+│
+├── scripts/                 # CLI entry points for reproducibility
+│   ├── run_preprocessing.py
+│   ├── train_segmentation.py
+│   ├── train_classification.py
+│   └── deploy_cloud.py
+│
+├── cloud/                   # Deployment artifacts
+│   ├── azure_pipelines/     # Azure ML Studio configs
+│   ├── docker/              # Dockerfiles for reproducible environments
+│   └── epic_integration/    # Epic Sandbox API adapters
+│
+└── logs/                    # Training/evaluation logs (excluded from git if large)
