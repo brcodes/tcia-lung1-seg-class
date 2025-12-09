@@ -20,9 +20,32 @@ cd tcia-lung1-seg-class
 
 ### 2. Create the Conda environment
 
+On macOS:
+conda env create -f environment-macos.yml
+conda activate tcia-lung1-seg-class-cpu
+
+On Azure/Linux GPU:
+conda env create -f environment-azure.yml
+conda activate tcia-lung1-seg-class-gpu
+
+remove if partial/stopped solve
 ```bash
-conda env create -f environment.yml
+conda env remove -n tcia-lung1-seg-class
 ```
+
+Check dep presence
+```bash
+conda activate tcia-lung1-seg-class
+conda list | grep torch
+# Should see: libtorch, pytorch, torchvision
+```
+
+Check GPU support in GPU environment
+```bash
+python -c "import torch; print(torch.cuda.is_available(), torch.version.cuda)"
+```
+
+
 
 ### 3. Activate the environment
 

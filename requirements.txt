@@ -8,6 +8,3 @@ myst-parser
 fhirclient        # Epic/FHIR API integration
 requests
 python-dotenv     # For managing secrets safely
-
-# Transformers (latest pip release often ahead of Conda)
-transformers

@@ -1,0 +1,35 @@
+name: tcia-lung1-seg-class-gpu
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  # Core ML/Imaging stack with GPU support
+  - pytorch
+  - torchvision
+  - monai
+  - scikit-learn
+  - scikit-image
+  - numpy
+  - pandas
+  - matplotlib
+  - pydicom
+  - nibabel
+  - simpleitk
+  - pyyaml
+  - tqdm
+  # CUDA runtime
+  - cudatoolkit=11.7
+  # Jupyter for exploration
+  - jupyterlab
+  - ipykernel
+  # Testing
+  - pytest
+  # Allow pip installs for extras
+  - pip:
+      - nnunet
+      - timm
+      - -r requirements.txt
