@@ -19,6 +19,12 @@ configs/
     free_gpu.yaml
     azure.yaml
 
+eg azure call
+python src/train/train.py --config configs/azure.yaml
+
+Same Python scripts in source, different scripts!!!
+
+
 │
 ├── data/                    # Local data staging (never PHI, only TCIA public)
 │   ├── raw/                 # Original TCIA NSCLC-Radiomics CT scans
