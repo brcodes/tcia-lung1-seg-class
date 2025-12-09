@@ -7,8 +7,9 @@ import numpy as np
 import glob
 import random
 from typing import List
+import argparse
 
-def get_dicom_files(base_dir: str = "data/raw/NSCLC-Radiomics-1", 
+def get_dicom_files(base_dir: str = "data/raw/NSCLC-Radiomics", 
                     subset_fraction: float = None, 
                     seed: int = 42) -> List[str]:
     """
@@ -49,37 +50,52 @@ if __name__ == "__main__":
     print(f"Loaded {len(subset_files)} DICOM files (5% subset).")
 
 
-# Step 1: Metadata inspection
-dicom_files = glob.glob("data/raw/NSCLC-Radiomics-1/**/**/*.dcm", recursive=True)
-sample = pydicom.dcmread(dicom_files[0])
-print("Patient ID:", sample.PatientID)
-print("Slice Thickness:", sample.SliceThickness)
-print("Pixel Spacing:", sample.PixelSpacing)
+# src/preprocessing/load_dicom.py
+import glob, random
+import pydicom, SimpleITK as sitk, nibabel as nib
+import numpy as np
 
-# Step 2: Convert DICOM series to NIfTI with resampling
-reader = sitk.ImageSeriesReader()
-series_IDs = reader.GetGDCMSeriesIDs("data/raw/NSCLC-Radiomics-1/")
-series = series_IDs[0]  # take first series for demo
-dicom_names = reader.GetGDCMSeriesFileNames("data/raw/NSCLC-Radiomics-1/", series)
-reader.SetFileNames(dicom_names)
-image = reader.Execute()
+def get_dicom_files(base_dir="data/raw/NSCLC-Radiomics-1", subset_fraction=None, seed=42):
+    files = glob.glob(f"{base_dir}/**/**/*.dcm", recursive=True)
+    if subset_fraction:
+        random.seed(seed)
+        k = int(len(files) * subset_fraction)
+        files = random.sample(files, k)
+    return files
 
-# Resample to 1mm isotropic spacing
-resample = sitk.ResampleImageFilter()
-resample.SetOutputSpacing([1.0, 1.0, 1.0])
-new_size = [int(round(sz * spc)) for sz, spc in zip(image.GetSize(), image.GetSpacing())]
-resample.SetSize(new_size)
-resampled = resample.Execute(image)
-sitk.WriteImage(resampled, "data/interim/nifti/sample.nii.gz")
+def inspect_metadata(dicom_file):
+    ds = pydicom.dcmread(dicom_file)
+    print(f"PatientID={ds.PatientID}, SliceThickness={ds.SliceThickness}, PixelSpacing={ds.PixelSpacing}")
 
-# Step 3: Explore and normalize with nibabel
-nii = nib.load("data/interim/nifti/sample.nii.gz")
-data = nii.get_fdata()
-print("Shape:", data.shape)
-print("Voxel dimensions:", nii.header.get_zooms())
+def convert_series_to_nifti(series_dir, out_path):
+    reader = sitk.ImageSeriesReader()
+    series = reader.GetGDCMSeriesIDs(series_dir)[0]
+    reader.SetFileNames(reader.GetGDCMSeriesFileNames(series_dir, series))
+    img = reader.Execute()
+    resample = sitk.ResampleImageFilter()
+    resample.SetOutputSpacing([1,1,1])
+    new_size = [int(round(sz*spc)) for sz, spc in zip(img.GetSize(), img.GetSpacing())]
+    resample.SetSize(new_size)
+    sitk.WriteImage(resample.Execute(img), out_path)
+    print(f"NIfTI saved to {out_path}")
 
-# Normalize HU range (lung window)
-data = np.clip(data, -1000, 400)
-data = (data - np.mean(data)) / np.std(data)
-nib.save(nib.Nifti1Image(data, nii.affine), "data/processed/sample_norm.nii.gz")
-print("Affine diagonal (voxel sizes):", np.diag(nii.affine)[:3])
+def explore_and_normalize(nifti_path, out_path):
+    nii = nib.load(nifti_path)
+    data = nii.get_fdata()
+    print(f"Shape={data.shape}, VoxelDims={nii.header.get_zooms()}, AffineDiag={np.diag(nii.affine)[:3]}")
+    data = np.clip(data, -1000, 400)
+    data = (data - np.mean(data)) / np.std(data)
+    nib.save(nib.Nifti1Image(data, nii.affine), out_path)
+    print(f"Normalized NIfTI saved to {out_path}")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--subset", type=float, default=None,
+                        help="Fraction of dataset to sample (e.g., 0.05 for 5%)")
+    args = parser.parse_args()
+
+    files = get_dicom_files(subset_fraction=args.subset)
+    print(f"Loaded {len(files)} files")
+    inspect_metadata(files[0])
+    nifti_path = convert_series_to_nifti("data/raw/NSCLC-Radiomics-1/", "data/interim/nifti/sample.nii.gz")
+    explore_and_normalize(nifti_path, "data/processed/sample_norm.nii.gz")
