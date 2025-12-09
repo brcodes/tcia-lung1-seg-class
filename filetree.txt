@@ -10,6 +10,15 @@ tcia-lung1-seg-class/
 │   ├── preprocessing.yaml
 │   ├── nnunet_train.yaml
 │   └── transformer_class.yaml
+
+# reconcile later
+configs/
+  base.yaml
+  envs/
+    cpu.yaml
+    free_gpu.yaml
+    azure.yaml
+
 │
 ├── data/                    # Local data staging (never PHI, only TCIA public)
 │   ├── raw/                 # Original TCIA NSCLC-Radiomics CT scans

@@ -1,0 +1,15 @@
+device: cuda
+batch_size: 8
+epochs: 10
+num_workers: 2
+amp: true
+grad_accum_steps: 2
+data_fraction: 0.1
+patch_size: [96, 96, 96]
+mode: debug
+artifacts_minimal: true
+save_top_k: 1
+
+# Classification
+resnet_frozen: true   # run frozen baseline for comparison
+swin_finetune: true   # small fine-tuning runs on reduced dataset
