@@ -33,22 +33,21 @@ os.makedirs(output_root, exist_ok=True)
 patient_id = 0
 for patient in sorted(os.listdir(raw_root)):
     patient_path = os.path.join(raw_root, patient)
+    
     for study in os.listdir(patient_path):
         study_path = os.path.join(patient_path, study)
-        for series in os.listdir(study_path):
-            series_path = os.path.join(study_path, series)
-            dcm_files = [os.path.join(series_path, f) for f in os.listdir(series_path) if f.endswith(".dcm")]
-            if not dcm_files:
-                print(f"No DICOM files in {series_path}.")
+        best_series = choose_best_series(study_path)
+        if best_series is None:
+            print(f"No study series found with single greatest num DICOMS at {study_path}.")
 
-            # Read DICOM series
-            reader = sitk.ImageSeriesReader()
-            dicom_names = reader.GetGDCMSeriesFileNames(series_path)
-            reader.SetFileNames(dicom_names)
-            image = reader.Execute()
+        # Read DICOM series
+        reader = sitk.ImageSeriesReader()
+        dicom_names = reader.GetGDCMSeriesFileNames(best_series)
+        reader.SetFileNames(dicom_names)
+        image = reader.Execute()
 
-            # Save as NIfTI
-            out_name = f"NSCLC_{patient_id:04d}.nii.gz"
-            sitk.WriteImage(image, os.path.join(output_root, out_name))
-            print(f"Converted {series_path} -> {out_name}")
-            patient_id += 1
+        # Save as NIfTI
+        out_name = f"NSCLC_{patient_id:04d}.nii.gz"
+        sitk.WriteImage(image, os.path.join(output_root, out_name))
+        print(f"Converted {best_series} -> {out_name}")
+        patient_id += 1
