@@ -1,0 +1,7 @@
+base_dir: data/raw/NSCLC-Radiomics
+subset_fraction: None
+name: full
+interim_path: data/interim/nifti/full.nii.gz
+processed_path: data/processed/full_norm.nii.gz
+clip_min: -1000
+clip_max: 400

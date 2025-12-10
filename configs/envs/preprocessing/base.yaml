@@ -1,0 +1,8 @@
+base_dir: data/raw/NSCLC-Radiomics
+# Subset fraction is applied to the list of total DICOM files, not the number of subjects
+subset_fraction: 0.001
+name: sample
+interim_path: data/interim/nifti/sample.nii.gz
+processed_path: data/preprocessed/nifti/sample_norm.nii.gz
+clip_min: -1000
+clip_max: 400
