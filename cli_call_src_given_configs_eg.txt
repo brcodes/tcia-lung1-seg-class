@@ -1,0 +1,1 @@
+python src/train/train.py --config configs/azure.yaml

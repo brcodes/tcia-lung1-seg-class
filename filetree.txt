@@ -3,29 +3,19 @@ tcia-lung1-seg-class/
 ├── README.md                # High-level overview, compliance notes, workflow diagram
 ├── LICENSE                  # Explicit license (important for medical repos)
 ├── environment.yml          # Conda env for ML stack
+
 ├── requirements.txt         # Pip-only lightweight deps
 ├── pyproject.toml           # Packaging (pip modules)
 ├── .gitignore               # Ignore large data, logs, PHI
 ├── configs/                 # YAML/JSON configs for preprocessing, training, deployment
-│   ├── preprocessing.yaml
-│   ├── nnunet_train.yaml
-│   └── transformer_class.yaml
-
-# reconcile later
-configs/
-  base.yaml
-  envs/
-    cpu.yaml
-    free_gpu.yaml
-    azure.yaml
-
-eg azure call
-python src/train/train.py --config configs/azure.yaml
-
-Same Python scripts in source, different scripts!!!
-
-
-│
+│   ├── preprocessing/
+│   │   ├── cpu.yaml
+│   │   ├── gpu_azure.yaml
+│   └── training/
+│       ├── cpu.yaml
+│       ├── gpu_azure.yaml
+│       └── gpu_free.yaml
+│ 
 ├── data/                    # Local data staging (never PHI, only TCIA public)
 │   ├── raw/                 # Original TCIA NSCLC-Radiomics CT scans
 │   ├── interim/             # Preprocessed (resampled, normalized)
@@ -33,10 +23,15 @@ Same Python scripts in source, different scripts!!!
 │
 ├── src/                     # Core Python source code (Pythonic convention)
 │   ├── preprocessing/       # Scripts for cleaning, resampling, normalization
+
 │   ├── segmentation/        # nnU-Net training/inference modules
+
 │   ├── classification/      # Transformer fine-tuning modules
+
 │   ├── evaluation/          # Metrics, ROC, confusion matrices
+
 │   └── utils/               # Shared helpers (logging, config parsing, compliance checks)
+
 │
 ├── notebooks/               # Jupyter notebooks for exploration, visualization
 │   ├── 01_data_exploration.ipynb
