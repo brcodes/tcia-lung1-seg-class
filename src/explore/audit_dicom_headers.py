@@ -19,25 +19,27 @@ PHI_TAGS = {
 import glob
 import os
 
-def get_dicom(patient_name, series_index=1, dicom_filename="1-1.dcm",
+def get_dicom(PatientID, SeriesInstanceUID_index=1, SeriesNumber=1, InstanceNumber=1,
               base_dir="../../data/raw/NSCLC-Radiomics"):
     """
     Grab a specific DICOM file given patient name, series order, and filename.
     
     Args:
-        patient_name (str): Patient folder name (e.g. "LUNG-001").
-        series_index (int): Series order (1-based index, sorted numerically).
-        dicom_filename (str): DICOM filename to grab (e.g. "1-1.dcm").
+        PatientID (str): Patient folder name (e.g. "LUNG-001").
+        SeriesInstanceUID_index (int): Series order (1-based index, sorted numerically).
+        SOPInstanceUID (str): DICOM instance to grab (e.g. "1-1.dcm").
         base_dir (str): Base path to NSCLC-Radiomics dataset.
     
     Returns:
         str: Path to the requested DICOM file.
     """
+    #Lung1 defaults SeriesNumber to 1
+    
     # Build glob for all series under the patient/studyUID
-    pattern = os.path.join(base_dir, patient_name, "*", "*")
+    pattern = os.path.join(base_dir, PatientID, "*", "*")
     series_dirs = glob.glob(pattern)
     if not series_dirs:
-        raise FileNotFoundError(f"No series found for patient ds ID {patient_name}")
+        raise FileNotFoundError(f"No series found for patient ds ID {PatientID}")
     
     # Sort series directories lexicographically (UIDs are strings, not ints)
     # Observe that they increase in numeric order due to UID structure, each representing a timepoint
@@ -45,16 +47,29 @@ def get_dicom(patient_name, series_index=1, dicom_filename="1-1.dcm",
     
     # Select the requested series (1-based index)
     try:
-        chosen_series = series_dirs[series_index - 1]
+        chosen_series = series_dirs[SeriesInstanceUID_index - 1]
     except IndexError:
-        raise IndexError(f"Series index {series_index} out of range (found {len(series_dirs)} series).")
+        raise IndexError(f"Series index {SeriesInstanceUID_index} out of range (found {len(series_dirs)} series).")
+    
+    # Count all the DICOMs in the chosen series, zfill the filename suffix using InstanceNumber
+    # Count how many dicoms are in this series
+    num_dicoms = len(glob.glob(os.path.join(chosen_series, "*.dcm")))
+    # Pad width = number of digits in num_dicoms
+    pad_width = len(str(num_dicoms))
+    
+    # Format instance number with dynamic zero-padding
+    # instance_str = str(InstanceNumber).zfill(pad_width)
+    dicom_filename = f"{SeriesNumber}-{str(InstanceNumber).zfill(pad_width)}.dcm"                 
     
     # Build full path to requested DICOM
     dicom_path = os.path.join(chosen_series, dicom_filename)
     if not os.path.exists(dicom_path):
         raise FileNotFoundError(f"DICOM file {dicom_filename} not found in {chosen_series}")
     
-    print(f"Chose {patient_name} series {series_index}, {dicom_filename}")
+    print(f"Chose DICOM:")
+    print(f"PatientID: {PatientID}")
+    print(f"SeriesInstanceUID index: {SeriesInstanceUID_index}")
+    print(f"InstanceNumber: {InstanceNumber}")
     print(f"path: {dicom_path}")
     
     return dicom_path
@@ -99,8 +114,18 @@ def audit_dicom_headers(dicom_path, output_json="dicom_header_audit.json"):
 
 # Example usage:
 
-dicom_path = get_dicom("LUNG1-001", series_index=1, dicom_filename="1-1.dcm")
+dicom_path = get_dicom(PatientID="LUNG1-001", 
+                       SeriesInstanceUID_index=3,
+                       InstanceNumber=2)
 print(f"Auditing DICOM file at: {dicom_path}")
-# audit_dicom_headers(dicom_path)
+audit_dicom_headers(dicom_path)
 
-# DICOM SeriesInstanceUIDs
+# DICOM 
+# PHI should typically not occur in PatientID here, where EHR pull would yield a surrogate ID
+# PatientID 
+#   (surrogate ID; in clinical settings, backed by a linkage key to the MRN)
+# StudyInstanceUID
+# SeriesInstanceUIDs
+#    (globally unique)
+# SOPInstanceUID 
+#   (uninformative)
