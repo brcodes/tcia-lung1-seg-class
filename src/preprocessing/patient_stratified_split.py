@@ -24,7 +24,7 @@ def split_manifest(df, source_manifest, output_path, splits_info, random_state):
     manifest = {
         "source_manifest": os.path.abspath(source_manifest),
         "output_path": os.path.abspath(output_path),
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
         "random_state": random_state,
         "hashes": {
             "source_manifest_sha256": file_sha256(source_manifest),
@@ -36,7 +36,7 @@ def split_manifest(df, source_manifest, output_path, splits_info, random_state):
             "python_version": platform.python_version(),
             "pandas_version": pd.__version__
         },
-        "patient_count": patient_count,
+        "patient_count_source": patient_count,
         "splits": splits_info
     }
     
@@ -89,7 +89,7 @@ def patient_stratified_split(
         proportions = (subset["Overall.Stage"].value_counts(normalize=True)
                        .sort_index().round(4).to_dict())
         splits_info[split] = {
-            "patient_count": int(len(subset)),
+            "patient_count_split": int(len(subset)),
             "classification_labels": {
                 "counts": counts,
                 "proportions": proportions
