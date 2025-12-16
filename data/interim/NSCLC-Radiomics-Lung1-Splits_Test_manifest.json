@@ -1,0 +1,32 @@
+{
+    "source_manifest": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/raw/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.csv",
+    "output_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1-Splits.csv",
+    "split_name": "Test",
+    "timestamp": "2025-12-16T16:05:56.569686+00:00Z",
+    "random_state": 42,
+    "hashes": {
+        "source_manifest_sha256": "132f72b58b9660bf5e6b24b9817b335f1896360bc253e1f2034a3ffee593e6fd",
+        "output_split_sha256": "1f697d22dcc06994a3197e8793bb430e24ebe295c32675aee6abd4a7de849029"
+    },
+    "patient_count": 85,
+    "classification_labels": {
+        "counts": {
+            "I": 19,
+            "II": 8,
+            "IIIa": 23,
+            "IIIb": 35
+        },
+        "proportions": {
+            "I": 0.2235,
+            "II": 0.0941,
+            "IIIa": 0.2706,
+            "IIIb": 0.4118
+        }
+    },
+    "script_metadata": {
+        "function": "patient_stratified_split",
+        "version": "v1.0",
+        "python_version": "3.10.19",
+        "pandas_version": "2.3.3"
+    }
+}
