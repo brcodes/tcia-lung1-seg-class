@@ -15,44 +15,37 @@ def file_sha256(path):
             h.update(chunk)
     return h.hexdigest()
 
-def split_manifest(df, source_manifest, output_path, split_name, random_state):
+def split_manifest(df, source_manifest, output_path, splits_info, random_state):
     """
-    Generate a clinically relevant JSON manifest for a given split.
+    Generate one clinically relevant JSON manifest for the entire splits.csv,
+    with nested Train/Test metadata.
     """
-    # Counts and proportions
-    counts = df["Overall.Stage"].value_counts().sort_index().to_dict()
-    proportions = (df["Overall.Stage"].value_counts(normalize=True)
-                   .sort_index().round(4).to_dict())
-
+    patient_count = int(len(df))
     manifest = {
         "source_manifest": os.path.abspath(source_manifest),
         "output_path": os.path.abspath(output_path),
-        "split_name": split_name,
-        "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
+        "timestamp": datetime.utcnow().isoformat() + "Z",
         "random_state": random_state,
         "hashes": {
             "source_manifest_sha256": file_sha256(source_manifest),
             "output_split_sha256": file_sha256(output_path) if os.path.exists(output_path) else None
-        },
-        "patient_count": int(len(df)),
-        "classification_labels": {
-            "counts": counts,
-            "proportions": proportions
         },
         "script_metadata": {
             "function": "patient_stratified_split",
             "version": "v1.0",
             "python_version": platform.python_version(),
             "pandas_version": pd.__version__
-        }
+        },
+        "patient_count": patient_count,
+        "splits": splits_info
     }
-
+    
     # Save JSON alongside split file
-    json_path = output_path.replace(".csv", f"_{split_name}_manifest.json")
+    json_path = output_path.replace(".csv", ".json")
     with open(json_path, "w") as f:
         json.dump(manifest, f, indent=4)
 
-    print(f"[{split_name.upper()}] manifest written to {json_path}")
+    print(f"Split manifest written to {json_path}")
     return manifest
 
 def patient_stratified_split(
@@ -64,8 +57,6 @@ def patient_stratified_split(
     # Load manifest
     df = pd.read_csv(manifest_path)
     
-    print(df.head())
-
     # Ensure required columns exist
     if "PatientID" not in df.columns or "Overall.Stage" not in df.columns:
         raise ValueError("manifest.csv must contain 'PatientID' and 'Overall.Stage' columns")
@@ -89,18 +80,23 @@ def patient_stratified_split(
 
     # Save splits
     df.to_csv(output_path, index=False)
-
-    # Print class counts and proportions
+    
+    # Prepare splits info for manifest, print
+    splits_info = {}
     for split in ["Train", "Test"]:
         subset = df[df["Split"] == split]
-        counts = subset["Overall.Stage"].value_counts().sort_index()
-        proportions = counts / len(subset)
-        print(f"\n[{split.upper()}] n={len(subset)}")
-        print("Counts:\n", counts)
-        print("Proportions:\n", proportions.round(4))
-        
-        # Generate JSON manifest
-        split_manifest(subset, manifest_path, output_path, split, random_state)
+        counts = subset["Overall.Stage"].value_counts().sort_index().to_dict()
+        proportions = (subset["Overall.Stage"].value_counts(normalize=True)
+                       .sort_index().round(4).to_dict())
+        splits_info[split] = {
+            "patient_count": int(len(subset)),
+            "classification_labels": {
+                "counts": counts,
+                "proportions": proportions
+            }
+        }
+        print(f"{split} info: {splits_info[split]}")
+    split_manifest(df, manifest_path, output_path, splits_info, random_state)
 
 if __name__ == "__main__":
     base = "../../data/"
