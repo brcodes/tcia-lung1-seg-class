@@ -1,11 +1,11 @@
 {
     "source_manifest": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/raw/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.csv",
     "output_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1-Splits.csv",
-    "timestamp": "2025-12-16T16:29:35.680816+00:00Z",
+    "timestamp": "2025-12-16T16:39:57.265373+00:00Z",
     "random_state": 42,
     "hashes": {
         "source_manifest_sha256": "132f72b58b9660bf5e6b24b9817b335f1896360bc253e1f2034a3ffee593e6fd",
-        "output_split_sha256": "1f697d22dcc06994a3197e8793bb430e24ebe295c32675aee6abd4a7de849029"
+        "output_split_sha256": "0a756d3f44b0e711bedbe5eb60ef792e861a112508958743d6dd11d18c3f8d65"
     },
     "script_metadata": {
         "function": "patient_stratified_split",
