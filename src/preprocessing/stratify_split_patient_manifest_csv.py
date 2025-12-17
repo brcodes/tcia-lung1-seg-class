@@ -26,12 +26,13 @@ def write_stratified_split_metadata_json(df, source_manifest, output_path, clean
             "output_split_sha256": file_sha256(output_path) if os.path.exists(output_path) else None
         },
         "script_metadata": {
-            "function": "patient_stratified_split",
-            "version": "v1.0",
+            "function": "stratify_split_patient_manifest_csv",
+            "commit_hash": "a123dd0",
             "python_version": platform.python_version(),
             "pandas_version": pd.__version__
         },
         "patient_count_source": patient_count,
+        "cleaning": clean_info,
         "splits": splits_info
     }
     
@@ -55,9 +56,11 @@ def stratify_split_patient_manifest_csv(
     df = pd.read_csv(manifest_path)
     # Optional preprocessing
     if optional_clean_kwargs:
-        # Explicit, Pythonic: only call if kwargs provided
-        df = clean_patient_manifest_csv(df, optional_clean_kwargs)
-
+        # Automatically registered as helper
+        df, clean_info = clean_patient_manifest_csv(df, optional_clean_kwargs)
+    else:
+        clean_info = None
+        
 
     # Stratified split by stage
     splitter = StratifiedShuffleSplit(
@@ -98,14 +101,18 @@ if __name__ == "__main__":
     manifest_name = "NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019-patient-manifest.csv"
     raw_path = os.path.join(base, "raw", manifest_name)
     # Cleaning before split; no clean if None
-    optional_clean_kwargs = {"keep_columns":["PatientID", "Overall.Stage"], 
-                        "dropna_columns":["Overall.Stage"], 
-                        "clean_path": os.path.join(base, "interim", manifest_name.replace(".csv", ".cleaned.csv"))}
+    clean = True
     strat_column = "Overall.Stage"
     train_size = 0.8
     random_state = 42
     
-    output_path = os.path.join(base, "interim", manifest_name.replace(".csv", ".stratified-split.csv"))
+    output_path = os.path.join(base, "interim", manifest_name)
+    if clean:
+        output_path = output_path.replace(".csv", ".cleaned.csv")
+        optional_clean_kwargs = {"keep_columns":["PatientID", "Overall.Stage"], 
+                            "dropna_columns":["Overall.Stage"], 
+                            "clean_path": output_path}
+    output_path = output_path.replace(".csv", ".stratified-split.csv")
     
     stratify_split_patient_manifest_csv(manifest_path=raw_path, 
                              output_path=output_path, 

@@ -4,50 +4,53 @@ import os
 import hashlib
 from datetime import datetime, timezone
 import platform
+from util import file_sha256
 
-def write_cleaning_metadata_json(df, source_manifest, output_path, splits_info, random_state):
+def write_cleaning_metadata_json(df, manifest_or_path, clean_path, random_state=42):
     """
     Generate one clinically relevant JSON manifest for the entire splits.csv,
     with nested Train/Test metadata.
     """
-    patient_count = int(len(df))
-    manifest = {
-        "source_manifest": os.path.abspath(source_manifest),
-        "output_path": os.path.abspath(output_path),
+    # Prepare clean info for manifest, print
+    global_clean_info = {
+        "source_manifest": "dataframe in memory" if isinstance(manifest_or_path, pd.DataFrame) else os.path.abspath(manifest_or_path),
+        "source_type": "DataFrame" if isinstance(manifest_or_path, pd.DataFrame) else "CSV",
+        "clean_path": os.path.abspath(clean_path),
         "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
         "random_state": random_state,
         "hashes": {
-            "source_manifest_sha256": file_sha256(source_manifest),
-            "output_split_sha256": file_sha256(output_path) if os.path.exists(output_path) else None
+            "source_manifest_sha256": file_sha256(manifest_or_path) if isinstance(manifest_or_path, str) else file_sha256(df),
+            "cleaned_manifest_sha256": file_sha256(clean_path)
         },
         "script_metadata": {
-            "function": "patient_stratified_split",
-            "version": "v1.0",
+            "function": "clean_patient_manifest_csv",
+            "commit_hash": "ab1230c",
             "python_version": platform.python_version(),
             "pandas_version": pd.__version__
-        },
-        "patient_count_source": patient_count,
-        "splits": splits_info
+        }
     }
-    
-    # Save JSON alongside split file
-    json_path = output_path.replace(".csv", ".json")
+    # Save JSON alongside cleaned file
+    json_path = clean_path.replace(".csv", ".json")
     with open(json_path, "w") as f:
-        json.dump(manifest, f, indent=4)
-
-    print(f"Split manifest written to {json_path}")
-    return manifest
+        json.dump(global_clean_info, f, indent=4)
 
 
-def clean_manifest_csv(manifest_or_path, clean_path, keep_columns=None, dropna_columns=None, **kwargs):
+def clean_patient_manifest_csv(manifest_or_path, clean_path=None, keep_columns=None, dropna_columns=None, random_state=None, **kwargs):
+    
+    if clean_path is None:
+        raise ValueError("clean_path must be specified to save cleaned manifest CSV.")
     
     # When clean is a helper
     if kwargs:
-        # Update this list to include other cleaning parameters as needed
-        valid_kwargs = {"manifest_or_path", "clean_path", "keep_columns", "dropna_columns"}
+        helper = True
+        # Dynamically get all argument names except 'kwargs'
+        valid_kwargs = set(locals().keys()) - {"kwargs"}
         invalid_kwargs = set(kwargs) - valid_kwargs
+        
+        # valid_kwargs = {"manifest_or_path", "clean_path", "keep_columns", "dropna_columns"}
+        # invalid_kwargs = set(kwargs) - valid_kwargs
         if invalid_kwargs:
-            raise ValueError(f"Unexpected kwargs for clean_raw_manifest: {invalid_kwargs}")
+            raise ValueError(f"Unexpected kwargs for clean_raw_manifest_csv: {invalid_kwargs}")
         # Override if present in kwargs
         manifest_or_path = kwargs.get("manifest_or_path", manifest_or_path)
         clean_path = kwargs.get("clean_path", clean_path)
@@ -56,6 +59,9 @@ def clean_manifest_csv(manifest_or_path, clean_path, keep_columns=None, dropna_c
         
     # Load manifest
     if not isinstance(manifest_or_path, pd.DataFrame):
+        # Check file presence
+        if not os.path.exists(manifest_or_path):
+            raise FileNotFoundError(f"Manifest path {manifest_or_path} does not exist.")
         df = pd.read_csv(manifest_or_path)
     else:
         df = manifest_or_path
@@ -66,14 +72,15 @@ def clean_manifest_csv(manifest_or_path, clean_path, keep_columns=None, dropna_c
         if missing:
             raise ValueError(f"Columns {missing} specified in keep_columns not found in manifest.csv")
         original_columns = list(df.columns)
+        org_col_count = int(len(original_columns))
         df = df.loc[:, keep_columns]
         # Log remaining columns
         remaining_columns = list(df.columns)
-        remaining_columns_count = int(len(remaining_columns))
+        rem_col_count = int(len(remaining_columns))
         # Log dropped columns
         dropped_columns = [col for col in original_columns if col not in remaining_columns]
         dropped_columns_count = int(len(dropped_columns))
-        print(f"{remaining_columns_count} Columns kept: {remaining_columns}")
+        print(f"{rem_col_count} Columns kept: {remaining_columns}")
         print(f"{dropped_columns_count} Columns dropped: {dropped_columns}")
         
     if dropna_columns is not None:
@@ -103,3 +110,27 @@ def clean_manifest_csv(manifest_or_path, clean_path, keep_columns=None, dropna_c
         print("Dropped identifiers (values from dropna_columns):")
         for rec in dropped_ids:
             print(rec)
+            
+    # Save cleaned manifest
+    df.to_csv(clean_path, index=False)
+    print(f"Cleaned manifest saved to {clean_path}")
+
+    # Prepare clean info for manifest, print
+    clean_info = {
+        "columns": {
+            "original": (org_col_count, original_columns),
+            "kept": (rem_col_count, remaining_columns),
+            "removed": (dropped_columns_count, dropped_columns)
+        },
+        "rows": {
+            "before_drop": before_drop,
+            "after_drop": after_drop,
+            "dropped_total": dropped_total,
+            "dropped_by_column": dropped_by_col
+        }
+    }
+    
+    global_clean_info = write_cleaning_metadata_json(df, manifest_or_path, clean_path, random_state=random_state)
+
+    if helper is True:
+        return df, global_clean_info
