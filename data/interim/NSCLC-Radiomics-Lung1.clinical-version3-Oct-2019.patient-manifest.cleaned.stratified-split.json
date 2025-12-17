@@ -1,0 +1,131 @@
+{
+    "source_manifest": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/raw/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.csv",
+    "output_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-split.csv",
+    "timestamp": "2025-12-17T19:44:55.660280+00:00Z",
+    "random_state": 42,
+    "hashes": {
+        "source_manifest_sha256": "132f72b58b9660bf5e6b24b9817b335f1896360bc253e1f2034a3ffee593e6fd",
+        "output_split_sha256": "0a756d3f44b0e711bedbe5eb60ef792e861a112508958743d6dd11d18c3f8d65"
+    },
+    "script_metadata": {
+        "function": "stratify_split_patient_manifest_csv",
+        "commit_hash": "a123dd0",
+        "python_version": "3.10.19",
+        "pandas_version": "2.3.3"
+    },
+    "patient_count_source": 421,
+    "cleaning": {
+        "source_manifest": "dataframe in memory",
+        "source_type": "DataFrame",
+        "clean_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.csv",
+        "timestamp": "2025-12-17T19:44:55.636925+00:00Z",
+        "random_state": null,
+        "hashes": {
+            "source_manifest_sha256": "35fdfa6558f0580e59eb9b3491c98dc848ce3751968cb74ed9faa79afc43f042",
+            "cleaned_manifest_sha256": "8066ffda96e64604c44c2d1e1cb6acabcd544965a1b4feab7d87b44c27d88a27"
+        },
+        "script_metadata": {
+            "function": "clean_patient_manifest_csv",
+            "commit_hash": "ab123dd0",
+            "python_version": "3.10.19",
+            "pandas_version": "2.3.3"
+        },
+        "cleaning_steps": {
+            "columns": {
+                "original": [
+                    10,
+                    [
+                        "PatientID",
+                        "age",
+                        "clinical.T.Stage",
+                        "Clinical.N.Stage",
+                        "Clinical.M.Stage",
+                        "Overall.Stage",
+                        "Histology",
+                        "gender",
+                        "Survival.time",
+                        "deadstatus.event"
+                    ]
+                ],
+                "kept": [
+                    2,
+                    [
+                        "PatientID",
+                        "Overall.Stage"
+                    ]
+                ],
+                "removed": [
+                    8,
+                    [
+                        "age",
+                        "clinical.T.Stage",
+                        "Clinical.N.Stage",
+                        "Clinical.M.Stage",
+                        "Histology",
+                        "gender",
+                        "Survival.time",
+                        "deadstatus.event"
+                    ]
+                ]
+            },
+            "patients": {
+                "before_drop": 422,
+                "after_drop": 421,
+                "dropped_total": 1,
+                "dropped_by_column": {
+                    "Overall.Stage": 1
+                },
+                "dropped_identifiers": [
+                    {
+                        "PatientID": "LUNG1-272",
+                        "Overall.Stage": NaN
+                    }
+                ],
+                "dropped_identifiers_by_column": {
+                    "Overall.Stage": [
+                        {
+                            "PatientID": "LUNG1-272",
+                            "Overall.Stage": NaN
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "splits": {
+        "Train": {
+            "patient_count": 336,
+            "classification_labels": {
+                "counts": {
+                    "I": 74,
+                    "II": 32,
+                    "IIIa": 89,
+                    "IIIb": 141
+                },
+                "proportions": {
+                    "I": 0.2202,
+                    "II": 0.0952,
+                    "IIIa": 0.2649,
+                    "IIIb": 0.4196
+                }
+            }
+        },
+        "Test": {
+            "patient_count": 85,
+            "classification_labels": {
+                "counts": {
+                    "I": 19,
+                    "II": 8,
+                    "IIIa": 23,
+                    "IIIb": 35
+                },
+                "proportions": {
+                    "I": 0.2235,
+                    "II": 0.0941,
+                    "IIIa": 0.2706,
+                    "IIIb": 0.4118
+                }
+            }
+        }
+    }
+}

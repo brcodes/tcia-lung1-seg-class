@@ -6,7 +6,7 @@ import json
 from datetime import datetime, timezone
 import platform
 
-from preprocessing.clean_patient_manifest_csv import clean_patient_manifest_csv
+from clean_patient_manifest_csv import clean_patient_manifest_csv
 from util import file_sha256
 
 
@@ -56,12 +56,14 @@ def stratify_split_patient_manifest_csv(
     df = pd.read_csv(manifest_path)
     # Optional preprocessing
     if optional_clean_kwargs:
+        print(optional_clean_kwargs)
         # Automatically registered as helper
-        df, clean_info = clean_patient_manifest_csv(df, optional_clean_kwargs)
+        kwargs = optional_clean_kwargs['optional_clean_kwargs']
+        print(kwargs)
+        df, clean_info = clean_patient_manifest_csv(df, **kwargs)
     else:
         clean_info = None
         
-
     # Stratified split by stage
     splitter = StratifiedShuffleSplit(
         n_splits=1, train_size=train_size, random_state=random_state
@@ -98,7 +100,7 @@ def stratify_split_patient_manifest_csv(
 
 if __name__ == "__main__":
     base = "../../data/"
-    manifest_name = "NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019-patient-manifest.csv"
+    manifest_name = "NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.csv"
     raw_path = os.path.join(base, "raw", manifest_name)
     # Cleaning before split; no clean if None
     clean = True
