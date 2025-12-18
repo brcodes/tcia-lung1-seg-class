@@ -146,6 +146,7 @@ def get_dicom(
 
 def typical_slice_thickness(dicom_paths, double_check=False):
     import pydicom
+    from pydicom.tag import Tag
 
     # Accept a single path or a list of paths.
     if isinstance(dicom_paths, (str, os.PathLike)):
@@ -155,6 +156,8 @@ def typical_slice_thickness(dicom_paths, double_check=False):
 
     thicknesses_mm = []
     skipped = 0
+    
+    thicknesses_tag = Tag(0x0018, 0x0050)
 
     for dicom_path in dicom_paths:
         ds = pydicom.dcmread(dicom_path, stop_before_pixels=True)
@@ -163,37 +166,44 @@ def typical_slice_thickness(dicom_paths, double_check=False):
         raw = ds.get("SliceThickness", None)
         if raw is None and hasattr(ds, "SliceThickness"):
             raw = getattr(ds, "SliceThickness")
+            if raw is None:
+                skipped += 1
+                # Tag search
+                # if thicknesses_tag in ds:
+                #     raw = ds[thicknesses_tag].value
+                #     if raw is None:
+                #         skipped += 1
+                        
+                        # Save this in a find substring print context( ) util
+                        # if double_check:
+                        #     needles = ("thickness", "slice")
+                        #     context_chars = 100
+                        #     for elem in ds:
+                        #         keyword = elem.keyword if elem.keyword else str(elem.tag)
+                        #         all_key_values = f"{keyword}: {elem.value}"
+                        #         haystack = all_key_values
+                        #         haystack_lower = haystack.lower()
 
-        if raw is None:
-            skipped += 1
-            needles = ("thickness", "slice")
-            context_chars = 100
-            for elem in ds:
-                keyword = elem.keyword if elem.keyword else str(elem.tag)
-                all_key_values = f"{keyword}: {elem.value}"
-                haystack = all_key_values
-                haystack_lower = haystack.lower()
+                        #         matched = next((n for n in needles if n in haystack_lower), None)
+                        #         if matched is None:
+                        #             continue
 
-                matched = next((n for n in needles if n in haystack_lower), None)
-                if matched is None:
-                    continue
+                        #         idx = haystack_lower.find(matched)
+                        #         start = max(0, idx - context_chars)
+                        #         end = min(len(haystack), idx + len(matched) + context_chars)
+                        #         snippet = haystack[start:end]
+                        #         prefix = "..." if start > 0 else ""
+                        #         suffix = "..." if end < len(haystack) else ""
 
-                idx = haystack_lower.find(matched)
-                start = max(0, idx - context_chars)
-                end = min(len(haystack), idx + len(matched) + context_chars)
-                snippet = haystack[start:end]
-                prefix = "..." if start > 0 else ""
-                suffix = "..." if end < len(haystack) else ""
+                                
+                        #         print(
+                        #             "Found possible SliceThickness-related info in DICOM (SliceThickness missing):\n"
+                        #             f"file: {dicom_path}\n"
+                        #             f"match: '{matched}'\n"
+                        #             f"context: {prefix}{snippet}{suffix}"
+                        #         )
 
-                
-                print(
-                    "Found possible SliceThickness-related info in DICOM (SliceThickness missing):\n"
-                    f"file: {dicom_path}\n"
-                    f"match: '{matched}'\n"
-                    f"context: {prefix}{snippet}{suffix}"
-                )
-
-            continue
+                continue
 
         try:
             # pydicom may give a DSfloat/DecimalString already.
