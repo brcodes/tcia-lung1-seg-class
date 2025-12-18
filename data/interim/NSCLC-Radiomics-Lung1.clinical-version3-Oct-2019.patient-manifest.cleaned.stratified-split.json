@@ -1,7 +1,7 @@
 {
     "source_manifest": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/raw/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.csv",
     "output_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-split.csv",
-    "timestamp": "2025-12-17T19:44:55.660280+00:00Z",
+    "timestamp": "2025-12-17T20:24:24.624069+00:00Z",
     "random_state": 42,
     "hashes": {
         "source_manifest_sha256": "132f72b58b9660bf5e6b24b9817b335f1896360bc253e1f2034a3ffee593e6fd",
@@ -18,7 +18,7 @@
         "source_manifest": "dataframe in memory",
         "source_type": "DataFrame",
         "clean_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.csv",
-        "timestamp": "2025-12-17T19:44:55.636925+00:00Z",
+        "timestamp": "2025-12-17T20:24:24.615779+00:00Z",
         "random_state": null,
         "hashes": {
             "source_manifest_sha256": "35fdfa6558f0580e59eb9b3491c98dc848ce3751968cb74ed9faa79afc43f042",

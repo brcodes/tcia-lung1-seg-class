@@ -15,6 +15,9 @@ def write_stratified_split_metadata_json(df, source_manifest, output_path, clean
     Generate one clinically relevant JSON manifest for the entire splits.csv,
     with nested Train/Test metadata.
     """
+    print("running: write_stratified_split_metadata_json")
+    print("\n")
+    
     patient_count = int(len(df))
     manifest = {
         "source_manifest": os.path.abspath(source_manifest),
@@ -42,6 +45,8 @@ def write_stratified_split_metadata_json(df, source_manifest, output_path, clean
         json.dump(manifest, f, indent=4)
 
     print(f"Split manifest written to {json_path}")
+    print("\n")
+    
     return manifest
 
 def stratify_split_patient_manifest_csv(
@@ -52,14 +57,15 @@ def stratify_split_patient_manifest_csv(
     random_state=42,
     **optional_clean_kwargs
 ):
+    print("running: stratify_split_patient_manifest_csv")
+    print("\n")
+    
     # Load
     df = pd.read_csv(manifest_path)
     # Optional preprocessing
     if optional_clean_kwargs:
-        print(optional_clean_kwargs)
         # Automatically registered as helper
         kwargs = optional_clean_kwargs['optional_clean_kwargs']
-        print(kwargs)
         df, clean_info = clean_patient_manifest_csv(df, **kwargs)
     else:
         clean_info = None
@@ -80,6 +86,8 @@ def stratify_split_patient_manifest_csv(
 
     # Save splits
     df.to_csv(output_path, index=False)
+    print(f"Stratified split manifest saved to {output_path}")
+    print("\n")
     
     # Prepare splits info for manifest, print
     splits_info = {}
@@ -95,7 +103,6 @@ def stratify_split_patient_manifest_csv(
                 "proportions": proportions
             }
         }
-        print(f"{split} info: {splits_info[split]}")
     write_stratified_split_metadata_json(df, manifest_path, output_path, clean_info, splits_info, random_state)
 
 if __name__ == "__main__":
@@ -115,6 +122,16 @@ if __name__ == "__main__":
                             "dropna_columns":["Overall.Stage"], 
                             "clean_path": output_path}
     output_path = output_path.replace(".csv", ".stratified-split.csv")
+    
+    print("stratify_split_patient_manifest_csv parameters:")
+    print(f"Manifest path: {raw_path}")
+    print(f"Clean: {clean}")
+    print(f"Stratification column: {strat_column}")
+    print(f"Train size: {train_size}")
+    print(f"Random state: {random_state}")
+    print(f"Output path: {output_path}")
+    print(f"Optional clean kwargs: {optional_clean_kwargs if clean else 'None'}")
+    print("\n")
     
     stratify_split_patient_manifest_csv(manifest_path=raw_path, 
                              output_path=output_path, 

@@ -11,6 +11,8 @@ def write_cleaning_metadata_json(df, manifest_or_path, clean_path, local_clean_i
     Generate one clinically relevant JSON manifest for the entire splits.csv,
     with nested Train/Test metadata.
     """
+    print("running: write_cleaning_metadata_json")
+    print("\n")
     # Prepare clean info for manifest, print
     manifest = isinstance(manifest_or_path, pd.DataFrame)
     global_clean_info = {
@@ -36,14 +38,17 @@ def write_cleaning_metadata_json(df, manifest_or_path, clean_path, local_clean_i
     with open(json_path, "w") as f:
         json.dump(global_clean_info, f, indent=4)
         
+    print(f"Cleaning metadata written to {json_path}")
+    print("\n")
+        
     return global_clean_info
 
 
 def clean_patient_manifest_csv(manifest_or_path, clean_path=None, keep_columns=None, dropna_columns=None, random_state=None, **helper_assignments):
+    print("running: clean_patient_manifest_csv")
+    print("\n")
     
-    
-    
-    
+
     # When clean is a helper
     # If helper_assignments are a subset of function args (as hoped)
     # then helper_assignments actually automatically assign to func args
@@ -54,25 +59,12 @@ def clean_patient_manifest_csv(manifest_or_path, clean_path=None, keep_columns=N
         valid_kwargs = set(locals().keys()) - {"helper_assignments"}
         invalid_kwargs = set(helper_assignments) - valid_kwargs
         raise ValueError(f"Unexpected kwargs for clean_raw_manifest_csv: {invalid_kwargs}")
-        # # Dynamically get all argument names except 'helper_assignments'
-        # valid_kwargs = set(locals().keys()) - {"helper_assignments"}
-        # invalid_kwargs = set(helper_assignments) - valid_kwargs
-        
-        # # valid_kwargs = {"manifest_or_path", "clean_path", "keep_columns", "dropna_columns"}
-        # # invalid_kwargs = set(helper_assignments) - valid_kwargs
-        # if invalid_kwargs:
-        #     raise ValueError(f"Unexpected kwargs for clean_raw_manifest_csv: {invalid_kwargs}")
-        # # Override if present in kwargs
-        # clean_path = helper_assignments.get("clean_path", clean_path)
-        # keep_columns = helper_assignments.get("keep_columns", keep_columns)
-        # dropna_columns = helper_assignments.get("dropna_columns", dropna_columns)
-        # random_state = helper_assignments.get("random_state", random_state)
-
+    
     # Basic checks
     if clean_path is None:
         raise ValueError("clean_path must be specified to save cleaned manifest CSV.")
     if random_state is None:
-        print("Random state is None. Only use for non-random cleaning steps.")
+        print("Random state is None. Non-random cleaning steps assumed.")
         
     # Load manifest
     if not isinstance(manifest_or_path, pd.DataFrame):
@@ -99,34 +91,6 @@ def clean_patient_manifest_csv(manifest_or_path, clean_path=None, keep_columns=N
         dropped_columns_count = int(len(dropped_columns))
         print(f"{rem_col_count} Columns kept: {remaining_columns}")
         print(f"{dropped_columns_count} Columns dropped: {dropped_columns}")
-        
-    # if dropna_columns is not None:
-    #     missing = [col for col in dropna_columns if col not in df.columns]
-    #     if missing:
-    #         raise ValueError(f"Columns {missing} specified in dropna_columns not found in manifest.csv")
-
-    #     before_drop = len(df)
-    #     na_counts_before = df[dropna_columns].isna().sum().to_dict()
-
-    #     # Capture rows that will be dropped
-    #     dropped_rows = df[df[dropna_columns].isna().any(axis=1)]
-    #     # Collect identifiers from *all* dropna_columns
-    #     dropped_ids = dropped_rows[dropna_columns].to_dict(orient="records")
-
-    #     df = df.dropna(subset=dropna_columns)
-
-    #     after_drop = len(df)
-    #     dropped_total = before_drop - after_drop
-    #     na_counts_after = df[dropna_columns].isna().sum().to_dict()
-    #     dropped_by_col = {col: na_counts_before[col] - na_counts_after[col] for col in dropna_columns}
-
-    #     print(f"Num rows before dropping NAs: {before_drop}")
-    #     print(f"Rows dropped due to NA in any of columns {dropna_columns}: {dropped_total}")
-    #     print(f"Rows dropped due to NA by column: {dropped_by_col}")
-    #     print(f"Num rows after dropping NAs: {after_drop}")
-    #     print("Dropped identifiers (values from dropna_columns):")
-    #     for rec in dropped_ids:
-    #         print(rec)
     
     if dropna_columns is not None:
         missing = [col for col in dropna_columns if col not in df.columns]
@@ -172,6 +136,7 @@ def clean_patient_manifest_csv(manifest_or_path, clean_path=None, keep_columns=N
     # Save cleaned manifest
     df.to_csv(clean_path, index=False)
     print(f"Cleaned manifest saved to {clean_path}")
+    print("\n")
 
     # Prepare clean info for manifest, print
     local_clean_info = {
