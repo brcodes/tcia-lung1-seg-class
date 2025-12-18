@@ -1,0 +1,180 @@
+{
+    "dataset": {
+        "datasetId": "NSCLC-Radiomics-Lung1",
+        "description": "NSCLC-Radiomics Lung1 stratified split cohort manifest",
+        "sourceSystem": "TCIA"
+    },
+    "sourceManifest": {
+        "cleanManifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/raw/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.csv",
+        "rowCount": 421,
+        "hash": "132f72b58b9660bf5e6b24b9817b335f1896360bc253e1f2034a3ffee593e6fd"
+    },
+    "splitConfig": {
+        "strategy": "stratifiedHoldout",
+        "targetColumn": "Overall.Stage",
+        "fractions": {
+            "train": 0.8,
+            "test": 0.19999999999999996
+        },
+        "randomSeed": 42,
+        "shuffle": true
+    },
+    "splits": [
+        {
+            "name": "Train",
+            "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-split.csv",
+            "rowCount": 336,
+            "labelDistribution": {
+                "counts": {
+                    "I": 74,
+                    "II": 32,
+                    "IIIa": 89,
+                    "IIIb": 141
+                },
+                "proportions": {
+                    "I": 0.2202,
+                    "II": 0.0952,
+                    "IIIa": 0.2649,
+                    "IIIb": 0.4196
+                }
+            }
+        },
+        {
+            "name": "Test",
+            "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-split.csv",
+            "rowCount": 85,
+            "labelDistribution": {
+                "counts": {
+                    "I": 19,
+                    "II": 8,
+                    "IIIa": 23,
+                    "IIIb": 35
+                },
+                "proportions": {
+                    "I": 0.2235,
+                    "II": 0.0941,
+                    "IIIa": 0.2706,
+                    "IIIb": 0.4118
+                }
+            }
+        }
+    ],
+    "processing": {
+        "pipelineName": "stratify_split_patient_manifest",
+        "pipelineVersion": "a123dd0",
+        "executedAt": "2025-12-18T17:26:57.412435+00:00",
+        "pythonVersion": "3.10.19",
+        "pandasVersion": "2.3.3",
+        "cleaningMetadata": {
+            "dataset": {
+                "datasetId": "NSCLC-Radiomics-Lung1",
+                "description": "NSCLC-Radiomics Lung1 cohort manifest cleaning",
+                "sourceSystem": "TCIA"
+            },
+            "sourceManifest": {
+                "rawManifestPath": "dataframe in memory",
+                "rawRowCount": 422,
+                "sourceType": "DataFrame"
+            },
+            "cleanManifest": {
+                "cleanManifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.csv",
+                "rowCount": 421,
+                "idColumn": [
+                    "PatientID"
+                ],
+                "columnSummary": {
+                    "PatientID": {
+                        "dtype": "object",
+                        "nonNullCount": 421
+                    },
+                    "Overall.Stage": {
+                        "dtype": "object",
+                        "nonNullCount": 421
+                    }
+                },
+                "hash": "8066ffda96e64604c44c2d1e1cb6acabcd544965a1b4feab7d87b44c27d88a27"
+            },
+            "processing": {
+                "pipelineName": "clean_patient_manifest",
+                "pipelineVersion": "ab123dd0",
+                "executedAt": "2025-12-18T17:26:57.405300+00:00",
+                "randomState": null,
+                "pythonVersion": "3.10.19",
+                "pandasVersion": "2.3.3",
+                "cleaningSummary": {
+                    "columns": {
+                        "original": {
+                            "count": 10,
+                            "names": [
+                                "PatientID",
+                                "age",
+                                "clinical.T.Stage",
+                                "Clinical.N.Stage",
+                                "Clinical.M.Stage",
+                                "Overall.Stage",
+                                "Histology",
+                                "gender",
+                                "Survival.time",
+                                "deadstatus.event"
+                            ]
+                        },
+                        "kept": {
+                            "count": 2,
+                            "names": [
+                                "PatientID",
+                                "Overall.Stage"
+                            ]
+                        },
+                        "removed": {
+                            "count": 8,
+                            "names": [
+                                "age",
+                                "clinical.T.Stage",
+                                "Clinical.N.Stage",
+                                "Clinical.M.Stage",
+                                "Histology",
+                                "gender",
+                                "Survival.time",
+                                "deadstatus.event"
+                            ]
+                        }
+                    },
+                    "patients": {
+                        "before_drop": 422,
+                        "after_drop": 421,
+                        "dropped_total": 1,
+                        "dropped_by_column": {
+                            "Overall.Stage": 1
+                        },
+                        "dropped_identifiers": [
+                            {
+                                "PatientID": "LUNG1-272",
+                                "Overall.Stage": null
+                            }
+                        ],
+                        "dropped_identifiers_by_column": {
+                            "Overall.Stage": [
+                                {
+                                    "PatientID": "LUNG1-272",
+                                    "Overall.Stage": null
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "phiStatus": {
+                "containsPhi": false,
+                "phiLevel": "none",
+                "verificationSource": "TCIA NSCLC-Radiomics Lung1 de-identified public dataset",
+                "notes": "Dataset is de-identified according to TCIA documentation."
+            }
+        }
+    },
+    "phiStatus": {
+        "containsPhi": false,
+        "phiLevel": "none",
+        "verificationSource": "TCIA NSCLC-Radiomics Lung1 de-identified public dataset",
+        "notes": "Dataset is de-identified according to TCIA documentation."
+    }
+}

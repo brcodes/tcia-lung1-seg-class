@@ -6,48 +6,80 @@ import json
 from datetime import datetime, timezone
 import platform
 
-from clean_patient_manifest_csv import clean_patient_manifest_csv
+from clean_patient_manifest_csv import clean_patient_manifest_csv, PHI_STATUS
 from util import file_sha256
 
 
-def write_stratified_split_metadata_json(df, source_manifest, output_path, clean_info, splits_info, random_state):
-    """
-    Generate one clinically relevant JSON manifest for the entire splits.csv,
-    with nested Train/Test metadata.
-    """
-    print("running: write_stratified_split_metadata_json")
-    print("\n")
-    
-    patient_count = int(len(df))
-    manifest = {
-        "source_manifest": os.path.abspath(source_manifest),
-        "output_path": os.path.abspath(output_path),
-        "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
-        "random_state": random_state,
-        "hashes": {
-            "source_manifest_sha256": file_sha256(source_manifest),
-            "output_split_sha256": file_sha256(output_path) if os.path.exists(output_path) else None
-        },
-        "script_metadata": {
-            "function": "stratify_split_patient_manifest_csv",
-            "commit_hash": "a123dd0",
-            "python_version": platform.python_version(),
-            "pandas_version": pd.__version__
-        },
-        "patient_count_source": patient_count,
-        "cleaning": clean_info,
-        "splits": splits_info
-    }
-    
-    # Save JSON alongside split file
-    json_path = output_path.replace(".csv", ".json")
-    with open(json_path, "w") as f:
-        json.dump(manifest, f, indent=4)
+def write_stratified_split_metadata(df, source_manifest, output_path, clean_metadata, splits_info, strat_column, train_size, random_state):
+    """Write JSON manifest metadata for a stratified split patient cohort manifest CSV.
 
-    print(f"Split manifest written to {json_path}")
+    The CSV with split assignments is treated as the patient cohort
+    manifest; this function writes accompanying processing metadata.
+    """
+    print("running: write_stratified_split_metadata")
     print("\n")
-    
-    return manifest
+
+    executed_at = datetime.now(timezone.utc).isoformat()
+
+    source_manifest_path = os.path.abspath(source_manifest)
+    split_manifest_path = os.path.abspath(output_path)
+
+    # Build per-split summary in a more Epic-style structure
+    splits = []
+    for split_name, info in splits_info.items():
+        label_stats = info.get("classification_labels", {})
+        splits.append({
+            "name": split_name,
+            "manifestPath": split_manifest_path,
+            "rowCount": int(info.get("patient_count", 0)),
+            "labelDistribution": {
+                "counts": label_stats.get("counts", {}),
+                "proportions": label_stats.get("proportions", {})
+            }
+        })
+
+    metadata = {
+        "dataset": {
+            "datasetId": "NSCLC-Radiomics-Lung1",
+            "description": "NSCLC-Radiomics Lung1 stratified split cohort manifest",
+            "sourceSystem": "TCIA"
+        },
+        "sourceManifest": {
+            "cleanManifestPath": source_manifest_path,
+            "rowCount": int(len(df)),
+            "hash": file_sha256(source_manifest)
+        },
+        "splitConfig": {
+            "strategy": "stratifiedHoldout",
+            "targetColumn": strat_column,
+            "fractions": {
+                "train": float(train_size),
+                "test": float(1.0 - train_size)
+            },
+            "randomSeed": random_state,
+            "shuffle": True
+        },
+        "splits": splits,
+        "processing": {
+            "pipelineName": "stratify_split_patient_manifest",
+            "pipelineVersion": "a123dd0",
+            "executedAt": executed_at,
+            "pythonVersion": platform.python_version(),
+            "pandasVersion": pd.__version__,
+            "cleaningMetadata": clean_metadata
+        },
+        "phiStatus": PHI_STATUS
+    }
+
+    # Save JSON alongside split file
+    json_path = output_path.replace(".csv", ".metadata.json")
+    with open(json_path, "w") as f:
+        json.dump(metadata, f, indent=4)
+
+    print(f"Split manifest metadata written to {json_path}")
+    print("\n")
+
+    return metadata
 
 def stratify_split_patient_manifest_csv(
     manifest_path="manifest.csv",
@@ -60,7 +92,7 @@ def stratify_split_patient_manifest_csv(
     print("running: stratify_split_patient_manifest_csv")
     print("\n")
     
-    # Load
+    # Load source cohort manifest
     df = pd.read_csv(manifest_path)
     # Optional preprocessing
     if optional_clean_kwargs:
@@ -84,12 +116,12 @@ def stratify_split_patient_manifest_csv(
     df.iloc[train_idx, df.columns.get_loc("Split")] = "Train"
     df.iloc[test_idx, df.columns.get_loc("Split")] = "Test"
 
-    # Save splits
+    # Save stratified cohort manifest with split assignments
     df.to_csv(output_path, index=False)
     print(f"Stratified split manifest saved to {output_path}")
     print("\n")
     
-    # Prepare splits info for manifest, print
+    # Prepare splits info for manifest metadata
     splits_info = {}
     for split in ["Train", "Test"]:
         subset = df[df["Split"] == split]
@@ -103,7 +135,16 @@ def stratify_split_patient_manifest_csv(
                 "proportions": proportions
             }
         }
-    write_stratified_split_metadata_json(df, manifest_path, output_path, clean_info, splits_info, random_state)
+    write_stratified_split_metadata(
+        df,
+        manifest_path,
+        output_path,
+        clean_info,
+        splits_info,
+        strat_column,
+        train_size,
+        random_state,
+    )
 
 if __name__ == "__main__":
     base = "../../data/"
@@ -120,6 +161,7 @@ if __name__ == "__main__":
         output_path = output_path.replace(".csv", ".cleaned.csv")
         optional_clean_kwargs = {"keep_columns":["PatientID", "Overall.Stage"], 
                             "dropna_columns":["Overall.Stage"], 
+                            "id_column":"PatientID",
                             "clean_path": output_path}
     output_path = output_path.replace(".csv", ".stratified-split.csv")
     
