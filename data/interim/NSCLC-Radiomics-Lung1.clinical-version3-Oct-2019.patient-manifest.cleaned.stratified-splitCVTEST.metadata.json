@@ -7,7 +7,7 @@
     "sourceManifest": {
         "cleanManifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
         "rowCount": 421,
-        "hash": "eba8eccff3b3e23ffacd3c17bed40fe8e53998cbc631e6ac07ef57261669d432"
+        "hash": "3437e5dc1c0f1e44101730921b67b6ed5e18883eba09b997ee09428a71190d9c"
     },
     "splitConfig": {
         "strategy": "stratifiedKFold",
@@ -27,38 +27,38 @@
                 {
                     "name": "train",
                     "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
-                    "rowCount": 336,
+                    "rowCount": 268,
                     "labelDistribution": {
                         "counts": {
-                            "I": 75,
-                            "II": 32,
-                            "IIIa": 89,
-                            "IIIb": 140
+                            "I": 60,
+                            "II": 25,
+                            "IIIa": 71,
+                            "IIIb": 112
                         },
                         "proportions": {
-                            "I": 0.2232,
-                            "II": 0.0952,
+                            "I": 0.2239,
+                            "II": 0.0933,
                             "IIIa": 0.2649,
-                            "IIIb": 0.4167
+                            "IIIb": 0.4179
                         }
                     }
                 },
                 {
                     "name": "val",
                     "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
-                    "rowCount": 85,
+                    "rowCount": 68,
                     "labelDistribution": {
                         "counts": {
-                            "I": 18,
-                            "II": 8,
-                            "IIIa": 23,
-                            "IIIb": 36
+                            "I": 14,
+                            "II": 7,
+                            "IIIa": 18,
+                            "IIIb": 29
                         },
                         "proportions": {
-                            "I": 0.2118,
-                            "II": 0.0941,
-                            "IIIa": 0.2706,
-                            "IIIb": 0.4235
+                            "I": 0.2059,
+                            "II": 0.1029,
+                            "IIIa": 0.2647,
+                            "IIIb": 0.4265
                         }
                     }
                 }
@@ -70,38 +70,38 @@
                 {
                     "name": "train",
                     "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
-                    "rowCount": 337,
+                    "rowCount": 269,
                     "labelDistribution": {
                         "counts": {
-                            "I": 74,
-                            "II": 32,
-                            "IIIa": 90,
-                            "IIIb": 141
+                            "I": 59,
+                            "II": 26,
+                            "IIIa": 71,
+                            "IIIb": 113
                         },
                         "proportions": {
-                            "I": 0.2196,
-                            "II": 0.095,
-                            "IIIa": 0.2671,
-                            "IIIb": 0.4184
+                            "I": 0.2193,
+                            "II": 0.0967,
+                            "IIIa": 0.2639,
+                            "IIIb": 0.4201
                         }
                     }
                 },
                 {
                     "name": "val",
                     "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
-                    "rowCount": 84,
+                    "rowCount": 67,
                     "labelDistribution": {
                         "counts": {
-                            "I": 19,
-                            "II": 8,
-                            "IIIa": 22,
-                            "IIIb": 35
+                            "I": 15,
+                            "II": 6,
+                            "IIIa": 18,
+                            "IIIb": 28
                         },
                         "proportions": {
-                            "I": 0.2262,
-                            "II": 0.0952,
-                            "IIIa": 0.2619,
-                            "IIIb": 0.4167
+                            "I": 0.2239,
+                            "II": 0.0896,
+                            "IIIa": 0.2687,
+                            "IIIb": 0.4179
                         }
                     }
                 }
@@ -113,38 +113,38 @@
                 {
                     "name": "train",
                     "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
-                    "rowCount": 337,
+                    "rowCount": 269,
                     "labelDistribution": {
                         "counts": {
-                            "I": 74,
-                            "II": 32,
-                            "IIIa": 90,
-                            "IIIb": 141
+                            "I": 59,
+                            "II": 26,
+                            "IIIa": 71,
+                            "IIIb": 113
                         },
                         "proportions": {
-                            "I": 0.2196,
-                            "II": 0.095,
-                            "IIIa": 0.2671,
-                            "IIIb": 0.4184
+                            "I": 0.2193,
+                            "II": 0.0967,
+                            "IIIa": 0.2639,
+                            "IIIb": 0.4201
                         }
                     }
                 },
                 {
                     "name": "val",
                     "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
-                    "rowCount": 84,
+                    "rowCount": 67,
                     "labelDistribution": {
                         "counts": {
-                            "I": 19,
-                            "II": 8,
-                            "IIIa": 22,
-                            "IIIb": 35
+                            "I": 15,
+                            "II": 6,
+                            "IIIa": 18,
+                            "IIIb": 28
                         },
                         "proportions": {
-                            "I": 0.2262,
-                            "II": 0.0952,
-                            "IIIa": 0.2619,
-                            "IIIb": 0.4167
+                            "I": 0.2239,
+                            "II": 0.0896,
+                            "IIIa": 0.2687,
+                            "IIIb": 0.4179
                         }
                     }
                 }
@@ -156,38 +156,38 @@
                 {
                     "name": "train",
                     "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
-                    "rowCount": 337,
+                    "rowCount": 269,
                     "labelDistribution": {
                         "counts": {
-                            "I": 74,
-                            "II": 32,
-                            "IIIa": 90,
-                            "IIIb": 141
+                            "I": 59,
+                            "II": 26,
+                            "IIIa": 71,
+                            "IIIb": 113
                         },
                         "proportions": {
-                            "I": 0.2196,
-                            "II": 0.095,
-                            "IIIa": 0.2671,
-                            "IIIb": 0.4184
+                            "I": 0.2193,
+                            "II": 0.0967,
+                            "IIIa": 0.2639,
+                            "IIIb": 0.4201
                         }
                     }
                 },
                 {
                     "name": "val",
                     "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
-                    "rowCount": 84,
+                    "rowCount": 67,
                     "labelDistribution": {
                         "counts": {
-                            "I": 19,
-                            "II": 8,
-                            "IIIa": 22,
-                            "IIIb": 35
+                            "I": 15,
+                            "II": 6,
+                            "IIIa": 18,
+                            "IIIb": 28
                         },
                         "proportions": {
-                            "I": 0.2262,
-                            "II": 0.0952,
-                            "IIIa": 0.2619,
-                            "IIIb": 0.4167
+                            "I": 0.2239,
+                            "II": 0.0896,
+                            "IIIa": 0.2687,
+                            "IIIb": 0.4179
                         }
                     }
                 }
@@ -199,38 +199,38 @@
                 {
                     "name": "train",
                     "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
-                    "rowCount": 337,
+                    "rowCount": 269,
                     "labelDistribution": {
                         "counts": {
-                            "I": 75,
-                            "II": 32,
-                            "IIIa": 89,
-                            "IIIb": 141
+                            "I": 59,
+                            "II": 25,
+                            "IIIa": 72,
+                            "IIIb": 113
                         },
                         "proportions": {
-                            "I": 0.2226,
-                            "II": 0.095,
-                            "IIIa": 0.2641,
-                            "IIIb": 0.4184
+                            "I": 0.2193,
+                            "II": 0.0929,
+                            "IIIa": 0.2677,
+                            "IIIb": 0.4201
                         }
                     }
                 },
                 {
                     "name": "val",
                     "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
-                    "rowCount": 84,
+                    "rowCount": 67,
                     "labelDistribution": {
                         "counts": {
-                            "I": 18,
-                            "II": 8,
-                            "IIIa": 23,
-                            "IIIb": 35
+                            "I": 15,
+                            "II": 7,
+                            "IIIa": 17,
+                            "IIIb": 28
                         },
                         "proportions": {
-                            "I": 0.2143,
-                            "II": 0.0952,
-                            "IIIa": 0.2738,
-                            "IIIb": 0.4167
+                            "I": 0.2239,
+                            "II": 0.1045,
+                            "IIIa": 0.2537,
+                            "IIIb": 0.4179
                         }
                     }
                 }
@@ -240,7 +240,7 @@
     "processing": {
         "pipelineName": "stratify_subsplit_patient_manifest_kfoldCV",
         "pipelineVersion": "a123dd0",
-        "executedAt": "2025-12-19T14:44:14.748634+00:00",
+        "executedAt": "2025-12-19T15:07:24.479832+00:00",
         "pythonVersion": "3.10.19",
         "pandasVersion": "2.3.3",
         "cleaningMetadata": null

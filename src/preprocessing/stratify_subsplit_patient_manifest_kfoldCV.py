@@ -119,26 +119,34 @@ def stratify_subsplit_patient_manifest_kfoldCV(
         df, clean_info = clean_patient_manifest_csv(df, **kwargs)
     else:
         clean_info = None
+        
+    # Train subset is where we compute CV fold assignments. We then write the
+    # resulting fold columns back into the full manifest, leaving Test rows as NA.
+    train_mask = df["Split"] == "Train"
+    df_train = df.loc[train_mask].copy()
 
-    y = df[strat_column]
+    y = df_train[strat_column]
 
     splitter = StratifiedKFold(n_splits=k_folds, shuffle=True, random_state=random_state)
 
-    # Add fold membership columns to a single manifest
+    # Add fold membership columns to the full manifest (default NA).
+    # Only Train rows will be populated.
     fold_columns = [f"cv_fold_{i}" for i in range(1, k_folds + 1)]
     for col in fold_columns:
-        df[col] = "train"
+        df[col] = pd.NA
+        df_train[col] = "train"
 
     folds_info = []
 
-    for fold_index, (train_idx, test_idx) in enumerate(splitter.split(df, y), start=1):
+    for fold_index, (train_idx, test_idx) in enumerate(splitter.split(df_train, y), start=1):
         fold_col = f"cv_fold_{fold_index}"
-        df.loc[test_idx, fold_col] = "val"
+        # `split()` yields positional indices; map them to index labels for `.loc`.
+        df_train.loc[df_train.index[test_idx], fold_col] = "val"
 
         # Per-fold split summary for metadata
         splits_info = {}
         for split_name, idx in [("train", train_idx), ("val", test_idx)]:
-            subset = df.iloc[idx]
+            subset = df_train.iloc[idx]
             counts = subset[strat_column].value_counts().sort_index().to_dict()
             proportions = (
                 subset[strat_column]
@@ -159,6 +167,11 @@ def stratify_subsplit_patient_manifest_kfoldCV(
             "fold": int(fold_index),
             "splits": splits_info,
         })
+
+    # Write fold assignments back into the full manifest (Train rows only).
+    # This keeps Test rows as NA.
+    if len(df_train) > 0:
+        df.loc[df_train.index, fold_columns] = df_train[fold_columns]
 
     # Save single cohort manifest with fold columns
     df.to_csv(output_path, index=False)
