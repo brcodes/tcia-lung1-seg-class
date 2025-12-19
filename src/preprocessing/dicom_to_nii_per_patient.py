@@ -168,7 +168,7 @@ def dicom_series_to_nifti(patient_dir: str | Path, out_path: str) -> None:
     sitk.WriteImage(img, out_path, useCompression=True)
 
 
-def main(base_path: str, interim_path: str):
+def dicoms_to_nifti(base_path: str, interim_path: str):
     patient_dirs = find_patient_dirs(base_path)
     if not patient_dirs:
         raise SystemExit(f"No patient subdirectories found under base_path={base_path}")
@@ -213,4 +213,5 @@ if __name__ == "__main__":
     # interim_path: output folder for per-patient .nii.gz volumes
     base_path = "../../data/raw/NSCLC-Radiomics/"  # e.g. "data/raw/NSCLC-Radiomics"
     interim_path = "../../data/interim/nifti"
-    main(base_path, interim_path)
+    dicoms_to_nifti(base_path, interim_path)
+    # preprocessing()
