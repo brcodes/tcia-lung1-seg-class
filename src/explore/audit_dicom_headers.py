@@ -166,44 +166,14 @@ def typical_slice_thickness(dicom_paths, double_check=False):
         raw = ds.get("SliceThickness", None)
         if raw is None and hasattr(ds, "SliceThickness"):
             raw = getattr(ds, "SliceThickness")
-            if raw is None:
-                skipped += 1
-                # Tag search
-                # if thicknesses_tag in ds:
-                #     raw = ds[thicknesses_tag].value
-                #     if raw is None:
-                #         skipped += 1
-                        
-                        # Save this in a find substring print context( ) util
-                        # if double_check:
-                        #     needles = ("thickness", "slice")
-                        #     context_chars = 100
-                        #     for elem in ds:
-                        #         keyword = elem.keyword if elem.keyword else str(elem.tag)
-                        #         all_key_values = f"{keyword}: {elem.value}"
-                        #         haystack = all_key_values
-                        #         haystack_lower = haystack.lower()
 
-                        #         matched = next((n for n in needles if n in haystack_lower), None)
-                        #         if matched is None:
-                        #             continue
+        # If keyword/attribute lookup failed (or is empty), fall back to explicit tag lookup.
+        if raw in (None, "", " ") and thicknesses_tag in ds:
+            raw = ds[thicknesses_tag].value
 
-                        #         idx = haystack_lower.find(matched)
-                        #         start = max(0, idx - context_chars)
-                        #         end = min(len(haystack), idx + len(matched) + context_chars)
-                        #         snippet = haystack[start:end]
-                        #         prefix = "..." if start > 0 else ""
-                        #         suffix = "..." if end < len(haystack) else ""
-
-                                
-                        #         print(
-                        #             "Found possible SliceThickness-related info in DICOM (SliceThickness missing):\n"
-                        #             f"file: {dicom_path}\n"
-                        #             f"match: '{matched}'\n"
-                        #             f"context: {prefix}{snippet}{suffix}"
-                        #         )
-
-                continue
+        if raw in (None, "", " "):
+            skipped += 1
+            continue
 
         try:
             # pydicom may give a DSfloat/DecimalString already.
