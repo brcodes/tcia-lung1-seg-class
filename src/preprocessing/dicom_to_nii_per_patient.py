@@ -87,13 +87,33 @@ def choose_best_series_under(study_dir: Path, *, max_depth: int = 3):
     best_files = None
     best_dir = None
 
+    def has_at_least_n_files(dir_path: Path, n: int) -> bool:
+        count = 0
+        try:
+            for p in dir_path.iterdir():
+                if p.is_file():
+                    count += 1
+                    if count >= n:
+                        return True
+        except PermissionError:
+            return False
+        return False
+
     for dicom_dir in iter_dirs_within(study_dir, max_depth=max_depth):
+        # Skip "calibration" / non-series dirs that only contain 1-2 files.
+        # This both matches your intent (ignore single-slice scans) and avoids a lot
+        # of noisy GDCM warnings from probing directories that can't form a series.
+        if not has_at_least_n_files(dicom_dir, 3):
+            continue
         series_ids = reader.GetGDCMSeriesIDs(str(dicom_dir))
         if not series_ids:
             continue
         for sid in series_ids:
             files = reader.GetGDCMSeriesFileNames(str(dicom_dir), sid)
             if not files:
+                continue
+            # Explicitly skip 1-2 file series (often calibration/localizer, etc.)
+            if len(files) < 3:
                 continue
             if best_files is None or len(files) > len(best_files):
                 best_sid = sid
@@ -164,7 +184,7 @@ def main(base_path: str, interim_path: str):
             continue
 
         patient_id = pdir.name
-        out_path = os.path.join(interim_path, f"{patient_id}.nii.gz")
+        out_path = os.path.join(interim_path, f"{patient_id}TEST.nii.gz")
 
         try:
             sid, files, dicom_dir = choose_best_series_under(study_dir, max_depth=3)
