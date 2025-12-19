@@ -113,7 +113,7 @@ def stratify_subsplit_patient_manifest_kfoldCV(
     # Load source cohort manifest
     df = pd.read_csv(manifest_path)
     # Optional preprocessing
-    if optional_clean_kwargs:
+    if optional_clean_kwargs and optional_clean_kwargs.get('clean', None) is not None:
         # Automatically registered as helper
         kwargs = optional_clean_kwargs['optional_clean_kwargs']
         df, clean_info = clean_patient_manifest_csv(df, **kwargs)
@@ -183,16 +183,16 @@ def stratify_subsplit_patient_manifest_kfoldCV(
 if __name__ == "__main__":
     base = "../../data/"
     manifest_name = "NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv"
-    raw_path = os.path.join(base, "raw", manifest_name)
+    raw_path = os.path.join(base, "interim", manifest_name)
     ## Will end with the same name
     # Authoritative source of all splits
-    output_path = os.path.join(base, "interim", manifest_name)
+    output_path = raw_path
     '''
     Cleaning
     '''
     # Cleaning before split; no clean if None
     clean = None
-    optional_clean_kwargs = None
+    optional_clean_kwargs = {'clean':None}
     if clean:
         output_path = output_path.replace(".csv", ".cleaned.csv")
         optional_clean_kwargs = {"keep_columns":["PatientID", "Overall.Stage"], 

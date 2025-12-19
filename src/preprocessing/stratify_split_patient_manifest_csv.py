@@ -95,7 +95,7 @@ def stratify_split_patient_manifest_csv(
     # Load source cohort manifest
     df = pd.read_csv(manifest_path)
     # Optional preprocessing
-    if optional_clean_kwargs:
+    if optional_clean_kwargs and optional_clean_kwargs.get('clean', None) is not None:
         # Automatically registered as helper
         kwargs = optional_clean_kwargs['optional_clean_kwargs']
         df, clean_info = clean_patient_manifest_csv(df, **kwargs)

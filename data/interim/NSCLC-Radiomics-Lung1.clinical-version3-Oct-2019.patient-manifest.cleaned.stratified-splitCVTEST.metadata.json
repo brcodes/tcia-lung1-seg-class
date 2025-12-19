@@ -1,0 +1,254 @@
+{
+    "dataset": {
+        "datasetId": "NSCLC-Radiomics-Lung1",
+        "description": "NSCLC-Radiomics Lung1 stratified split cohort manifest",
+        "sourceSystem": "TCIA"
+    },
+    "sourceManifest": {
+        "cleanManifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
+        "rowCount": 421,
+        "hash": "eba8eccff3b3e23ffacd3c17bed40fe8e53998cbc631e6ac07ef57261669d432"
+    },
+    "splitConfig": {
+        "strategy": "stratifiedKFold",
+        "targetColumn": "Overall.Stage",
+        "kFolds": 5,
+        "fractions": {
+            "train": 0.8,
+            "test": 0.2
+        },
+        "randomSeed": 42,
+        "shuffle": true
+    },
+    "folds": [
+        {
+            "index": 1,
+            "splits": [
+                {
+                    "name": "train",
+                    "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
+                    "rowCount": 336,
+                    "labelDistribution": {
+                        "counts": {
+                            "I": 75,
+                            "II": 32,
+                            "IIIa": 89,
+                            "IIIb": 140
+                        },
+                        "proportions": {
+                            "I": 0.2232,
+                            "II": 0.0952,
+                            "IIIa": 0.2649,
+                            "IIIb": 0.4167
+                        }
+                    }
+                },
+                {
+                    "name": "val",
+                    "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
+                    "rowCount": 85,
+                    "labelDistribution": {
+                        "counts": {
+                            "I": 18,
+                            "II": 8,
+                            "IIIa": 23,
+                            "IIIb": 36
+                        },
+                        "proportions": {
+                            "I": 0.2118,
+                            "II": 0.0941,
+                            "IIIa": 0.2706,
+                            "IIIb": 0.4235
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "index": 2,
+            "splits": [
+                {
+                    "name": "train",
+                    "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
+                    "rowCount": 337,
+                    "labelDistribution": {
+                        "counts": {
+                            "I": 74,
+                            "II": 32,
+                            "IIIa": 90,
+                            "IIIb": 141
+                        },
+                        "proportions": {
+                            "I": 0.2196,
+                            "II": 0.095,
+                            "IIIa": 0.2671,
+                            "IIIb": 0.4184
+                        }
+                    }
+                },
+                {
+                    "name": "val",
+                    "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
+                    "rowCount": 84,
+                    "labelDistribution": {
+                        "counts": {
+                            "I": 19,
+                            "II": 8,
+                            "IIIa": 22,
+                            "IIIb": 35
+                        },
+                        "proportions": {
+                            "I": 0.2262,
+                            "II": 0.0952,
+                            "IIIa": 0.2619,
+                            "IIIb": 0.4167
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "index": 3,
+            "splits": [
+                {
+                    "name": "train",
+                    "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
+                    "rowCount": 337,
+                    "labelDistribution": {
+                        "counts": {
+                            "I": 74,
+                            "II": 32,
+                            "IIIa": 90,
+                            "IIIb": 141
+                        },
+                        "proportions": {
+                            "I": 0.2196,
+                            "II": 0.095,
+                            "IIIa": 0.2671,
+                            "IIIb": 0.4184
+                        }
+                    }
+                },
+                {
+                    "name": "val",
+                    "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
+                    "rowCount": 84,
+                    "labelDistribution": {
+                        "counts": {
+                            "I": 19,
+                            "II": 8,
+                            "IIIa": 22,
+                            "IIIb": 35
+                        },
+                        "proportions": {
+                            "I": 0.2262,
+                            "II": 0.0952,
+                            "IIIa": 0.2619,
+                            "IIIb": 0.4167
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "index": 4,
+            "splits": [
+                {
+                    "name": "train",
+                    "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
+                    "rowCount": 337,
+                    "labelDistribution": {
+                        "counts": {
+                            "I": 74,
+                            "II": 32,
+                            "IIIa": 90,
+                            "IIIb": 141
+                        },
+                        "proportions": {
+                            "I": 0.2196,
+                            "II": 0.095,
+                            "IIIa": 0.2671,
+                            "IIIb": 0.4184
+                        }
+                    }
+                },
+                {
+                    "name": "val",
+                    "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
+                    "rowCount": 84,
+                    "labelDistribution": {
+                        "counts": {
+                            "I": 19,
+                            "II": 8,
+                            "IIIa": 22,
+                            "IIIb": 35
+                        },
+                        "proportions": {
+                            "I": 0.2262,
+                            "II": 0.0952,
+                            "IIIa": 0.2619,
+                            "IIIb": 0.4167
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "index": 5,
+            "splits": [
+                {
+                    "name": "train",
+                    "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
+                    "rowCount": 337,
+                    "labelDistribution": {
+                        "counts": {
+                            "I": 75,
+                            "II": 32,
+                            "IIIa": 89,
+                            "IIIb": 141
+                        },
+                        "proportions": {
+                            "I": 0.2226,
+                            "II": 0.095,
+                            "IIIa": 0.2641,
+                            "IIIb": 0.4184
+                        }
+                    }
+                },
+                {
+                    "name": "val",
+                    "manifestPath": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/interim/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.cleaned.stratified-splitCVTEST.csv",
+                    "rowCount": 84,
+                    "labelDistribution": {
+                        "counts": {
+                            "I": 18,
+                            "II": 8,
+                            "IIIa": 23,
+                            "IIIb": 35
+                        },
+                        "proportions": {
+                            "I": 0.2143,
+                            "II": 0.0952,
+                            "IIIa": 0.2738,
+                            "IIIb": 0.4167
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "processing": {
+        "pipelineName": "stratify_subsplit_patient_manifest_kfoldCV",
+        "pipelineVersion": "a123dd0",
+        "executedAt": "2025-12-19T14:44:14.748634+00:00",
+        "pythonVersion": "3.10.19",
+        "pandasVersion": "2.3.3",
+        "cleaningMetadata": null
+    },
+    "phiStatus": {
+        "containsPhi": false,
+        "phiLevel": "none",
+        "verificationSource": "TCIA NSCLC-Radiomics Lung1 de-identified public dataset",
+        "notes": "Dataset is de-identified according to TCIA documentation."
+    }
+}
