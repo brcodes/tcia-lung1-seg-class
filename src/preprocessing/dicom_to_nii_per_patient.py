@@ -123,7 +123,7 @@ def choose_best_series_under(study_dir: Path, *, max_depth: int = 3):
     return best_sid, best_files, best_dir
 
 
-def dicom_files_to_nifti(files, out_path: str) -> None:
+def dicom_files_to_nifti(files, out_path: str, patient_id: str) -> tuple:
     reader = sitk.ImageSeriesReader()
     reader.MetaDataDictionaryArrayUpdateOn()
     reader.LoadPrivateTagsOn()
@@ -134,8 +134,15 @@ def dicom_files_to_nifti(files, out_path: str) -> None:
     if img.GetPixelID() != sitk.sitkInt16:
         img = sitk.Cast(img, sitk.sitkInt16)
 
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    sitk.WriteImage(img, out_path, useCompression=True)
+    '''
+    adjust for in-memory preprocesing
+    '''
+    # os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    # sitk.WriteImage(img, out_path, useCompression=True)
+    
+    
+    
+    return (patient_id, img, tumor_mask)  # Return the image object instead of writing to disk
 
 
 def dicom_series_to_nifti(patient_dir: str | Path, out_path: str) -> None:
@@ -194,7 +201,7 @@ def dicoms_to_nifti(base_path: str, interim_path: str):
                     f"study_dir={study_dir}"
                 )
 
-            dicom_files_to_nifti(files, out_path)
+            dicom_files_to_nifti(files, out_path, patient_id)
             print(f"[OK] {patient_id} -> {out_path}")
         except Exception as e:
             failures.append((patient_id, str(e)))
