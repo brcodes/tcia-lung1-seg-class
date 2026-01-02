@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 import sys
 from dataclasses import dataclass
-import pytest
 
 
 # Define a set of DICOM tags commonly considered PHI under HIPAA
@@ -107,7 +106,8 @@ class MaskFinderConfig:
 
 def get_dicom(
         PatientID=None,
-        SeriesInstanceUID_index=None,
+    StudyInstanceUID_index=None,
+    SeriesInstanceUID_index=None,
         SeriesNumber=None,
         InstanceNumber=None,
         base_dir="../../data/raw/NSCLC-Radiomics",
@@ -116,15 +116,16 @@ def get_dicom(
         Grab DICOM file(s) from the Lung1 dataset.
 
         Behavior:
-        - If *all* of (PatientID, SeriesInstanceUID_index, SeriesNumber, InstanceNumber) are not None,
+        - If *all* of (PatientID, StudyInstanceUID_index, SeriesNumber, InstanceNumber) are not None,
             returns a single DICOM path (str), matching the prior behavior.
         - If *any* of those arguments are None, that argument becomes a wildcard and the function
             returns a list[str] of all matching DICOM paths.
     
     Args:
         PatientID (str|None): Patient folder name (e.g. "LUNG1-001"). None means all patients.
-        SeriesInstanceUID_index (int|None): Series order (1-based index, lexicographically sorted
-            series directory list within each patient). None means all series per patient.
+        StudyInstanceUID_index (int|None): Study order (1-based index, lexicographically sorted
+            study directory list within each patient). None means all studies per patient.
+        SeriesInstanceUID_index (int|None): Deprecated alias for StudyInstanceUID_index.
         SeriesNumber (int|None): DICOM SeriesNumber encoded in filename as "<SeriesNumber>-...".
             None means all series numbers.
         InstanceNumber (int|None): DICOM InstanceNumber encoded in filename as "...-<Instance>.dcm".
@@ -134,10 +135,13 @@ def get_dicom(
     Returns:
         str | list[str]: One DICOM path when fully specified; otherwise a list of paths.
     """
-    want_list = any(
-        v is None
-        for v in (PatientID, SeriesInstanceUID_index, SeriesNumber, InstanceNumber)
-    )
+    # Backward-compat: historically this arg was misnamed.
+    if StudyInstanceUID_index is not None and SeriesInstanceUID_index is not None:
+        raise ValueError("Provide only one of StudyInstanceUID_index or SeriesInstanceUID_index")
+    if StudyInstanceUID_index is None and SeriesInstanceUID_index is not None:
+        StudyInstanceUID_index = SeriesInstanceUID_index
+
+    want_list = any(v is None for v in (PatientID, StudyInstanceUID_index, SeriesNumber, InstanceNumber))
 
     # Patient selection
     if PatientID is None:
@@ -154,55 +158,62 @@ def get_dicom(
     matches = []
 
     for patient_dir in patient_dirs:
-        # Build glob for all series under the patient/studyUID
-        series_dirs = glob.glob(os.path.join(patient_dir, "*", "*"))
-        series_dirs = [s for s in series_dirs if os.path.isdir(s)]
-        if not series_dirs:
+        # Select study directories under the patient folder
+        study_dirs = glob.glob(os.path.join(patient_dir, "*"))
+        study_dirs = [s for s in study_dirs if os.path.isdir(s)]
+        if not study_dirs:
             # If PatientID is explicit, preserve the old behavior of erroring.
             if PatientID is not None:
-                raise FileNotFoundError(f"No series found for patient ds ID {PatientID}")
+                raise FileNotFoundError(f"No studies found for patient ds ID {PatientID}")
             continue
 
-        # Sort series directories lexicographically (UIDs are strings, not ints)
-        series_dirs.sort()
+        # Sort study directories lexicographically (UIDs are strings, not ints)
+        study_dirs.sort()
 
-        # Select series (1-based index) or all
-        if SeriesInstanceUID_index is None:
-            chosen_series_dirs = series_dirs
+        # Select study (1-based index) or all
+        if StudyInstanceUID_index is None:
+            chosen_study_dirs = study_dirs
         else:
             try:
-                chosen_series_dirs = [series_dirs[SeriesInstanceUID_index - 1]]
+                chosen_study_dirs = [study_dirs[StudyInstanceUID_index - 1]]
             except IndexError:
                 raise IndexError(
-                    f"Series index {SeriesInstanceUID_index} out of range "
-                    f"(found {len(series_dirs)} series) for patient {os.path.basename(patient_dir)}."
+                    f"Study index {StudyInstanceUID_index} out of range "
+                    f"(found {len(study_dirs)} studies) for patient {os.path.basename(patient_dir)}."
                 )
 
-        for chosen_series in chosen_series_dirs:
-            dcm_paths = glob.glob(os.path.join(chosen_series, "*.dcm"))
-            if not dcm_paths:
+        for chosen_study in chosen_study_dirs:
+            series_dirs = glob.glob(os.path.join(chosen_study, "*"))
+            series_dirs = [s for s in series_dirs if os.path.isdir(s)]
+            if not series_dirs:
                 continue
-            dcm_paths.sort()
+            series_dirs.sort()
 
-            for dicom_path in dcm_paths:
-                name = os.path.basename(dicom_path)
-                m = _DICOM_FILENAME_RE.match(name)
-                if not m:
+            for series_dir in series_dirs:
+                dcm_paths = glob.glob(os.path.join(series_dir, "*.dcm"))
+                if not dcm_paths:
                     continue
-                series_num = int(m.group("series"))
-                instance_num = int(m.group("instance"))
+                dcm_paths.sort()
 
-                if SeriesNumber is not None and series_num != SeriesNumber:
-                    continue
-                if InstanceNumber is not None and instance_num != InstanceNumber:
-                    continue
+                for dicom_path in dcm_paths:
+                    name = os.path.basename(dicom_path)
+                    m = _DICOM_FILENAME_RE.match(name)
+                    if not m:
+                        continue
+                    series_num = int(m.group("series"))
+                    instance_num = int(m.group("instance"))
 
-                matches.append(dicom_path)
+                    if SeriesNumber is not None and series_num != SeriesNumber:
+                        continue
+                    if InstanceNumber is not None and instance_num != InstanceNumber:
+                        continue
+
+                    matches.append(dicom_path)
 
     if not matches:
         raise FileNotFoundError(
             "No DICOMs matched "
-            f"PatientID={PatientID}, SeriesInstanceUID_index={SeriesInstanceUID_index}, "
+            f"PatientID={PatientID}, StudyInstanceUID_index={StudyInstanceUID_index}, "
             f"SeriesNumber={SeriesNumber}, InstanceNumber={InstanceNumber} under {base_dir}"
         )
 
@@ -221,7 +232,7 @@ def get_dicom(
     dicom_path = matches[0]
     print("Chose DICOM:")
     print(f"PatientID: {PatientID}")
-    print(f"SeriesInstanceUID index: {SeriesInstanceUID_index}")
+    print(f"StudyInstanceUID index: {StudyInstanceUID_index}")
     print(f"SeriesNumber: {SeriesNumber}")
     print(f"InstanceNumber: {InstanceNumber}")
     print(f"path: {dicom_path}")
@@ -614,6 +625,36 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
     T_SERIES_INSTANCE_UID = Tag(0x0020, 0x000E)
     T_REFERENCED_SOP_INSTANCE_UID = Tag(0x0008, 0x1155)
 
+    class PatientIdPathError(ValueError):
+        pass
+
+    def _patient_and_study_from_path(path: str) -> tuple[str, str]:
+        """Return (patient_id, study_instance_uid) from the Lung1 folder layout.
+
+        Expected layout:
+        .../<PatientID>/<StudyInstanceUID>/<SeriesInstanceUID>/<instance>.dcm
+
+        PatientID is defined as the *parent folder of the StudyInstanceUID folder*.
+        Hard-fail if PatientID doesn't contain 'LUNG1' (case-insensitive).
+        """
+
+        p = Path(path)
+        try:
+            study_instance_uid = p.parents[1].name
+            patient_id = p.parents[2].name
+        except Exception:
+            raise PatientIdPathError(f"Path too short to extract PatientID/StudyInstanceUID: {path}")
+
+        if not patient_id or "lung1" not in patient_id.lower():
+            raise PatientIdPathError(
+                f"Expected PatientID folder containing 'LUNG1' but got '{patient_id}' for path: {path}"
+            )
+
+        if not study_instance_uid:
+            raise PatientIdPathError(f"Empty StudyInstanceUID folder name for path: {path}")
+
+        return patient_id, study_instance_uid
+
     def _hash_value(s: str) -> str:
         return hashlib.sha256(s.encode("utf-8", errors="replace")).hexdigest()
 
@@ -699,6 +740,8 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
     def _audit_one(path: str):
         ds = pydicom.dcmread(path, stop_before_pixels=True)
 
+        patient_id, study_instance_uid_path = _patient_and_study_from_path(path)
+
         sop = _get_str(ds, T_SOP)
         modality = _get_str(ds, T_MOD)
         series_desc = _get_str(ds, T_SERIES_DESC)
@@ -755,12 +798,20 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
             print(f"RTSTRUCT found: {1 if rtstruct_confident else 0}")
             print(f"SEG found: {1 if seg_confident else 0}")
 
+            if is_mask_object:
+                # Requested: print/log patient ID (folder name) immediately above referenced series info.
+                print(f"PatientID: {patient_id}")
+                print(f"StudyInstanceUID: {study_instance_uid_path}")
+                print(f"Referenced SeriesInstanceUIDs: {sorted(referenced_series_uids)}")
+
             if cfg.print_tag_details and total_mask_tag_count:
                 for t in present_mask_tags:
                     print(f"MASK_TAG {t['keyword']} {t['tag']}")
 
         audit_output = {
             "file": str(path),
+            "patient_id": patient_id,
+            "study_instance_uid": study_instance_uid_path,
             "sop_class_uid": sop,
             "sop_class_name": _SOP_CLASS_UID_NAMES.get(sop) if sop else None,
             "modality": modality,
@@ -795,6 +846,8 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
     for path in paths:
         try:
             per_file.append(_audit_one(path))
+        except PatientIdPathError:
+            raise
         except Exception as e:
             per_file.append({"file": str(path), "error": str(e)})
 
@@ -839,17 +892,17 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
 
 if __name__ == "__main__":
     
-    dicom_paths = get_dicom(PatientID="LUNG1-001",
-                            SeriesInstanceUID_index=None,
-                            SeriesNumber=None,
-                            InstanceNumber=None)
+    dicom_paths = get_dicom(PatientID=None,
+                            StudyInstanceUID_index=1,
+                            SeriesNumber=1,
+                            InstanceNumber=1)
     
     audit = False
     find_masks = True
     check_thickness = False
     
     # # Check slice thickness
-    # dicom_paths = get_dicom(SeriesInstanceUID_index=2)
+    # dicom_paths = get_dicom(StudyInstanceUID_index=2)
     
     if audit:
         # Audit a specific DICOM
