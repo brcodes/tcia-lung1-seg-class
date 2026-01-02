@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import sys
 from dataclasses import dataclass
+import pytest
 
 
 # Define a set of DICOM tags commonly considered PHI under HIPAA
@@ -609,6 +610,10 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
     T_SEG_SEQ = Tag(0x0062, 0x0002)
     T_SEG_LABEL = Tag(0x0062, 0x0005)
 
+    # Tags used to link mask objects back to source images/series.
+    T_SERIES_INSTANCE_UID = Tag(0x0020, 0x000E)
+    T_REFERENCED_SOP_INSTANCE_UID = Tag(0x0008, 0x1155)
+
     def _hash_value(s: str) -> str:
         return hashlib.sha256(s.encode("utf-8", errors="replace")).hexdigest()
 
@@ -658,6 +663,39 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
                     labels.add(str(elem))
         return sorted(labels)
 
+    def _collect_references(ds):
+        """Collect reference information to help link SEG/RTSTRUCT -> CT series.
+
+        We conservatively extract:
+        - the object's own SeriesInstanceUID (top-level)
+        - any nested SeriesInstanceUID values found in sequences (often referenced source series)
+        - any ReferencedSOPInstanceUID values found in sequences
+        """
+
+        try:
+            root_series_uid = ds.get("SeriesInstanceUID", None)
+            root_series_uid = str(root_series_uid) if root_series_uid not in (None, "", " ") else None
+        except Exception:
+            root_series_uid = None
+
+        referenced_series_uids: set[str] = set()
+        referenced_sop_uids: set[str] = set()
+
+        for elem in _iter_elements(ds):
+            try:
+                if elem.tag == T_SERIES_INSTANCE_UID:
+                    v = str(elem.value)
+                    if v and v != root_series_uid:
+                        referenced_series_uids.add(v)
+                elif elem.tag == T_REFERENCED_SOP_INSTANCE_UID:
+                    v = str(elem.value)
+                    if v:
+                        referenced_sop_uids.add(v)
+            except Exception:
+                continue
+
+        return root_series_uid, referenced_series_uids, referenced_sop_uids
+
     def _audit_one(path: str):
         ds = pydicom.dcmread(path, stop_before_pixels=True)
 
@@ -680,6 +718,9 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
         # Collect labels and try tumor-ish match
         labels = _collect_labels(ds) if (rtstruct_confident or seg_confident or is_rtstruct or is_seg) else []
         tumor_labels = [s for s in labels if tumor_label_re.search(s or "")]
+
+        # Collect reference info (helps tie masks back to the source CT series)
+        series_instance_uid, referenced_series_uids, referenced_sop_uids = _collect_references(ds)
 
         # Track which MASK_TAGS were actually present anywhere in the dataset.
         present_mask_tags: list[dict] = []
@@ -724,6 +765,11 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
             "sop_class_name": _SOP_CLASS_UID_NAMES.get(sop) if sop else None,
             "modality": modality,
             "series_description": series_desc,
+            "series_instance_uid": series_instance_uid,
+            "referenced_series_instance_uids": sorted(referenced_series_uids),
+            "referenced_series_instance_uid_count": len(referenced_series_uids),
+            "referenced_sop_instance_uid_count": len(referenced_sop_uids),
+            "has_references": bool(referenced_series_uids or referenced_sop_uids),
             "total_mask_tag_count": total_mask_tag_count,
             "mask_tag_names": [t["keyword"] for t in present_mask_tags],
             "mask_tags_present": present_mask_tags,
@@ -756,6 +802,14 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
     rtstruct_files = [x["file"] for x in per_file if x.get("mask_type") == "RTSTRUCT"]
     mask_files = rtstruct_files + seg_files
 
+    # Aggregate: referenced SeriesInstanceUID -> mask files.
+    masks_by_referenced_series: dict[str, list[str]] = {}
+    for a in per_file:
+        if a.get("mask_type") not in ("SEG", "RTSTRUCT"):
+            continue
+        for uid in a.get("referenced_series_instance_uids", []) or []:
+            masks_by_referenced_series.setdefault(uid, []).append(a.get("file"))
+
     if cfg.print_summary:
         print(f"TOTAL MASK FILES found: {len(mask_files)}")
         print(f"SEG files found: {len(seg_files)}")
@@ -768,6 +822,7 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
         "seg_file_count": len(seg_files),
         "rtstruct_files": rtstruct_files,
         "rtstruct_file_count": len(rtstruct_files),
+        "masks_by_referenced_series_instance_uid": masks_by_referenced_series,
         "audits": per_file,
         "config": {
             "scan_sequences": cfg.scan_sequences,
@@ -784,7 +839,7 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
 
 if __name__ == "__main__":
     
-    dicom_paths = get_dicom(PatientID=None,
+    dicom_paths = get_dicom(PatientID="LUNG1-001",
                             SeriesInstanceUID_index=None,
                             SeriesNumber=None,
                             InstanceNumber=None)
