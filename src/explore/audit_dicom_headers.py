@@ -1,12 +1,12 @@
 import json
 from pathlib import Path
 import sys
+from dataclasses import dataclass
 
 
 # Define a set of DICOM tags commonly considered PHI under HIPAA
 PHI_TAGS = {
     (0x0010, 0x0010): "PatientName",
-    (0x0010, 0x0020): "PatientID",
     (0x0010, 0x0030): "PatientBirthDate",
     (0x0010, 0x0040): "PatientSex",
     (0x0008, 0x0020): "StudyDate",
@@ -46,6 +46,24 @@ _SOP_CLASS_UID_NAMES = {
     "1.2.840.10008.5.1.4.1.1.481.3": "RT Structure Set Storage",
     "1.2.840.10008.5.1.4.1.1.481.5": "RT Plan Storage",
 }
+
+
+@dataclass(frozen=True)
+class AuditConfig:
+    """Configuration for `audit_dicom_header`.
+
+    Defaults are set to a safer mode for clinical-ish workflows:
+    - No full header dump (`include_all_headers=False`)
+    - Redact values in outputs (`redact_values=True`)
+    - Print only when violations exist
+    """
+
+    include_all_headers: bool = False
+    scan_sequences: bool = True
+    flag_private_tags: bool = True
+    redact_values: bool = True
+    print_only_violations: bool = True
+    max_value_preview: int = 0
 
 def get_dicom(
         PatientID=None,
@@ -363,52 +381,91 @@ def typical_slice_thickness(dicom_paths, double_check=False):
 
     return thicknesses_mm
 
-def audit_dicom_header(dicom_path, output_json="dicom_header_audit.json"):
+def audit_dicom_header(dicom_path, output_json="dicom_header_audit.json", *, config=None):
     """Audit one DICOM or many DICOMs.
 
-    If `dicom_path` is a list/tuple of paths, audits each in sequence and
-    writes a single combined JSON file to `output_json`.
+    - If `dicom_path` is a list/tuple, audits each path in sequence and writes
+      one combined JSON file to `output_json`.
+    - By default, prints only when violations are found, and avoids printing
+      raw values.
+
+    Advanced behavior can be controlled via an optional `config` argument.
     """
 
-    import os
+    import hashlib
+
     import pydicom
 
-    def _audit_one(path):
+    cfg = config if config is not None else AuditConfig()
+
+    def _hash_value(s: str) -> str:
+        return hashlib.sha256(s.encode("utf-8", errors="replace")).hexdigest()
+
+    def _maybe_redact(value: str):
+        if not cfg.redact_values:
+            return value
+        value = "" if value is None else str(value)
+        out = {"sha256": _hash_value(value)}
+        if cfg.max_value_preview and cfg.max_value_preview > 0:
+            out["preview"] = value[: cfg.max_value_preview]
+        return out
+
+    def _iter_elements(ds):
+        for elem in ds:
+            yield elem
+            acknowledging_sequence = cfg.scan_sequences and getattr(elem, "VR", None) == "SQ"
+            if not acknowledging_sequence:
+                continue
+            try:
+                for item in elem.value:
+                    yield from _iter_elements(item)
+            except Exception:
+                continue
+
+    def _audit_one(path: str):
         ds = pydicom.dcmread(path, stop_before_pixels=True)
 
-        header_dict = {}
-        phi_flags = []
+        header_dict = {} if cfg.include_all_headers else None
+        flags = []
 
-        for elem in ds:
-            tag = (elem.tag.group, elem.tag.element)
+        for elem in _iter_elements(ds):
+            tag_tuple = (elem.tag.group, elem.tag.element)
             keyword = elem.keyword if elem.keyword else str(elem.tag)
-            value = str(elem.value)
-            header_dict[keyword] = value
+            value_str = str(elem.value)
 
-            if tag in PHI_TAGS:
-                phi_flags.append(
+            if cfg.include_all_headers:
+                header_dict[keyword] = _maybe_redact(value_str)
+
+            is_phi_tag = tag_tuple in PHI_TAGS
+            is_private = bool(getattr(elem.tag, "is_private", False))
+            is_private_risk = cfg.flag_private_tags and is_private
+
+            if is_phi_tag or is_private_risk:
+                flags.append(
                     {
                         "tag": f"({elem.tag.group:04X},{elem.tag.element:04X})",
                         "keyword": keyword,
-                        "value": value,
+                        "reason": "PHI_TAGS" if is_phi_tag else "PRIVATE_TAG",
+                        "value": _maybe_redact(value_str),
                     }
                 )
 
-        # Print summary to terminal
-        print("\n=== DICOM HEADER AUDIT ===")
-        print(f"File: {path}")
-        print(f"Total attributes: {len(ds)}")
-        print(f"Potential PHI fields found: {len(phi_flags)}")
-        for f in phi_flags:
-            print(f"⚠️ {f['keyword']} = {f['value']}")
+        # Print only if there are violations (and do NOT print raw values)
+        if (not cfg.print_only_violations) or flags:
+            print("\n=== DICOM HEADER AUDIT ===")
+            print(f"File: {path}")
+            print(f"Total attributes (top-level): {len(ds)}")
+            print(f"Potential PHI/private fields found: {len(flags)}")
+            for f in flags:
+                print(f"VIOLATION: {f['reason']} {f['keyword']} {f['tag']}")
 
-        # Build JSON payload for audit trail
         audit_output = {
             "file": str(path),
             "total_attributes": len(ds),
-            "potential_phi": phi_flags,
-            "all_headers": header_dict,
+            "potential_phi": flags,
         }
+        if cfg.include_all_headers:
+            audit_output["all_headers"] = header_dict
         return audit_output
 
     # Normalize input to list vs single
@@ -416,20 +473,33 @@ def audit_dicom_header(dicom_path, output_json="dicom_header_audit.json"):
         paths = [str(p) for p in dicom_path]
         per_file = []
         for path in paths:
-            per_file.append(_audit_one(path))
+            try:
+                per_file.append(_audit_one(path))
+            except Exception as e:
+                per_file.append({"file": str(path), "error": str(e)})
 
         combined = {
             "total_files": len(paths),
-            "files": [x["file"] for x in per_file],
+            "files": [x.get("file") for x in per_file],
             "audits": per_file,
+            "config": {
+                "include_all_headers": cfg.include_all_headers,
+                "scan_sequences": cfg.scan_sequences,
+                "flag_private_tags": cfg.flag_private_tags,
+                "redact_values": cfg.redact_values,
+                "print_only_violations": cfg.print_only_violations,
+                "max_value_preview": cfg.max_value_preview,
+            },
         }
         Path(output_json).write_text(json.dumps(combined, indent=2))
-        print(f"\nAudit JSON exported to {output_json}")
+        if not cfg.print_only_violations:
+            print(f"\nAudit JSON exported to {output_json}")
         return combined
 
     single = _audit_one(str(dicom_path))
     Path(output_json).write_text(json.dumps(single, indent=2))
-    print(f"\nAudit JSON exported to {output_json}")
+    if not cfg.print_only_violations:
+        print(f"\nAudit JSON exported to {output_json}")
     return single
 
 if __name__ == "__main__":
@@ -441,9 +511,6 @@ if __name__ == "__main__":
                                 SeriesInstanceUID_index=1,
                                 SeriesNumber=1,
                                 InstanceNumber=1)
-        print(isinstance(dicom_path, str))
-        print(isinstance(dicom_path, os.PathLike))
-        print(isinstance(dicom_path, list))
         print(f"Auditing DICOM file(s)")
         print(f"Auditing DICOM file at: {dicom_path}")
         audit_dicom_header(dicom_path)
