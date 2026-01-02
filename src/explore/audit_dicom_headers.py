@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import sys
 
 # Define a set of DICOM tags commonly considered PHI under HIPAA
 PHI_TAGS = {
@@ -15,12 +16,35 @@ PHI_TAGS = {
     (0x0008, 0x0050): "AccessionNumber",
 }
 
+# Define a set of DICOM tags 
+AUX_TAGS = {
+    (0x0018, 0x0050): "SliceThickness"
+}
+
+# Define a set of DICOM tags 
+MASK_FINDER_TAGS = {
+    (0x0008, 0x103E): "SeriesDescription"
+}
+
 import glob
 import os
 import re
+from collections import defaultdict
 
 
 _DICOM_FILENAME_RE = re.compile(r"^(?P<series>\d+)-(?P<instance>\d+)\.dcm$")
+
+
+_SOP_CLASS_UID_NAMES = {
+    # Common imaging storage classes (subset)
+    "1.2.840.10008.5.1.4.1.1.2": "CT Image Storage",
+    "1.2.840.10008.5.1.4.1.1.4": "MR Image Storage",
+    "1.2.840.10008.5.1.4.1.1.128": "PET Image Storage",
+    # Radiotherapy
+    "1.2.840.10008.5.1.4.1.1.481.2": "RT Dose Storage",
+    "1.2.840.10008.5.1.4.1.1.481.3": "RT Structure Set Storage",
+    "1.2.840.10008.5.1.4.1.1.481.5": "RT Plan Storage",
+}
 
 def get_dicom(
         PatientID=None,
@@ -144,6 +168,117 @@ def get_dicom(
     print(f"path: {dicom_path}")
     return dicom_path
 
+
+def summarize_patient_series_contents(
+    base_dir: str = "../../data/raw/NSCLC-Radiomics",
+    patient_id: str | None = None,
+    series_double_check: bool = False,
+    max_patients: int | None = None,
+):
+    """Print per-patient, per-series DICOM header summaries.
+
+    Uses `get_dicom(..., base_dir=...)` to collect DICOM filepaths, then groups
+    them into buckets by (PatientID folder, Study folder, Series folder).
+
+    For each series bucket, prints:
+    - Count of DICOM instances in that series
+    - Modality (0008,0060)
+    - SOPClassUID (0008,0016)
+
+    Args:
+        base_dir: Root folder containing patient directories.
+        patient_id: Optional single patient folder to summarize.
+        series_double_check: If True, scans *all* instances in the series and
+            reports sets of observed values. If False, reads the first instance
+            only (faster) and assumes series-level consistency.
+        max_patients: Optional cap to limit output (useful for quick previews).
+    """
+
+    import pydicom
+
+    dicom_paths = get_dicom(PatientID=patient_id, base_dir=base_dir)
+    base_path = Path(base_dir).resolve()
+
+    series_buckets: dict[tuple[str, str, str], list[str]] = defaultdict(list)
+    unparsed = 0
+
+    for p in dicom_paths:
+        p_path = Path(p).resolve()
+        try:
+            rel = p_path.relative_to(base_path)
+        except Exception:
+            # If base_dir resolution doesn't match (symlinks, etc.), fall back to string parsing.
+            rel = Path(os.path.relpath(str(p_path), str(base_path)))
+
+        parts = rel.parts
+        # Expected: <patient>/<study>/<series>/<file>.dcm
+        if len(parts) < 4:
+            unparsed += 1
+            continue
+
+        patient = parts[0]
+        study = parts[1]
+        series = parts[2]
+        series_buckets[(patient, study, series)].append(str(p_path))
+
+    patients = sorted({k[0] for k in series_buckets.keys()})
+    if max_patients is not None:
+        patients = patients[:max_patients]
+
+    print("\n=== PATIENT / SERIES DICOM SUMMARY ===")
+    print(f"Base dir: {base_dir}")
+    if patient_id is not None:
+        print(f"Patient filter: {patient_id}")
+    print(f"Patients found: {len(patients)}")
+    if unparsed:
+        print(f"Warning: skipped {unparsed} paths with unexpected layout")
+
+    for patient in patients:
+        patient_keys = [k for k in series_buckets.keys() if k[0] == patient]
+        patient_keys.sort(key=lambda t: (t[1], t[2]))
+        print("\n---")
+        print(f"Patient: {patient} | Series buckets: {len(patient_keys)}")
+
+        for (patient_k, study_k, series_k) in patient_keys:
+            series_paths = series_buckets[(patient_k, study_k, series_k)]
+            series_paths.sort()
+
+            to_read = series_paths if series_double_check else [series_paths[0]]
+            modalities: set[str] = set()
+            sop_uids: set[str] = set()
+            read_errors = 0
+
+            for dcm_path in to_read:
+                try:
+                    ds = pydicom.dcmread(dcm_path, stop_before_pixels=True)
+                except Exception:
+                    read_errors += 1
+                    continue
+
+                mod = ds.get("Modality", None)
+                sop = ds.get("SOPClassUID", None)
+
+                modalities.add(str(mod) if mod not in (None, "", " ") else "MISSING")
+                sop_uids.add(str(sop) if sop not in (None, "", " ") else "MISSING")
+
+            sop_named = []
+            for uid in sorted(sop_uids):
+                name = _SOP_CLASS_UID_NAMES.get(uid)
+                sop_named.append(f"{uid} ({name})" if name else uid)
+
+            print(
+                " | ".join(
+                    [
+                        f"study={study_k}",
+                        f"series={series_k}",
+                        f"instances={len(series_paths)}",
+                        f"Modality={sorted(modalities)}",
+                        f"SOPClassUID={sop_named}",
+                        f"read_errors={read_errors}",
+                    ]
+                )
+            )
+
 def typical_slice_thickness(dicom_paths, double_check=False):
     import pydicom
     from pydicom.tag import Tag
@@ -247,6 +382,7 @@ def audit_dicom_header(dicom_path, output_json="dicom_header_audit.json"):
                 "keyword": keyword,
                 "value": value
             })
+            
 
     # Print summary to terminal
     print("\n=== DICOM HEADER AUDIT ===")
@@ -268,18 +404,26 @@ def audit_dicom_header(dicom_path, output_json="dicom_header_audit.json"):
 
 if __name__ == "__main__":
     
-    audit = False
+    audit = True
     if audit:
         # Audit a specific DICOM
-        dicom_path = get_dicom(PatientID="LUNG1-001",
-                                SeriesInstanceUID_index=3,
-                                InstanceNumber=2)
-        print(f"Auditing DICOM file at: {dicom_path}")
+        dicom_path = get_dicom()
+        print(isinstance(dicom_path, str))
+        print(isinstance(dicom_path, os.PathLike))
+        print(isinstance(dicom_path, list))
+        print(f"Auditing DICOM file(s)")
         audit_dicom_header(dicom_path)
     
-    # Check slice thickness
-    dicom_paths = get_dicom(SeriesInstanceUID_index=2)
-    typical_slice_thickness(dicom_paths)
+    #TO-DO:
+    '''
+    Check to make sure that
+    you didn"t miss principal series bt hard coding this
+    '''
+    check_thickness = False
+    if check_thickness:
+        # Check slice thickness
+        dicom_paths = get_dicom(SeriesInstanceUID_index=2)
+        typical_slice_thickness(dicom_paths)
 
 # DICOM 
 # PHI should typically not occur in PatientID here, where EHR pull would yield a surrogate ID
