@@ -101,6 +101,7 @@ class MaskFinderConfig:
     redact_values: bool = True
     print_only_matches: bool = True
     print_tag_details: bool = False
+    print_summary: bool = True
     max_value_preview: int = 0
 
 def get_dicom(
@@ -588,6 +589,8 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
 
     cfg = config if config is not None else MaskFinderConfig()
 
+    output_json_path = Path(output_json)
+
     # Common tumor-ish label heuristics seen clinically.
     tumor_label_re = re.compile(
         r"(tumou?r|gtv|itv|ptv|lesion|mass|nodule|primary|gross)",
@@ -698,6 +701,10 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
         is_mask_object = bool(rtstruct_confident or seg_confident)
         mask_type = "RTSTRUCT" if rtstruct_confident else ("SEG" if seg_confident else None)
 
+        mask_found = 1 if is_mask_object else 0
+        seg_found = 1 if seg_confident else 0
+        rtstruct_found = 1 if rtstruct_confident else 0
+
         # Print in the same concise style as your other audits.
         if (not cfg.print_only_matches) or is_mask_object:
             print(f"File: {path}")
@@ -723,6 +730,9 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
             "is_rtstruct": rtstruct_confident,
             "is_seg": seg_confident,
             "mask_type": mask_type,
+            "mask_found": mask_found,
+            "seg_found": seg_found,
+            "rtstruct_found": rtstruct_found,
             "labels_found": [_maybe_redact(x) for x in labels],
             "tumor_like_labels_found": [_maybe_redact(x) for x in tumor_labels],
             "tumor_like_label_count": len(tumor_labels),
@@ -742,22 +752,34 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
         except Exception as e:
             per_file.append({"file": str(path), "error": str(e)})
 
-    mask_files = [x["file"] for x in per_file if x.get("mask_type") in ("RTSTRUCT", "SEG")]
+    seg_files = [x["file"] for x in per_file if x.get("mask_type") == "SEG"]
+    rtstruct_files = [x["file"] for x in per_file if x.get("mask_type") == "RTSTRUCT"]
+    mask_files = rtstruct_files + seg_files
+
+    if cfg.print_summary:
+        print(f"TOTAL MASK FILES found: {len(mask_files)}")
+        print(f"SEG files found: {len(seg_files)}")
+        print(f"RTSTRUCT files found: {len(rtstruct_files)}")
     combined = {
         "total_files": len(paths),
         "mask_files": mask_files,
         "mask_file_count": len(mask_files),
+        "seg_files": seg_files,
+        "seg_file_count": len(seg_files),
+        "rtstruct_files": rtstruct_files,
+        "rtstruct_file_count": len(rtstruct_files),
         "audits": per_file,
         "config": {
             "scan_sequences": cfg.scan_sequences,
             "redact_values": cfg.redact_values,
             "print_only_matches": cfg.print_only_matches,
             "print_tag_details": cfg.print_tag_details,
+            "print_summary": cfg.print_summary,
             "max_value_preview": cfg.max_value_preview,
         },
     }
 
-    Path(output_json).write_text(json.dumps(combined, indent=2))
+    output_json_path.write_text(json.dumps(combined, indent=2))
     return combined
 
 if __name__ == "__main__":
