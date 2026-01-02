@@ -27,6 +27,24 @@ MASK_FINDER_TAGS = {
     (0x0008, 0x103E): "SeriesDescription"
 }
 
+# Tags useful for identifying segmentation / RTSTRUCT mask objects.
+MASK_TAGS = {
+    (0x0008, 0x0016): "SOPClassUID",
+    (0x0008, 0x0060): "Modality",
+    (0x0008, 0x103E): "SeriesDescription",
+    # RTSTRUCT
+    (0x3006, 0x0002): "StructureSetLabel",
+    (0x3006, 0x0004): "StructureSetName",
+    (0x3006, 0x0020): "StructureSetROISequence",
+    (0x3006, 0x0026): "ROIName",
+    (0x3006, 0x0080): "RTROIObservationsSequence",
+    # SEG
+    (0x0062, 0x0002): "SegmentSequence",
+    (0x0062, 0x0005): "SegmentLabel",
+    (0x0062, 0x0008): "SegmentAlgorithmType",
+    (0x0062, 0x0009): "SegmentAlgorithmName",
+}
+
 import glob
 import os
 import re
@@ -45,6 +63,8 @@ _SOP_CLASS_UID_NAMES = {
     "1.2.840.10008.5.1.4.1.1.481.2": "RT Dose Storage",
     "1.2.840.10008.5.1.4.1.1.481.3": "RT Structure Set Storage",
     "1.2.840.10008.5.1.4.1.1.481.5": "RT Plan Storage",
+    # Segmentation
+    "1.2.840.10008.5.1.4.1.1.66.4": "Segmentation Storage",
 }
 
 
@@ -63,6 +83,23 @@ class AuditConfig:
     flag_private_tags: bool = True
     redact_values: bool = True
     print_only_violations: bool = True
+    print_tag_details: bool = False
+    max_value_preview: int = 0
+
+
+@dataclass(frozen=True)
+class MaskFinderConfig:
+    """Configuration for `find_tumor_mask_dicoms`.
+
+    Defaults are conservative:
+    - Print only when a mask-like object is detected
+    - Print only counts unless `print_tag_details=True`
+    - Redact extracted label values in JSON by default
+    """
+
+    scan_sequences: bool = True
+    redact_values: bool = True
+    print_only_matches: bool = True
     print_tag_details: bool = False
     max_value_preview: int = 0
 
@@ -528,22 +565,237 @@ def audit_dicom_header(dicom_path, output_json="dicom_header_audit.json", *, con
         print(f"\nAudit JSON exported to {output_json}")
     return single
 
+
+def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, config: MaskFinderConfig | None = None):
+    """Scan one DICOM or many DICOMs and identify likely tumor mask objects.
+
+    This function is header-only (uses `stop_before_pixels=True`) and classifies
+    DICOMs as:
+    - RTSTRUCT: RT Structure Set Storage and/or Modality=RTSTRUCT, with ROI sequences
+    - SEG: Segmentation Storage and/or Modality=SEG, with Segment sequences
+
+    It additionally tries to detect *tumor-related* content by examining ROI/segment
+    labels (e.g. GTV/ITV/PTV/tumor) when those are present in headers.
+
+    Accepts a single path or a list/tuple of paths; writes one combined JSON file.
+    """
+
+    import hashlib
+    import re
+
+    import pydicom
+    from pydicom.tag import Tag
+
+    cfg = config if config is not None else MaskFinderConfig()
+
+    # Common tumor-ish label heuristics seen clinically.
+    tumor_label_re = re.compile(
+        r"(tumou?r|gtv|itv|ptv|lesion|mass|nodule|primary|gross)",
+        re.IGNORECASE,
+    )
+
+    RTSTRUCT_UID = "1.2.840.10008.5.1.4.1.1.481.3"
+    SEG_UID = "1.2.840.10008.5.1.4.1.1.66.4"
+
+    # Tags we key off for structural confidence.
+    T_SOP = Tag(0x0008, 0x0016)
+    T_MOD = Tag(0x0008, 0x0060)
+    T_SERIES_DESC = Tag(0x0008, 0x103E)
+    T_ROI_SEQ = Tag(0x3006, 0x0020)
+    T_ROI_NAME = Tag(0x3006, 0x0026)
+    T_SEG_SEQ = Tag(0x0062, 0x0002)
+    T_SEG_LABEL = Tag(0x0062, 0x0005)
+
+    def _hash_value(s: str) -> str:
+        return hashlib.sha256(s.encode("utf-8", errors="replace")).hexdigest()
+
+    def _maybe_redact(value: str):
+        if not cfg.redact_values:
+            return value
+        value = "" if value is None else str(value)
+        out = {"sha256": _hash_value(value)}
+        if cfg.max_value_preview and cfg.max_value_preview > 0:
+            out["preview"] = value[: cfg.max_value_preview]
+        return out
+
+    def _iter_elements(ds):
+        for elem in ds:
+            yield elem
+            if not (cfg.scan_sequences and getattr(elem, "VR", None) == "SQ"):
+                continue
+            try:
+                for item in elem.value:
+                    yield from _iter_elements(item)
+            except Exception:
+                continue
+
+    def _tag_str(tag: Tag) -> str:
+        return f"({tag.group:04X},{tag.element:04X})"
+
+    def _get_str(ds, tag: Tag):
+        if tag in ds:
+            try:
+                return str(ds[tag].value)
+            except Exception:
+                return str(ds[tag])
+        return None
+
+    def _collect_labels(ds):
+        """Collect ROI/segment labels from RTSTRUCT/SEG headers.
+
+        This may miss some data if it only exists inside pixel data, but should
+        capture most clinically meaningful label strings.
+        """
+        labels = set()
+        for elem in _iter_elements(ds):
+            if elem.tag == T_ROI_NAME or elem.tag == T_SEG_LABEL:
+                try:
+                    labels.add(str(elem.value))
+                except Exception:
+                    labels.add(str(elem))
+        return sorted(labels)
+
+    def _audit_one(path: str):
+        ds = pydicom.dcmread(path, stop_before_pixels=True)
+
+        sop = _get_str(ds, T_SOP)
+        modality = _get_str(ds, T_MOD)
+        series_desc = _get_str(ds, T_SERIES_DESC)
+
+        # Presence-based signals
+        has_roi_seq = T_ROI_SEQ in ds
+        has_seg_seq = T_SEG_SEQ in ds
+
+        # Strong type determination
+        is_rtstruct = (sop == RTSTRUCT_UID) or (modality == "RTSTRUCT")
+        is_seg = (sop == SEG_UID) or (modality == "SEG")
+
+        # Structural confidence checks (helps catch mis-encoded modality strings)
+        rtstruct_confident = is_rtstruct and has_roi_seq
+        seg_confident = is_seg and has_seg_seq
+
+        # Collect labels and try tumor-ish match
+        labels = _collect_labels(ds) if (rtstruct_confident or seg_confident or is_rtstruct or is_seg) else []
+        tumor_labels = [s for s in labels if tumor_label_re.search(s or "")]
+
+        # Track which MASK_TAGS were actually present anywhere in the dataset.
+        present_mask_tags: list[dict] = []
+        present_tag_tuples = set()
+        for elem in _iter_elements(ds):
+            t = (elem.tag.group, elem.tag.element)
+            if t in MASK_TAGS and t not in present_tag_tuples:
+                present_tag_tuples.add(t)
+                keyword = elem.keyword if elem.keyword else MASK_TAGS.get(t, str(elem.tag))
+                present_mask_tags.append(
+                    {
+                        "tag": f"({elem.tag.group:04X},{elem.tag.element:04X})",
+                        "keyword": keyword,
+                    }
+                )
+
+        total_mask_tag_count = len(present_mask_tags)
+
+        is_mask_object = bool(rtstruct_confident or seg_confident)
+        mask_type = "RTSTRUCT" if rtstruct_confident else ("SEG" if seg_confident else None)
+
+        # Print in the same concise style as your other audits.
+        if (not cfg.print_only_matches) or is_mask_object:
+            print(f"File: {path}")
+            print(f"TOTAL MASK TAGS found: {total_mask_tag_count}")
+
+            # Report mask type counts as 0/1 for per-file reporting clarity.
+            print(f"RTSTRUCT found: {1 if rtstruct_confident else 0}")
+            print(f"SEG found: {1 if seg_confident else 0}")
+
+            if cfg.print_tag_details and total_mask_tag_count:
+                for t in present_mask_tags:
+                    print(f"MASK_TAG {t['keyword']} {t['tag']}")
+
+        audit_output = {
+            "file": str(path),
+            "sop_class_uid": sop,
+            "sop_class_name": _SOP_CLASS_UID_NAMES.get(sop) if sop else None,
+            "modality": modality,
+            "series_description": series_desc,
+            "total_mask_tag_count": total_mask_tag_count,
+            "mask_tag_names": [t["keyword"] for t in present_mask_tags],
+            "mask_tags_present": present_mask_tags,
+            "is_rtstruct": rtstruct_confident,
+            "is_seg": seg_confident,
+            "mask_type": mask_type,
+            "labels_found": [_maybe_redact(x) for x in labels],
+            "tumor_like_labels_found": [_maybe_redact(x) for x in tumor_labels],
+            "tumor_like_label_count": len(tumor_labels),
+        }
+        return audit_output
+
+    # Normalize input to list vs single
+    if isinstance(dicom_path, (list, tuple)):
+        paths = [str(p) for p in dicom_path]
+    else:
+        paths = [str(dicom_path)]
+
+    per_file = []
+    for path in paths:
+        try:
+            per_file.append(_audit_one(path))
+        except Exception as e:
+            per_file.append({"file": str(path), "error": str(e)})
+
+    mask_files = [x["file"] for x in per_file if x.get("mask_type") in ("RTSTRUCT", "SEG")]
+    combined = {
+        "total_files": len(paths),
+        "mask_files": mask_files,
+        "mask_file_count": len(mask_files),
+        "audits": per_file,
+        "config": {
+            "scan_sequences": cfg.scan_sequences,
+            "redact_values": cfg.redact_values,
+            "print_only_matches": cfg.print_only_matches,
+            "print_tag_details": cfg.print_tag_details,
+            "max_value_preview": cfg.max_value_preview,
+        },
+    }
+
+    Path(output_json).write_text(json.dumps(combined, indent=2))
+    return combined
+
 if __name__ == "__main__":
     
-    audit = True
+    dicom_paths = get_dicom(PatientID=None,
+                            SeriesInstanceUID_index=None,
+                            SeriesNumber=None,
+                            InstanceNumber=None)
+    
+    audit = False
+    find_masks = True
+    check_thickness = False
+    
+    # # Check slice thickness
+    # dicom_paths = get_dicom(SeriesInstanceUID_index=2)
+    
     if audit:
         # Audit a specific DICOM
-        dicom_path = get_dicom(PatientID="LUNG1-001",
-                                SeriesInstanceUID_index=1,
-                                SeriesNumber=1,
-                                InstanceNumber=1)
         print(f"Auditing DICOM file(s)")
-        print(f"Auditing DICOM file at: {dicom_path}")
-        audit_dicom_header(dicom_path, config=AuditConfig(
+        audit_dicom_header(dicom_paths, config=AuditConfig(
             include_all_headers=False,
             redact_values=True,
             print_only_violations=True,
-            print_tag_details=True))
+            print_tag_details=False))
+
+    if find_masks:
+        # Find tumor mask objects (SEG / RTSTRUCT) within a patient (or broaden by setting PatientID=None).
+        print(f"Finding tumor mask DICOM file(s)")
+        find_tumor_mask_dicoms(
+            dicom_paths,
+            output_json="dicom_mask_audit.json",
+            config=MaskFinderConfig(
+                scan_sequences=True,
+                redact_values=True,
+                print_only_matches=True,
+                print_tag_details=False,
+            ),
+        )
             
         
 
@@ -554,8 +806,6 @@ if __name__ == "__main__":
     '''
     check_thickness = False
     if check_thickness:
-        # Check slice thickness
-        dicom_paths = get_dicom(SeriesInstanceUID_index=2)
         typical_slice_thickness(dicom_paths)
 
 # DICOM 
