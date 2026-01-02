@@ -63,6 +63,7 @@ class AuditConfig:
     flag_private_tags: bool = True
     redact_values: bool = True
     print_only_violations: bool = True
+    print_tag_details: bool = False
     max_value_preview: int = 0
 
 def get_dicom(
@@ -426,6 +427,8 @@ def audit_dicom_header(dicom_path, output_json="dicom_header_audit.json", *, con
         ds = pydicom.dcmread(path, stop_before_pixels=True)
 
         header_dict = {} if cfg.include_all_headers else None
+        phi_flags = []
+        private_flags = []
         flags = []
 
         for elem in _iter_elements(ds):
@@ -441,27 +444,49 @@ def audit_dicom_header(dicom_path, output_json="dicom_header_audit.json", *, con
             is_private_risk = cfg.flag_private_tags and is_private
 
             if is_phi_tag or is_private_risk:
-                flags.append(
-                    {
-                        "tag": f"({elem.tag.group:04X},{elem.tag.element:04X})",
-                        "keyword": keyword,
-                        "reason": "PHI_TAGS" if is_phi_tag else "PRIVATE_TAG",
-                        "value": _maybe_redact(value_str),
-                    }
-                )
+                entry = {
+                    "tag": f"({elem.tag.group:04X},{elem.tag.element:04X})",
+                    "keyword": keyword,
+                    "reason": "PHI_TAGS" if is_phi_tag else "PRIVATE_TAG",
+                    "value": _maybe_redact(value_str),
+                }
+                flags.append(entry)
+                if is_phi_tag:
+                    phi_flags.append(entry)
+                else:
+                    private_flags.append(entry)
+
+        phi_count = len(phi_flags)
+        private_count = len(private_flags)
+        total_found = phi_count + private_count
 
         # Print only if there are violations (and do NOT print raw values)
-        if (not cfg.print_only_violations) or flags:
-            print("\n=== DICOM HEADER AUDIT ===")
+        if (not cfg.print_only_violations) or (total_found > 0):
             print(f"File: {path}")
-            print(f"Total attributes (top-level): {len(ds)}")
-            print(f"Potential PHI/private fields found: {len(flags)}")
-            for f in flags:
-                print(f"VIOLATION: {f['reason']} {f['keyword']} {f['tag']}")
+            print(f"TOTAL TAGS found: {total_found}")
+            print(f"PHI_TAGS found: {phi_count}")
+            if cfg.print_tag_details and phi_count:
+                for f in phi_flags:
+                    # Prefer "NAME (gggg,eeee)"; avoid duplicates if keyword is already the tag.
+                    if f.get("keyword") and f["keyword"] != f["tag"]:
+                        print(f"PHI_TAG {f['keyword']} {f['tag']}")
+                    else:
+                        print(f"PHI_TAG {f['tag']}")
+            print(f"PRIVATE_TAGS found: {private_count}")
+            if cfg.print_tag_details and private_count:
+                for f in private_flags:
+                    # Private tags often have no standard keyword; avoid printing "(tag) (tag)".
+                    if f.get("keyword") and f["keyword"] != f["tag"]:
+                        print(f"PRIVATE_TAG {f['keyword']} {f['tag']}")
+                    else:
+                        print(f"PRIVATE_TAG {f['tag']}")
 
         audit_output = {
             "file": str(path),
             "total_attributes": len(ds),
+            "total_tag_count": total_found,
+            "phi_tag_count": phi_count,
+            "private_tag_count": private_count,
             "potential_phi": flags,
         }
         if cfg.include_all_headers:
@@ -488,6 +513,7 @@ def audit_dicom_header(dicom_path, output_json="dicom_header_audit.json", *, con
                 "flag_private_tags": cfg.flag_private_tags,
                 "redact_values": cfg.redact_values,
                 "print_only_violations": cfg.print_only_violations,
+                "print_tag_details": cfg.print_tag_details,
                 "max_value_preview": cfg.max_value_preview,
             },
         }
@@ -513,7 +539,12 @@ if __name__ == "__main__":
                                 InstanceNumber=1)
         print(f"Auditing DICOM file(s)")
         print(f"Auditing DICOM file at: {dicom_path}")
-        audit_dicom_header(dicom_path)
+        audit_dicom_header(dicom_path, config=AuditConfig(
+            include_all_headers=False,
+            redact_values=True,
+            print_only_violations=True,
+            print_tag_details=True))
+            
         
 
     #TO-DO:
