@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import sys
 
+
 # Define a set of DICOM tags commonly considered PHI under HIPAA
 PHI_TAGS = {
     (0x0010, 0x0010): "PatientName",
@@ -363,57 +364,91 @@ def typical_slice_thickness(dicom_paths, double_check=False):
     return thicknesses_mm
 
 def audit_dicom_header(dicom_path, output_json="dicom_header_audit.json"):
+    """Audit one DICOM or many DICOMs.
+
+    If `dicom_path` is a list/tuple of paths, audits each in sequence and
+    writes a single combined JSON file to `output_json`.
+    """
+
+    import os
     import pydicom
-    ds = pydicom.dcmread(dicom_path, stop_before_pixels=True)
-    
-    header_dict = {}
-    phi_flags = []
 
-    for elem in ds:
-        # print(elem)
-        tag = (elem.tag.group, elem.tag.element)
-        keyword = elem.keyword if elem.keyword else str(elem.tag)
-        value = str(elem.value)
-        header_dict[keyword] = value
+    def _audit_one(path):
+        ds = pydicom.dcmread(path, stop_before_pixels=True)
 
-        if tag in PHI_TAGS:
-            phi_flags.append({
-                "tag": f"({elem.tag.group:04X},{elem.tag.element:04X})",
-                "keyword": keyword,
-                "value": value
-            })
-            
+        header_dict = {}
+        phi_flags = []
 
-    # Print summary to terminal
-    print("\n=== DICOM HEADER AUDIT ===")
-    print(f"File: {dicom_path}")
-    print(f"Total attributes: {len(ds)}")
-    print(f"Potential PHI fields found: {len(phi_flags)}")
-    for f in phi_flags:
-        print(f"⚠️ {f['keyword']} = {f['value']}")
+        for elem in ds:
+            tag = (elem.tag.group, elem.tag.element)
+            keyword = elem.keyword if elem.keyword else str(elem.tag)
+            value = str(elem.value)
+            header_dict[keyword] = value
 
-    # Export to JSON for audit trail
-    audit_output = {
-        "file": str(dicom_path),
-        "total_attributes": len(ds),
-        "potential_phi": phi_flags,
-        "all_headers": header_dict
-    }
-    Path(output_json).write_text(json.dumps(audit_output, indent=2))
+            if tag in PHI_TAGS:
+                phi_flags.append(
+                    {
+                        "tag": f"({elem.tag.group:04X},{elem.tag.element:04X})",
+                        "keyword": keyword,
+                        "value": value,
+                    }
+                )
+
+        # Print summary to terminal
+        print("\n=== DICOM HEADER AUDIT ===")
+        print(f"File: {path}")
+        print(f"Total attributes: {len(ds)}")
+        print(f"Potential PHI fields found: {len(phi_flags)}")
+        for f in phi_flags:
+            print(f"⚠️ {f['keyword']} = {f['value']}")
+
+        # Build JSON payload for audit trail
+        audit_output = {
+            "file": str(path),
+            "total_attributes": len(ds),
+            "potential_phi": phi_flags,
+            "all_headers": header_dict,
+        }
+        return audit_output
+
+    # Normalize input to list vs single
+    if isinstance(dicom_path, (list, tuple)):
+        paths = [str(p) for p in dicom_path]
+        per_file = []
+        for path in paths:
+            per_file.append(_audit_one(path))
+
+        combined = {
+            "total_files": len(paths),
+            "files": [x["file"] for x in per_file],
+            "audits": per_file,
+        }
+        Path(output_json).write_text(json.dumps(combined, indent=2))
+        print(f"\nAudit JSON exported to {output_json}")
+        return combined
+
+    single = _audit_one(str(dicom_path))
+    Path(output_json).write_text(json.dumps(single, indent=2))
     print(f"\nAudit JSON exported to {output_json}")
+    return single
 
 if __name__ == "__main__":
     
     audit = True
     if audit:
         # Audit a specific DICOM
-        dicom_path = get_dicom()
+        dicom_path = get_dicom(PatientID="LUNG1-001",
+                                SeriesInstanceUID_index=1,
+                                SeriesNumber=1,
+                                InstanceNumber=1)
         print(isinstance(dicom_path, str))
         print(isinstance(dicom_path, os.PathLike))
         print(isinstance(dicom_path, list))
         print(f"Auditing DICOM file(s)")
+        print(f"Auditing DICOM file at: {dicom_path}")
         audit_dicom_header(dicom_path)
-    
+        
+
     #TO-DO:
     '''
     Check to make sure that
