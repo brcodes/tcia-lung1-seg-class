@@ -530,7 +530,7 @@ def audit_dicom_header(dicom_path, output_json="dicom_header_audit.json", *, con
 
         # Print only if there are violations (and do NOT print raw values)
         if (not cfg.print_only_violations) or (total_found > 0):
-            print(f"File: {path}")
+            print(f"\nFile: {path}")
             print(f"TOTAL TAGS found: {total_found}")
             print(f"PHI_TAGS found: {phi_count}")
             if cfg.print_tag_details and phi_count:
@@ -819,6 +819,20 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
         modality = _get_str(ds, T_MOD)
         series_desc = _get_str(ds, T_SERIES_DESC)
 
+        # The mask object's own SeriesInstanceUID (not the referenced source series).
+        # This should exist in all valid DICOMs; fall back to folder name for robustness.
+        try:
+            series_instance_uid = ds.get("SeriesInstanceUID", None)
+            series_instance_uid = str(series_instance_uid) if series_instance_uid not in (None, "", " ") else None
+        except Exception:
+            series_instance_uid = None
+        if not series_instance_uid:
+            try:
+                # Expected: .../<PatientID>/<StudyInstanceUID>/<SeriesInstanceUID>/<instance>.dcm
+                series_instance_uid = Path(path).parents[0].name
+            except Exception:
+                series_instance_uid = None
+
         # Streamlined detection: this dataset is clean; we key solely off Modality.
         is_rtstruct = modality == "RTSTRUCT"
         is_seg = modality == "SEG"
@@ -862,23 +876,26 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
 
         # Print in the same concise style as your other audits.
         if (not cfg.print_only_matches) or is_mask_object:
-            print(f"File: {path}")
-            print(f"TOTAL MASK TAGS found: {total_mask_tag_count}")
-
-            # Report mask type counts as 0/1 for per-file reporting clarity.
-            print(f"RTSTRUCT found: {1 if is_rtstruct else 0}")
+            print(f"\nFile: {path}")
             print(f"SEG found: {1 if is_seg else 0}")
+            print(f"RTSTRUCT found: {1 if is_rtstruct else 0}")
+            print(f"Deep tag search completed: {deep_tag_search_completed}")
+            print(f"ALT MASK TAGS found: {total_mask_tag_count}")
+
+            if cfg.print_tag_details and total_mask_tag_count:
+                for t in present_mask_tags:
+                    print(f"MASK_TAG {t['keyword']} {t['tag']}")
+            
 
             if is_mask_object:
                 # Requested: print/log patient ID (folder name) immediately above referenced series info.
                 print(f"PatientID: {patient_id}")
                 print(f"StudyInstanceUID: {study_instance_uid_path}")
+                print(f"Scan sequences: {1 if cfg.scan_sequences else 0}")
                 print(f"Referenced SeriesInstanceUID: {referenced_series_instance_uid}")
-                print(f"Deep tag search completed: {deep_tag_search_completed}")
+                print(f"SeriesInstanceUID: {series_instance_uid}")
 
-            if cfg.print_tag_details and total_mask_tag_count:
-                for t in present_mask_tags:
-                    print(f"MASK_TAG {t['keyword']} {t['tag']}")
+            
 
         audit_output = {
             "file": str(path),
@@ -888,6 +905,7 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
             "sop_class_name": _SOP_CLASS_UID_NAMES.get(sop) if sop else None,
             "modality": modality,
             "series_description": series_desc,
+            "series_instance_uid": series_instance_uid,
             "referenced_series_instance_uid": referenced_series_instance_uid,
             "has_reference": bool(referenced_series_instance_uid),
             "deep_tag_search_completed": deep_tag_search_completed,
@@ -935,7 +953,7 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
             masks_by_referenced_series.setdefault(uid, []).append(a.get("file"))
 
     if cfg.print_summary:
-        print(f"TOTAL MASK FILES found: {len(mask_files)}")
+        print(f"\nTOTAL MASK FILES found: {len(mask_files)}")
         print(f"SEG files found: {len(seg_files)}")
         print(f"RTSTRUCT files found: {len(rtstruct_files)}")
     combined = {
