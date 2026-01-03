@@ -520,6 +520,7 @@ def get_dicom(
 
         # Requested: print first/last PatientID in sorted order.
         patient_ids_sorted = sorted(patient_ids_matched)
+        print(f"PatientIDs found: {len(patient_ids_sorted)}")
         if patient_ids_sorted:
             first_pid = patient_ids_sorted[0]
             last_pid = patient_ids_sorted[-1]
@@ -542,34 +543,68 @@ def get_dicom(
             print("Min series folders per patient: UNKNOWN (PatientID=UNKNOWN)")
             print("Max series folders per patient: UNKNOWN (PatientID=UNKNOWN)")
 
-        # Requested: min/max number of DICOMs per series folder, with PatientID + SeriesInstanceUID.
+        # Requested: min/max number of DICOMs per *principal* series folder.
+        # Definition (per user): principal series folder always has > 2 DICOMs.
         if dcm_count_by_series_folder:
             items = [
                 (count, patient, series)
                 for (patient, _study, series), count in dcm_count_by_series_folder.items()
+                if int(count) > 2
             ]
-            items.sort(key=lambda t: (t[0], t[1], t[2]))
-            min_dcms, min_dcms_pid, min_dcms_series = items[0]
-            max_dcms, max_dcms_pid, max_dcms_series = max(items, key=lambda t: (t[0], t[1], t[2]))
-            print(
-                f"Min DICOMs per series folder: {min_dcms} "
-                f"(PatientID={min_dcms_pid}, SeriesInstanceUID={min_dcms_series})"
-            )
-            print(
-                f"Max DICOMs per series folder: {max_dcms} "
-                f"(PatientID={max_dcms_pid}, SeriesInstanceUID={max_dcms_series})"
-            )
+            if items:
+                print(f"Principal series folders found: {len(items)}")
+                items.sort(key=lambda t: (t[0], t[1], t[2]))
+                min_dcms, min_dcms_pid, min_dcms_series = items[0]
+                max_dcms, max_dcms_pid, max_dcms_series = max(items, key=lambda t: (t[0], t[1], t[2]))
+                print(
+                    f"Min DICOMs per principal series folder: {min_dcms} "
+                    f"(PatientID={min_dcms_pid}, SeriesInstanceUID={min_dcms_series})"
+                )
+                print(
+                    f"Max DICOMs per principal series folder: {max_dcms} "
+                    f"(PatientID={max_dcms_pid}, SeriesInstanceUID={max_dcms_series})"
+                )
+                avg_dcms = sum(int(c) for (c, _p, _s) in items) / len(items)
+                print(f"Avg DICOMs per principal series folder: {avg_dcms:.4g}")
+            else:
+                print("Principal series folders found: 0")
+                print(
+                    "Min DICOMs per principal series folder: UNKNOWN "
+                    "(PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)"
+                )
+                print(
+                    "Max DICOMs per principal series folder: UNKNOWN "
+                    "(PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)"
+                )
+                print("Avg DICOMs per principal series folder: UNKNOWN")
         else:
-            print("Min DICOMs per series folder: UNKNOWN (PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)")
-            print("Max DICOMs per series folder: UNKNOWN (PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)")
+            print("Principal series folders found: 0")
+            print(
+                "Min DICOMs per principal series folder: UNKNOWN "
+                "(PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)"
+            )
+            print(
+                "Max DICOMs per principal series folder: UNKNOWN "
+                "(PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)"
+            )
+            print("Avg DICOMs per principal series folder: UNKNOWN")
     except Exception:
         # Do not fail the data fetch due to logging.
+        print("PatientIDs found: UNKNOWN")
         print("1st PatientID (from sorted IDs): UNKNOWN")
         print("Last PatientID (from sorted IDs): UNKNOWN")
         print("Min series folders per patient: UNKNOWN (PatientID=UNKNOWN)")
         print("Max series folders per patient: UNKNOWN (PatientID=UNKNOWN)")
-        print("Min DICOMs per series folder: UNKNOWN (PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)")
-        print("Max DICOMs per series folder: UNKNOWN (PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)")
+        print(
+            "Min DICOMs per principal series folder: UNKNOWN "
+            "(PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)"
+        )
+        print(
+            "Max DICOMs per principal series folder: UNKNOWN "
+            "(PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)"
+        )
+        print("Avg DICOMs per principal series folder: UNKNOWN")
+        print("Principal series folders found: UNKNOWN")
 
     if want_list:
         return matches
@@ -1324,14 +1359,20 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
 
 if __name__ == "__main__":
     
-    dicom_paths = get_dicom(PatientID='LUNG1-001',
-                            StudyInstanceUID_index=1,
+    # dicom_paths = get_dicom(PatientID='LUNG1-001',
+    #                         StudyInstanceUID_index=1,
+    #                         SeriesInstanceUID_index=None,
+    #                         SeriesNumber=None,
+    #                         InstanceNumber=None)
+    
+    dicom_paths = get_dicom(PatientID=None,
+                            StudyInstanceUID_index=None,
                             SeriesInstanceUID_index=None,
                             SeriesNumber=None,
                             InstanceNumber=None)
     
     audit = False
-    find_masks = True
+    find_masks = False
     check_thickness = False
     
     # # Check slice thickness
