@@ -1,5 +1,8 @@
 import json
+import hashlib
+from datetime import datetime, timezone
 from pathlib import Path
+import os
 import sys
 from dataclasses import dataclass
 
@@ -46,7 +49,6 @@ MASK_TAGS = {
 }
 
 import glob
-import os
 import re
 from collections import defaultdict
 
@@ -66,6 +68,244 @@ _SOP_CLASS_UID_NAMES = {
     # Segmentation
     "1.2.840.10008.5.1.4.1.1.66.4": "Segmentation Storage",
 }
+
+
+def _sha256_hex(s: str) -> str:
+    s = "" if s is None else str(s)
+    return hashlib.sha256(s.encode("utf-8", errors="replace")).hexdigest()
+
+
+def _fhir_id(prefix: str, stable_key: str, n: int = 24) -> str:
+    """Create a stable FHIR-safe id ([A-Za-z0-9\-\.]{1,64}) derived from stable_key."""
+
+    h = _sha256_hex(stable_key)[:n]
+    return f"{prefix}-{h}"
+
+
+def _fhir_now() -> str:
+    # FHIR instant/dateTime should be ISO8601; use UTC Z.
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def export_mask_audit_as_fhir_r4_bundle(
+    combined_mask_audit: dict,
+    output_json: str | os.PathLike,
+    *,
+    patient_identifier_system: str = "urn:dicom:patientid",
+) -> dict:
+    """Export a FHIR R4 Bundle(type=collection) representing results of `find_tumor_mask_dicoms()`.
+
+    Requirements (per user):
+    - FHIR R4 strict-ish JSON
+    - Bundle.type = "collection"
+    - Save SeriesDescription only as `seriesDescriptionHash` (SHA-256)
+    - Patient identifier system uses `urn:dicom:patientid`
+
+    Notes:
+    - DICOM UIDs are represented via Identifier.system='urn:dicom:uid' and value='urn:oid:{uid}'.
+    - Filepaths are included in an Observation extension (secure environment assumption).
+    """
+
+    audits = combined_mask_audit.get("audits", []) or []
+    timestamp = _fhir_now()
+
+    patient_resources: dict[str, dict] = {}
+    imagingstudy_resources: dict[tuple[str, str], dict] = {}  # (patient_id, study_uid) -> ImagingStudy
+    observation_resources: list[dict] = []
+
+    def _dicom_uid_identifier(uid: str) -> dict:
+        return {"system": "urn:dicom:uid", "value": f"urn:oid:{uid}"}
+
+    def _modality_coding(modality: str | None) -> dict | None:
+        if modality in (None, "", " "):
+            return None
+        return {"system": "http://dicom.nema.org/resources/ontology/DCM", "code": str(modality)}
+
+    def _ensure_series(imagingstudy: dict, series_uid: str | None, modality: str | None):
+        if not series_uid:
+            return
+        existing = {s.get("uid") for s in imagingstudy.get("series", []) if isinstance(s, dict)}
+        if series_uid in existing:
+            return
+        s = {"uid": str(series_uid)}
+        mod = _modality_coding(modality)
+        if mod:
+            s["modality"] = mod
+        imagingstudy.setdefault("series", []).append(s)
+
+    # Build resources
+    for a in audits:
+        if not isinstance(a, dict):
+            continue
+        if a.get("error"):
+            continue
+
+        patient_id = a.get("patient_id")
+        study_uid = a.get("study_instance_uid")
+        mask_series_uid = a.get("series_instance_uid")
+        referenced_series_uid = a.get("referenced_series_instance_uid")
+
+        if not patient_id or not study_uid:
+            continue
+
+        # Patient
+        if patient_id not in patient_resources:
+            pid = _fhir_id("patient", str(patient_id))
+            patient_resources[patient_id] = {
+                "resourceType": "Patient",
+                "id": pid,
+                "identifier": [{"system": patient_identifier_system, "value": str(patient_id)}],
+            }
+
+        patient_ref = {"reference": f"Patient/{patient_resources[patient_id]['id']}"}
+
+        # ImagingStudy (one per patient+study)
+        study_key = (str(patient_id), str(study_uid))
+        if study_key not in imagingstudy_resources:
+            is_id = _fhir_id("imagingstudy", f"{patient_id}|{study_uid}")
+            imagingstudy_resources[study_key] = {
+                "resourceType": "ImagingStudy",
+                "id": is_id,
+                "status": "available",
+                "subject": patient_ref,
+                "identifier": [_dicom_uid_identifier(str(study_uid))],
+                "started": timestamp,
+                "series": [],
+            }
+
+        imagingstudy = imagingstudy_resources[study_key]
+        _ensure_series(imagingstudy, mask_series_uid, a.get("modality"))
+        _ensure_series(imagingstudy, referenced_series_uid, None)
+
+        imagingstudy_ref = {"reference": f"ImagingStudy/{imagingstudy['id']}"}
+
+        # Observation (one per audited mask-related DICOM)
+        file_path = a.get("file")
+        obs_id = _fhir_id("obs", f"{patient_id}|{study_uid}|{file_path}")
+
+        series_desc = a.get("series_description")
+        series_desc_hash = _sha256_hex(series_desc) if series_desc not in (None, "", " ") else None
+
+        deep_completed = bool(a.get("deep_tag_search_completed", False))
+        scan_sequences_enabled = bool(combined_mask_audit.get("config", {}).get("scan_sequences", True))
+
+        components: list[dict] = []
+
+        def _add_component(code: str, value_key: str, value):
+            components.append(
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://example.org/fhir/CodeSystem/dicom-audit",
+                                "code": code,
+                            }
+                        ]
+                    },
+                    value_key: value,
+                }
+            )
+
+        if a.get("modality"):
+            _add_component("modality", "valueString", str(a.get("modality")))
+        if a.get("sop_class_uid"):
+            _add_component("sopClassUID", "valueString", str(a.get("sop_class_uid")))
+        if a.get("sop_instance_uid"):
+            _add_component("sopInstanceUID", "valueString", str(a.get("sop_instance_uid")))
+
+        _add_component("isSEG", "valueBoolean", bool(a.get("is_seg")))
+        _add_component("isRTSTRUCT", "valueBoolean", bool(a.get("is_rtstruct")))
+        _add_component("maskFound", "valueBoolean", bool(a.get("mask_found")))
+
+        _add_component("scanSequencesEnabled", "valueBoolean", scan_sequences_enabled)
+        _add_component("deepTagSearchCompleted", "valueBoolean", deep_completed)
+
+        # Requested: seriesDescriptionHash (SHA-256)
+        if series_desc_hash:
+            _add_component("seriesDescriptionHash", "valueString", series_desc_hash)
+
+        if mask_series_uid:
+            _add_component("maskSeriesInstanceUID", "valueString", str(mask_series_uid))
+        if referenced_series_uid:
+            _add_component("referencedSeriesInstanceUID", "valueString", str(referenced_series_uid))
+
+        _add_component("tumorLikeLabelCount", "valueInteger", int(a.get("tumor_like_label_count", 0) or 0))
+
+        if deep_completed:
+            labels = a.get("labels_found") or []
+            tumor_labels = a.get("tumor_like_labels_found") or []
+
+            def _extract_hashes(xs):
+                out = []
+                for x in xs:
+                    if isinstance(x, dict) and "sha256" in x:
+                        out.append(x["sha256"])
+                    elif isinstance(x, str):
+                        out.append(_sha256_hex(x))
+                return out
+
+            _add_component("labelHashesSHA256", "valueString", json.dumps(_extract_hashes(labels)))
+            _add_component("tumorLikeLabelHashesSHA256", "valueString", json.dumps(_extract_hashes(tumor_labels)))
+
+        obs = {
+            "resourceType": "Observation",
+            "id": obs_id,
+            "status": "final",
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "imaging",
+                            "display": "Imaging",
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "coding": [
+                    {
+                        "system": "http://example.org/fhir/CodeSystem/dicom-audit",
+                        "code": "dicom-mask-audit",
+                        "display": "DICOM SEG/RTSTRUCT Mask Audit",
+                    }
+                ],
+                "text": "DICOM SEG/RTSTRUCT Mask Audit",
+            },
+            "subject": patient_ref,
+            "effectiveDateTime": timestamp,
+            "derivedFrom": [imagingstudy_ref],
+            "component": components,
+        }
+
+        # Secure-environment assumption: keep raw filepath in an extension.
+        if file_path:
+            obs.setdefault("extension", []).append(
+                {
+                    "url": "http://example.org/fhir/StructureDefinition/source-file-path",
+                    "valueString": str(file_path),
+                }
+            )
+
+        observation_resources.append(obs)
+
+    entries: list[dict] = []
+    for res in patient_resources.values():
+        entries.append({"fullUrl": f"urn:uuid:{res['id']}", "resource": res})
+    for res in imagingstudy_resources.values():
+        entries.append({"fullUrl": f"urn:uuid:{res['id']}", "resource": res})
+    for res in observation_resources:
+        entries.append({"fullUrl": f"urn:uuid:{res['id']}", "resource": res})
+
+    bundle = {
+        "resourceType": "Bundle",
+        "type": "collection",
+        "timestamp": timestamp,
+        "entry": entries,
+    }
+
+    Path(output_json).write_text(json.dumps(bundle, indent=2))
+    return bundle
 
 
 @dataclass(frozen=True)
@@ -111,7 +351,7 @@ def get_dicom(
     SeriesInstanceUID_index=None,
         SeriesNumber=None,
         InstanceNumber=None,
-        base_dir="../../data/raw/NSCLC-Radiomics",
+    base_dir="../../data/raw/NSCLC-Radiomics",
 ):
     """
         Grab DICOM file(s) from the Lung1 dataset.
@@ -634,6 +874,7 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
     T_SOP = Tag(0x0008, 0x0016)
     T_MOD = Tag(0x0008, 0x0060)
     T_SERIES_DESC = Tag(0x0008, 0x103E)
+    T_SOP_INSTANCE_UID = Tag(0x0008, 0x0018)
     T_ROI_SEQ = Tag(0x3006, 0x0020)
     T_ROI_NAME = Tag(0x3006, 0x0026)
     T_SEG_SEQ = Tag(0x0062, 0x0002)
@@ -816,6 +1057,7 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
         patient_id, study_instance_uid_path = _patient_and_study_from_path(path)
 
         sop = _get_str(ds, T_SOP)
+        sop_instance_uid = _get_str(ds, T_SOP_INSTANCE_UID)
         modality = _get_str(ds, T_MOD)
         series_desc = _get_str(ds, T_SERIES_DESC)
 
@@ -902,6 +1144,7 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
             "patient_id": patient_id,
             "study_instance_uid": study_instance_uid_path,
             "sop_class_uid": sop,
+            "sop_instance_uid": sop_instance_uid,
             "sop_class_name": _SOP_CLASS_UID_NAMES.get(sop) if sop else None,
             "modality": modality,
             "series_description": series_desc,
@@ -977,6 +1220,12 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
         },
     }
 
+    output_json_path.write_text(json.dumps(combined, indent=2))
+
+    # Emit FHIR R4 Bundle (collection) alongside the native JSON.
+    fhir_path = output_json_path.with_name(output_json_path.stem + ".fhir.bundle.json")
+    export_mask_audit_as_fhir_r4_bundle(combined, fhir_path, patient_identifier_system="urn:dicom:patientid")
+    combined["fhir_r4_bundle_file"] = str(fhir_path)
     output_json_path.write_text(json.dumps(combined, indent=2))
     return combined
 
