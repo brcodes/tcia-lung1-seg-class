@@ -377,6 +377,16 @@ def get_dicom(
     Returns:
         str | list[str]: One DICOM path when fully specified; otherwise a list of paths.
     """
+    # Always print inputs at the start (requested).
+    print("Getting DICOM(s)\n")
+    print("Args:")
+    print(f"PatientID: {PatientID}")
+    print(f"StudyInstanceUID_index: {StudyInstanceUID_index}")
+    print(f"SeriesInstanceUID_index: {SeriesInstanceUID_index}")
+    print(f"SeriesNumber: {SeriesNumber}")
+    print(f"InstanceNumber: {InstanceNumber}")
+    print(f"base_dir: {base_dir}")
+
     want_list = any(
         v is None
         for v in (
@@ -477,6 +487,89 @@ def get_dicom(
 
     # Deterministic ordering
     matches.sort()
+
+    # Print totals and patient ID span (requested) once matches are known.
+    print(f"Total paths found: {len(matches)}")
+    try:
+        base_path = Path(base_dir).resolve()
+        patient_ids_matched: set[str] = set()
+        series_folders_by_patient: dict[str, set[tuple[str, str]]] = defaultdict(set)
+        dcm_count_by_series_folder: dict[tuple[str, str, str], int] = defaultdict(int)
+
+        for p in matches:
+            p_path = Path(p).resolve()
+
+            try:
+                rel = p_path.relative_to(base_path)
+            except Exception:
+                # If base_dir resolution doesn't match (symlinks, etc.), fall back to string parsing.
+                rel = Path(os.path.relpath(str(p_path), str(base_path)))
+
+            parts = rel.parts
+            # Expected: <patient>/<study>/<series>/<file>.dcm
+            if len(parts) < 4:
+                continue
+
+            patient = parts[0]
+            study = parts[1]
+            series = parts[2]
+
+            patient_ids_matched.add(patient)
+            series_folders_by_patient[patient].add((study, series))
+            dcm_count_by_series_folder[(patient, study, series)] += 1
+
+        # Requested: print first/last PatientID in sorted order.
+        patient_ids_sorted = sorted(patient_ids_matched)
+        if patient_ids_sorted:
+            first_pid = patient_ids_sorted[0]
+            last_pid = patient_ids_sorted[-1]
+            print(f"1st PatientID (from sorted IDs): {first_pid}")
+            print(f"Last PatientID (from sorted IDs): {last_pid}")
+        else:
+            # Should be rare, but keep behavior predictable.
+            print("1st PatientID (from sorted IDs): UNKNOWN")
+            print("Last PatientID (from sorted IDs): UNKNOWN")
+
+        # Requested: min/max number of series folders (unique series dirs) per patient.
+        if series_folders_by_patient:
+            per_patient_series_counts = [(len(v), pid) for pid, v in series_folders_by_patient.items()]
+            per_patient_series_counts.sort(key=lambda t: (t[0], t[1]))
+            min_series_count, min_series_pid = per_patient_series_counts[0]
+            max_series_count, max_series_pid = max(per_patient_series_counts, key=lambda t: (t[0], t[1]))
+            print(f"Min series folders per patient: {min_series_count} (PatientID={min_series_pid})")
+            print(f"Max series folders per patient: {max_series_count} (PatientID={max_series_pid})")
+        else:
+            print("Min series folders per patient: UNKNOWN (PatientID=UNKNOWN)")
+            print("Max series folders per patient: UNKNOWN (PatientID=UNKNOWN)")
+
+        # Requested: min/max number of DICOMs per series folder, with PatientID + SeriesInstanceUID.
+        if dcm_count_by_series_folder:
+            items = [
+                (count, patient, series)
+                for (patient, _study, series), count in dcm_count_by_series_folder.items()
+            ]
+            items.sort(key=lambda t: (t[0], t[1], t[2]))
+            min_dcms, min_dcms_pid, min_dcms_series = items[0]
+            max_dcms, max_dcms_pid, max_dcms_series = max(items, key=lambda t: (t[0], t[1], t[2]))
+            print(
+                f"Min DICOMs per series folder: {min_dcms} "
+                f"(PatientID={min_dcms_pid}, SeriesInstanceUID={min_dcms_series})"
+            )
+            print(
+                f"Max DICOMs per series folder: {max_dcms} "
+                f"(PatientID={max_dcms_pid}, SeriesInstanceUID={max_dcms_series})"
+            )
+        else:
+            print("Min DICOMs per series folder: UNKNOWN (PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)")
+            print("Max DICOMs per series folder: UNKNOWN (PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)")
+    except Exception:
+        # Do not fail the data fetch due to logging.
+        print("1st PatientID (from sorted IDs): UNKNOWN")
+        print("Last PatientID (from sorted IDs): UNKNOWN")
+        print("Min series folders per patient: UNKNOWN (PatientID=UNKNOWN)")
+        print("Max series folders per patient: UNKNOWN (PatientID=UNKNOWN)")
+        print("Min DICOMs per series folder: UNKNOWN (PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)")
+        print("Max DICOMs per series folder: UNKNOWN (PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)")
 
     if want_list:
         return matches
@@ -1255,7 +1348,7 @@ if __name__ == "__main__":
 
     if find_masks:
         # Find tumor mask objects (SEG / RTSTRUCT) within a patient (or broaden by setting PatientID=None).
-        print(f"Finding tumor mask DICOM file(s)")
+        print(f"\nFinding tumor mask DICOM file(s)")
         find_tumor_mask_dicoms(
             dicom_paths,
             output_json="dicom_mask_audit.json",
