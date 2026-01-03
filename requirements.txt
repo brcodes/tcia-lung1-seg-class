@@ -3,6 +3,7 @@ black
 flake8
 sphinx
 myst-parser
+pytest
 
 # Clinical/workflow integration
 fhirclient        # Epic/FHIR API integration

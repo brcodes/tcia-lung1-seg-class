@@ -98,6 +98,7 @@ class MaskFinderConfig:
     """
 
     scan_sequences: bool = True
+    deep_tag_search: bool = False
     redact_values: bool = True
     print_only_matches: bool = True
     print_tag_details: bool = False
@@ -125,7 +126,8 @@ def get_dicom(
         PatientID (str|None): Patient folder name (e.g. "LUNG1-001"). None means all patients.
         StudyInstanceUID_index (int|None): Study order (1-based index, lexicographically sorted
             study directory list within each patient). None means all studies per patient.
-        SeriesInstanceUID_index (int|None): Deprecated alias for StudyInstanceUID_index.
+        SeriesInstanceUID_index (int|None): Series order (1-based index, lexicographically sorted
+            series directory list within each selected study). None means all series per study.
         SeriesNumber (int|None): DICOM SeriesNumber encoded in filename as "<SeriesNumber>-...".
             None means all series numbers.
         InstanceNumber (int|None): DICOM InstanceNumber encoded in filename as "...-<Instance>.dcm".
@@ -135,13 +137,16 @@ def get_dicom(
     Returns:
         str | list[str]: One DICOM path when fully specified; otherwise a list of paths.
     """
-    # Backward-compat: historically this arg was misnamed.
-    if StudyInstanceUID_index is not None and SeriesInstanceUID_index is not None:
-        raise ValueError("Provide only one of StudyInstanceUID_index or SeriesInstanceUID_index")
-    if StudyInstanceUID_index is None and SeriesInstanceUID_index is not None:
-        StudyInstanceUID_index = SeriesInstanceUID_index
-
-    want_list = any(v is None for v in (PatientID, StudyInstanceUID_index, SeriesNumber, InstanceNumber))
+    want_list = any(
+        v is None
+        for v in (
+            PatientID,
+            StudyInstanceUID_index,
+            SeriesInstanceUID_index,
+            SeriesNumber,
+            InstanceNumber,
+        )
+    )
 
     # Patient selection
     if PatientID is None:
@@ -189,7 +194,20 @@ def get_dicom(
                 continue
             series_dirs.sort()
 
-            for series_dir in series_dirs:
+            # Select series (1-based index) or all
+            if SeriesInstanceUID_index is None:
+                chosen_series_dirs = series_dirs
+            else:
+                try:
+                    chosen_series_dirs = [series_dirs[SeriesInstanceUID_index - 1]]
+                except IndexError:
+                    raise IndexError(
+                        f"Series index {SeriesInstanceUID_index} out of range "
+                        f"(found {len(series_dirs)} series) for study {os.path.basename(chosen_study)} "
+                        f"patient {os.path.basename(patient_dir)}."
+                    )
+
+            for series_dir in chosen_series_dirs:
                 dcm_paths = glob.glob(os.path.join(series_dir, "*.dcm"))
                 if not dcm_paths:
                     continue
@@ -670,7 +688,7 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
     def _iter_elements(ds):
         for elem in ds:
             yield elem
-            if not (cfg.scan_sequences and getattr(elem, "VR", None) == "SQ"):
+            if not (cfg.deep_tag_search and cfg.scan_sequences and getattr(elem, "VR", None) == "SQ"):
                 continue
             try:
                 for item in elem.value:
@@ -704,14 +722,30 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
                     labels.add(str(elem))
         return sorted(labels)
 
-    def _collect_references(ds):
-        """Collect reference information to help link SEG/RTSTRUCT -> CT series.
+    def _collect_referenced_series_instance_uid(ds, source_path: str):
+        """Return the referenced SeriesInstanceUID for a SEG/RTSTRUCT.
 
-        We conservatively extract:
-        - the object's own SeriesInstanceUID (top-level)
-        - any nested SeriesInstanceUID values found in sequences (often referenced source series)
-        - any ReferencedSOPInstanceUID values found in sequences
+        Preferred: find a non-root (0020,000E) somewhere in sequences.
+        Fallback: if series UID isn't present, use a referenced SOPInstanceUID (0008,1155)
+        and resolve its SeriesInstanceUID by scanning DICOMs in the same patient/study.
+
+        Assumption for this dataset: each mask refers to at most one source series.
         """
+
+        if not cfg.scan_sequences:
+            return None
+
+        # Lightweight recursion through sequence elements.
+        def _walk(dataset):
+            for elem in dataset:
+                yield elem
+                if getattr(elem, "VR", None) != "SQ":
+                    continue
+                try:
+                    for item in elem.value:
+                        yield from _walk(item)
+                except Exception:
+                    continue
 
         try:
             root_series_uid = ds.get("SeriesInstanceUID", None)
@@ -719,23 +753,62 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
         except Exception:
             root_series_uid = None
 
-        referenced_series_uids: set[str] = set()
-        referenced_sop_uids: set[str] = set()
-
-        for elem in _iter_elements(ds):
+        # 1) Try direct SeriesInstanceUID references in sequences.
+        for elem in _walk(ds):
             try:
-                if elem.tag == T_SERIES_INSTANCE_UID:
-                    v = str(elem.value)
-                    if v and v != root_series_uid:
-                        referenced_series_uids.add(v)
-                elif elem.tag == T_REFERENCED_SOP_INSTANCE_UID:
-                    v = str(elem.value)
-                    if v:
-                        referenced_sop_uids.add(v)
+                if elem.tag != T_SERIES_INSTANCE_UID:
+                    continue
+                v = str(elem.value)
+                if not v:
+                    continue
+                if root_series_uid and v == root_series_uid:
+                    continue
+                return v
             except Exception:
                 continue
 
-        return root_series_uid, referenced_series_uids, referenced_sop_uids
+        # 2) Fall back to a referenced SOPInstanceUID -> resolve to SeriesInstanceUID.
+        referenced_sop_uid = None
+        for elem in _walk(ds):
+            try:
+                if elem.tag != T_REFERENCED_SOP_INSTANCE_UID:
+                    continue
+                v = str(elem.value)
+                if v:
+                    referenced_sop_uid = v
+                    break
+            except Exception:
+                continue
+
+        if not referenced_sop_uid:
+            return None
+
+        # Expected layout: .../<PatientID>/<StudyInstanceUID>/<SeriesInstanceUID>/<instance>.dcm
+        p = Path(source_path)
+        try:
+            study_dir = p.parents[1]
+        except Exception:
+            return None
+
+        # Search all DICOMs in the study folder for a matching SOPInstanceUID.
+        # This is only used when the series UID isn't directly present in the mask header.
+        try:
+            for candidate in glob.glob(str(study_dir / "*" / "*.dcm")):
+                try:
+                    ds_src = pydicom.dcmread(candidate, stop_before_pixels=True)
+                except Exception:
+                    continue
+                sop_uid = ds_src.get("SOPInstanceUID", None)
+                sop_uid = str(sop_uid) if sop_uid not in (None, "", " ") else None
+                if sop_uid != referenced_sop_uid:
+                    continue
+                series_uid = ds_src.get("SeriesInstanceUID", None)
+                series_uid = str(series_uid) if series_uid not in (None, "", " ") else None
+                return series_uid
+        except Exception:
+            return None
+
+        return None
 
     def _audit_one(path: str):
         ds = pydicom.dcmread(path, stop_before_pixels=True)
@@ -746,48 +819,46 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
         modality = _get_str(ds, T_MOD)
         series_desc = _get_str(ds, T_SERIES_DESC)
 
-        # Presence-based signals
-        has_roi_seq = T_ROI_SEQ in ds
-        has_seg_seq = T_SEG_SEQ in ds
+        # Streamlined detection: this dataset is clean; we key solely off Modality.
+        is_rtstruct = modality == "RTSTRUCT"
+        is_seg = modality == "SEG"
 
-        # Strong type determination
-        is_rtstruct = (sop == RTSTRUCT_UID) or (modality == "RTSTRUCT")
-        is_seg = (sop == SEG_UID) or (modality == "SEG")
+        is_mask_object = bool(is_rtstruct or is_seg)
+        mask_type = "RTSTRUCT" if is_rtstruct else ("SEG" if is_seg else None)
 
-        # Structural confidence checks (helps catch mis-encoded modality strings)
-        rtstruct_confident = is_rtstruct and has_roi_seq
-        seg_confident = is_seg and has_seg_seq
+        deep_tag_search_completed = 1 if cfg.deep_tag_search else 0
 
-        # Collect labels and try tumor-ish match
-        labels = _collect_labels(ds) if (rtstruct_confident or seg_confident or is_rtstruct or is_seg) else []
-        tumor_labels = [s for s in labels if tumor_label_re.search(s or "")]
+        # Optional deep tag search for labels/tags/references.
+        if cfg.deep_tag_search and is_mask_object:
+            labels = _collect_labels(ds)
+            tumor_labels = [s for s in labels if tumor_label_re.search(s or "")]
+            referenced_series_instance_uid = _collect_referenced_series_instance_uid(ds, path)
+        else:
+            labels = []
+            tumor_labels = []
+            referenced_series_instance_uid = _collect_referenced_series_instance_uid(ds, path)
 
-        # Collect reference info (helps tie masks back to the source CT series)
-        series_instance_uid, referenced_series_uids, referenced_sop_uids = _collect_references(ds)
-
-        # Track which MASK_TAGS were actually present anywhere in the dataset.
+        # Track which MASK_TAGS were present (deep search only).
         present_mask_tags: list[dict] = []
-        present_tag_tuples = set()
-        for elem in _iter_elements(ds):
-            t = (elem.tag.group, elem.tag.element)
-            if t in MASK_TAGS and t not in present_tag_tuples:
-                present_tag_tuples.add(t)
-                keyword = elem.keyword if elem.keyword else MASK_TAGS.get(t, str(elem.tag))
-                present_mask_tags.append(
-                    {
-                        "tag": f"({elem.tag.group:04X},{elem.tag.element:04X})",
-                        "keyword": keyword,
-                    }
-                )
+        if cfg.deep_tag_search and is_mask_object:
+            present_tag_tuples = set()
+            for elem in _iter_elements(ds):
+                t = (elem.tag.group, elem.tag.element)
+                if t in MASK_TAGS and t not in present_tag_tuples:
+                    present_tag_tuples.add(t)
+                    keyword = elem.keyword if elem.keyword else MASK_TAGS.get(t, str(elem.tag))
+                    present_mask_tags.append(
+                        {
+                            "tag": f"({elem.tag.group:04X},{elem.tag.element:04X})",
+                            "keyword": keyword,
+                        }
+                    )
 
         total_mask_tag_count = len(present_mask_tags)
 
-        is_mask_object = bool(rtstruct_confident or seg_confident)
-        mask_type = "RTSTRUCT" if rtstruct_confident else ("SEG" if seg_confident else None)
-
         mask_found = 1 if is_mask_object else 0
-        seg_found = 1 if seg_confident else 0
-        rtstruct_found = 1 if rtstruct_confident else 0
+        seg_found = 1 if is_seg else 0
+        rtstruct_found = 1 if is_rtstruct else 0
 
         # Print in the same concise style as your other audits.
         if (not cfg.print_only_matches) or is_mask_object:
@@ -795,14 +866,15 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
             print(f"TOTAL MASK TAGS found: {total_mask_tag_count}")
 
             # Report mask type counts as 0/1 for per-file reporting clarity.
-            print(f"RTSTRUCT found: {1 if rtstruct_confident else 0}")
-            print(f"SEG found: {1 if seg_confident else 0}")
+            print(f"RTSTRUCT found: {1 if is_rtstruct else 0}")
+            print(f"SEG found: {1 if is_seg else 0}")
 
             if is_mask_object:
                 # Requested: print/log patient ID (folder name) immediately above referenced series info.
                 print(f"PatientID: {patient_id}")
                 print(f"StudyInstanceUID: {study_instance_uid_path}")
-                print(f"Referenced SeriesInstanceUIDs: {sorted(referenced_series_uids)}")
+                print(f"Referenced SeriesInstanceUID: {referenced_series_instance_uid}")
+                print(f"Deep tag search completed: {deep_tag_search_completed}")
 
             if cfg.print_tag_details and total_mask_tag_count:
                 for t in present_mask_tags:
@@ -816,16 +888,14 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
             "sop_class_name": _SOP_CLASS_UID_NAMES.get(sop) if sop else None,
             "modality": modality,
             "series_description": series_desc,
-            "series_instance_uid": series_instance_uid,
-            "referenced_series_instance_uids": sorted(referenced_series_uids),
-            "referenced_series_instance_uid_count": len(referenced_series_uids),
-            "referenced_sop_instance_uid_count": len(referenced_sop_uids),
-            "has_references": bool(referenced_series_uids or referenced_sop_uids),
+            "referenced_series_instance_uid": referenced_series_instance_uid,
+            "has_reference": bool(referenced_series_instance_uid),
+            "deep_tag_search_completed": deep_tag_search_completed,
             "total_mask_tag_count": total_mask_tag_count,
             "mask_tag_names": [t["keyword"] for t in present_mask_tags],
             "mask_tags_present": present_mask_tags,
-            "is_rtstruct": rtstruct_confident,
-            "is_seg": seg_confident,
+            "is_rtstruct": is_rtstruct,
+            "is_seg": is_seg,
             "mask_type": mask_type,
             "mask_found": mask_found,
             "seg_found": seg_found,
@@ -860,7 +930,8 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
     for a in per_file:
         if a.get("mask_type") not in ("SEG", "RTSTRUCT"):
             continue
-        for uid in a.get("referenced_series_instance_uids", []) or []:
+        uid = a.get("referenced_series_instance_uid")
+        if uid:
             masks_by_referenced_series.setdefault(uid, []).append(a.get("file"))
 
     if cfg.print_summary:
@@ -879,6 +950,7 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
         "audits": per_file,
         "config": {
             "scan_sequences": cfg.scan_sequences,
+            "deep_tag_search": cfg.deep_tag_search,
             "redact_values": cfg.redact_values,
             "print_only_matches": cfg.print_only_matches,
             "print_tag_details": cfg.print_tag_details,
@@ -892,10 +964,11 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
 
 if __name__ == "__main__":
     
-    dicom_paths = get_dicom(PatientID=None,
+    dicom_paths = get_dicom(PatientID='LUNG1-001',
                             StudyInstanceUID_index=1,
-                            SeriesNumber=1,
-                            InstanceNumber=1)
+                            SeriesInstanceUID_index=None,
+                            SeriesNumber=None,
+                            InstanceNumber=None)
     
     audit = False
     find_masks = True
@@ -921,6 +994,7 @@ if __name__ == "__main__":
             output_json="dicom_mask_audit.json",
             config=MaskFinderConfig(
                 scan_sequences=True,
+                deep_tag_search=False,
                 redact_values=True,
                 print_only_matches=True,
                 print_tag_details=False,
