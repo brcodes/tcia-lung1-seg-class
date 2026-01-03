@@ -495,6 +495,7 @@ def get_dicom(
         patient_ids_matched: set[str] = set()
         series_folders_by_patient: dict[str, set[tuple[str, str]]] = defaultdict(set)
         dcm_count_by_series_folder: dict[tuple[str, str, str], int] = defaultdict(int)
+        representative_dicom_by_series_folder: dict[tuple[str, str, str], str] = {}
 
         for p in matches:
             p_path = Path(p).resolve()
@@ -517,6 +518,7 @@ def get_dicom(
             patient_ids_matched.add(patient)
             series_folders_by_patient[patient].add((study, series))
             dcm_count_by_series_folder[(patient, study, series)] += 1
+            representative_dicom_by_series_folder.setdefault((patient, study, series), str(p_path))
 
         # Requested: print first/last PatientID in sorted order.
         patient_ids_sorted = sorted(patient_ids_matched)
@@ -547,15 +549,15 @@ def get_dicom(
         # Definition (per user): principal series folder always has > 2 DICOMs.
         if dcm_count_by_series_folder:
             items = [
-                (count, patient, series)
-                for (patient, _study, series), count in dcm_count_by_series_folder.items()
+                (count, patient, study, series)
+                for (patient, study, series), count in dcm_count_by_series_folder.items()
                 if int(count) > 2
             ]
             if items:
                 print(f"Principal series folders found: {len(items)}")
-                items.sort(key=lambda t: (t[0], t[1], t[2]))
-                min_dcms, min_dcms_pid, min_dcms_series = items[0]
-                max_dcms, max_dcms_pid, max_dcms_series = max(items, key=lambda t: (t[0], t[1], t[2]))
+                items.sort(key=lambda t: (t[0], t[1], t[2], t[3]))
+                min_dcms, min_dcms_pid, _min_dcms_study, min_dcms_series = items[0]
+                max_dcms, max_dcms_pid, _max_dcms_study, max_dcms_series = max(items, key=lambda t: (t[0], t[1], t[2], t[3]))
                 print(
                     f"Min DICOMs per principal series folder: {min_dcms} "
                     f"(PatientID={min_dcms_pid}, SeriesInstanceUID={min_dcms_series})"
@@ -564,8 +566,58 @@ def get_dicom(
                     f"Max DICOMs per principal series folder: {max_dcms} "
                     f"(PatientID={max_dcms_pid}, SeriesInstanceUID={max_dcms_series})"
                 )
-                avg_dcms = sum(int(c) for (c, _p, _s) in items) / len(items)
+                avg_dcms = sum(int(c) for (c, _p, _st, _s) in items) / len(items)
                 print(f"Avg DICOMs per principal series folder: {avg_dcms:.4g}")
+
+                # SliceThickness stats across principal series only.
+                try:
+                    import pydicom
+                    from pydicom.tag import Tag
+
+                    thickness_tag = Tag(0x0018, 0x0050)
+                    thicknesses_mm: list[float] = []
+
+                    for (_count, pid, st, ser) in items:
+                        rep = representative_dicom_by_series_folder.get((pid, st, ser))
+                        if not rep:
+                            continue
+                        try:
+                            ds = pydicom.dcmread(rep, stop_before_pixels=True)
+                        except Exception:
+                            continue
+
+                        raw = ds.get("SliceThickness", None)
+                        if raw is None and hasattr(ds, "SliceThickness"):
+                            raw = getattr(ds, "SliceThickness")
+                        if raw in (None, "", " ") and thickness_tag in ds:
+                            raw = ds[thickness_tag].value
+                        if raw in (None, "", " "):
+                            continue
+
+                        try:
+                            thicknesses_mm.append(float(raw))
+                        except Exception:
+                            s = str(raw)
+                            m = re.search(r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?", s)
+                            if not m:
+                                continue
+                            thicknesses_mm.append(float(m.group(0)))
+
+                    if thicknesses_mm:
+                        mn = min(thicknesses_mm)
+                        mx = max(thicknesses_mm)
+                        avg = sum(thicknesses_mm) / len(thicknesses_mm)
+                        print(f"Min SliceThickness (mm) [principal series]: {mn:.4g}")
+                        print(f"Max SliceThickness (mm) [principal series]: {mx:.4g}")
+                        print(f"Avg SliceThickness (mm) [principal series]: {avg:.4g}")
+                    else:
+                        print("Min SliceThickness (mm) [principal series]: UNKNOWN")
+                        print("Max SliceThickness (mm) [principal series]: UNKNOWN")
+                        print("Avg SliceThickness (mm) [principal series]: UNKNOWN")
+                except Exception:
+                    print("Min SliceThickness (mm) [principal series]: UNKNOWN")
+                    print("Max SliceThickness (mm) [principal series]: UNKNOWN")
+                    print("Avg SliceThickness (mm) [principal series]: UNKNOWN")
             else:
                 print("Principal series folders found: 0")
                 print(
@@ -577,6 +629,9 @@ def get_dicom(
                     "(PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)"
                 )
                 print("Avg DICOMs per principal series folder: UNKNOWN")
+                print("Min SliceThickness (mm) [principal series]: UNKNOWN")
+                print("Max SliceThickness (mm) [principal series]: UNKNOWN")
+                print("Avg SliceThickness (mm) [principal series]: UNKNOWN")
         else:
             print("Principal series folders found: 0")
             print(
@@ -588,6 +643,9 @@ def get_dicom(
                 "(PatientID=UNKNOWN, SeriesInstanceUID=UNKNOWN)"
             )
             print("Avg DICOMs per principal series folder: UNKNOWN")
+            print("Min SliceThickness (mm) [principal series]: UNKNOWN")
+            print("Max SliceThickness (mm) [principal series]: UNKNOWN")
+            print("Avg SliceThickness (mm) [principal series]: UNKNOWN")
     except Exception:
         # Do not fail the data fetch due to logging.
         print("PatientIDs found: UNKNOWN")
@@ -605,6 +663,9 @@ def get_dicom(
         )
         print("Avg DICOMs per principal series folder: UNKNOWN")
         print("Principal series folders found: UNKNOWN")
+        print("Min SliceThickness (mm) [principal series]: UNKNOWN")
+        print("Max SliceThickness (mm) [principal series]: UNKNOWN")
+        print("Avg SliceThickness (mm) [principal series]: UNKNOWN")
 
     if want_list:
         return matches
@@ -1373,7 +1434,6 @@ if __name__ == "__main__":
     
     audit = False
     find_masks = False
-    check_thickness = False
     
     # # Check slice thickness
     # dicom_paths = get_dicom(StudyInstanceUID_index=2)
@@ -1402,16 +1462,7 @@ if __name__ == "__main__":
             ),
         )
             
-        
 
-    #TO-DO:
-    '''
-    Check to make sure that
-    you didn"t miss principal series bt hard coding this
-    '''
-    check_thickness = False
-    if check_thickness:
-        typical_slice_thickness(dicom_paths)
 
 # DICOM 
 # PHI should typically not occur in PatientID here, where EHR pull would yield a surrogate ID
