@@ -1388,6 +1388,12 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
         print(f"\nTOTAL MASK FILES found: {len(mask_files)}")
         print(f"SEG files found: {len(seg_files)}")
         print(f"RTSTRUCT files found: {len(rtstruct_files)}")
+        print(f"PatientIDs with NO tumor mask info found: {patients_without_masks_count}")
+        print(f"1st PatientID with NO tumor mask info: {patients_without_masks_first}")
+        print(f"Last PatientID with NO tumor mask info: {patients_without_masks_last}")
+        print(f"PatientIDs with NO SEG found: {patients_without_seg_count}")
+        print(f"1st PatientID with NO SEG found: {patients_without_seg_first}")
+        print(f"Last PatientID with NO SEG found: {patients_without_seg_last}")
     combined = {
         "total_files": len(paths),
         "mask_files": mask_files,
