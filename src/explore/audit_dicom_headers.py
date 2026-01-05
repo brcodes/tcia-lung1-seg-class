@@ -1159,7 +1159,7 @@ def typical_slice_thickness(dicom_paths, double_check=False):
 
 def audit_dicom_header(
     dicom_path,
-    output_json="dicom_header_audit.json",
+    output_json: str | os.PathLike | None = "dicom_header_audit.json",
     *,
     config=None,
     header_cache: DicomHeaderCache | None = None,
@@ -1303,6 +1303,8 @@ def audit_dicom_header(
             },
         }
         if write_json:
+            if output_json is None:
+                raise ValueError("output_json must be provided when write_json=True")
             Path(output_json).write_text(json.dumps(combined, indent=2))
         if not cfg.print_only_violations:
             print(f"\nAudit JSON exported to {output_json}")
@@ -1310,6 +1312,8 @@ def audit_dicom_header(
 
     single = _audit_one(str(dicom_path))
     if write_json:
+        if output_json is None:
+            raise ValueError("output_json must be provided when write_json=True")
         Path(output_json).write_text(json.dumps(single, indent=2))
     if not cfg.print_only_violations:
         print(f"\nAudit JSON exported to {output_json}")
@@ -1318,7 +1322,7 @@ def audit_dicom_header(
 
 def find_tumor_mask_dicoms(
     dicom_path,
-    output_json="dicom_mask_audit.json",
+    output_json: str | os.PathLike | None = "dicom_mask_audit.json",
     *,
     config: MaskFinderConfig | None = None,
     header_cache: DicomHeaderCache | None = None,
@@ -1346,7 +1350,7 @@ def find_tumor_mask_dicoms(
 
     cfg = config if config is not None else MaskFinderConfig()
 
-    output_json_path = Path(output_json)
+    output_json_path = Path(output_json) if output_json is not None else None
 
     # Common tumor-ish label heuristics seen clinically.
     tumor_label_re = re.compile(
@@ -1745,10 +1749,14 @@ def find_tumor_mask_dicoms(
     }
 
     if write_json:
+        if output_json_path is None:
+            raise ValueError("output_json must be provided when write_json=True")
         output_json_path.write_text(json.dumps(combined, indent=2))
 
     # Emit FHIR R4 Bundle (collection) alongside the native JSON.
     if export_fhir:
+        if output_json_path is None:
+            raise ValueError("output_json must be provided when export_fhir=True")
         fhir_path = output_json_path.with_name(output_json_path.stem + ".fhir.bundle.json")
         export_mask_audit_as_fhir_r4_bundle(combined, fhir_path, patient_identifier_system="urn:dicom:patientid")
         combined["fhir_r4_bundle_file"] = str(fhir_path)
@@ -2133,7 +2141,7 @@ def run_unified_dicom_audit(
     if cfg.run_phi_audit:
         header_combined = audit_dicom_header(
             paths,
-            output_json="dicom_header_audit.json",
+            output_json=None,
             config=cfg.header_audit_config,
             header_cache=cache,
             write_json=False,
@@ -2143,7 +2151,7 @@ def run_unified_dicom_audit(
     if cfg.run_mask_finder:
         mask_combined = find_tumor_mask_dicoms(
             paths,
-            output_json="dicom_mask_audit.json",
+            output_json=None,
             config=cfg.mask_finder_config,
             header_cache=cache,
             write_json=False,
