@@ -1,7 +1,7 @@
 {
   "resourceType": "Bundle",
   "type": "collection",
-  "timestamp": "2026-01-05T17:46:17.431422Z",
+  "timestamp": "2026-01-05T18:33:32.127179Z",
   "entry": [
     {
       "fullUrl": "urn:uuid:patient-f291a7525ec1094675750b0d",
@@ -31,7 +31,7 @@
             "value": "urn:oid:1.3.6.1.4.1.32722.99.99.239341353911714368772597187099978969331"
           }
         ],
-        "started": "2026-01-05T17:46:17.431422Z",
+        "started": "2026-01-05T18:33:32.127179Z",
         "series": [
           {
             "uid": "1.2.276.0.7230010.3.1.3.2323910823.20524.1597260509.554",
@@ -83,7 +83,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -162,7 +162,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -340,7 +340,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -419,7 +419,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -586,7 +586,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -665,7 +665,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -750,7 +750,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -829,7 +829,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -914,7 +914,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -993,7 +993,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1078,7 +1078,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1157,7 +1157,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1242,7 +1242,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1321,7 +1321,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1406,7 +1406,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1485,7 +1485,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1570,7 +1570,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1649,7 +1649,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1734,7 +1734,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1813,7 +1813,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1898,7 +1898,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1977,7 +1977,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2062,7 +2062,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2141,7 +2141,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2226,7 +2226,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2305,7 +2305,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2390,7 +2390,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2469,7 +2469,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2554,7 +2554,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2633,7 +2633,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2718,7 +2718,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2797,7 +2797,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2882,7 +2882,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2961,7 +2961,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3046,7 +3046,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3125,7 +3125,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3210,7 +3210,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3289,7 +3289,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3374,7 +3374,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3453,7 +3453,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3538,7 +3538,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3617,7 +3617,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3702,7 +3702,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3781,7 +3781,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3866,7 +3866,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3945,7 +3945,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4030,7 +4030,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4109,7 +4109,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4194,7 +4194,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4273,7 +4273,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4358,7 +4358,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4437,7 +4437,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4522,7 +4522,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4601,7 +4601,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4686,7 +4686,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4765,7 +4765,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4850,7 +4850,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4929,7 +4929,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5014,7 +5014,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5093,7 +5093,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5178,7 +5178,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5257,7 +5257,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5342,7 +5342,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5421,7 +5421,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5506,7 +5506,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5585,7 +5585,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5670,7 +5670,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5749,7 +5749,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5834,7 +5834,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5913,7 +5913,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5998,7 +5998,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6077,7 +6077,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6162,7 +6162,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6241,7 +6241,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6326,7 +6326,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6405,7 +6405,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6490,7 +6490,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6569,7 +6569,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6654,7 +6654,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6733,7 +6733,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6818,7 +6818,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6897,7 +6897,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6982,7 +6982,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7061,7 +7061,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7146,7 +7146,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7225,7 +7225,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7310,7 +7310,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7389,7 +7389,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7474,7 +7474,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7553,7 +7553,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7638,7 +7638,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7717,7 +7717,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7802,7 +7802,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7881,7 +7881,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7966,7 +7966,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8045,7 +8045,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8130,7 +8130,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8209,7 +8209,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8294,7 +8294,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8373,7 +8373,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8458,7 +8458,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8537,7 +8537,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8622,7 +8622,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8701,7 +8701,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8786,7 +8786,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8865,7 +8865,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8950,7 +8950,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9029,7 +9029,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9114,7 +9114,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9193,7 +9193,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9278,7 +9278,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9357,7 +9357,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9442,7 +9442,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9521,7 +9521,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9606,7 +9606,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9685,7 +9685,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9770,7 +9770,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9849,7 +9849,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9934,7 +9934,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10013,7 +10013,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10098,7 +10098,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10177,7 +10177,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10262,7 +10262,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10341,7 +10341,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10426,7 +10426,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10505,7 +10505,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10590,7 +10590,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10669,7 +10669,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10754,7 +10754,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10833,7 +10833,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10918,7 +10918,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10997,7 +10997,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11082,7 +11082,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11161,7 +11161,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11246,7 +11246,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11325,7 +11325,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11410,7 +11410,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11489,7 +11489,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11574,7 +11574,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11653,7 +11653,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11738,7 +11738,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11817,7 +11817,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11902,7 +11902,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11981,7 +11981,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12066,7 +12066,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12145,7 +12145,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12230,7 +12230,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12309,7 +12309,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12394,7 +12394,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12473,7 +12473,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12558,7 +12558,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12637,7 +12637,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12722,7 +12722,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12801,7 +12801,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12886,7 +12886,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12965,7 +12965,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13050,7 +13050,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13129,7 +13129,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13214,7 +13214,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13293,7 +13293,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13378,7 +13378,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13457,7 +13457,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13542,7 +13542,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13621,7 +13621,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13706,7 +13706,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13785,7 +13785,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13870,7 +13870,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13949,7 +13949,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14034,7 +14034,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14113,7 +14113,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14198,7 +14198,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14277,7 +14277,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14362,7 +14362,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14441,7 +14441,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14526,7 +14526,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14605,7 +14605,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14690,7 +14690,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14769,7 +14769,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14854,7 +14854,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14933,7 +14933,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15018,7 +15018,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15097,7 +15097,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15182,7 +15182,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15261,7 +15261,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15346,7 +15346,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15425,7 +15425,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15510,7 +15510,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15589,7 +15589,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15674,7 +15674,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15753,7 +15753,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15838,7 +15838,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15917,7 +15917,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16002,7 +16002,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16081,7 +16081,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16166,7 +16166,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16245,7 +16245,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16330,7 +16330,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16409,7 +16409,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16494,7 +16494,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16573,7 +16573,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16658,7 +16658,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16737,7 +16737,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16822,7 +16822,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16901,7 +16901,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16986,7 +16986,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17065,7 +17065,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17150,7 +17150,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17229,7 +17229,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17314,7 +17314,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17393,7 +17393,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17478,7 +17478,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17557,7 +17557,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17642,7 +17642,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17721,7 +17721,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17806,7 +17806,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17885,7 +17885,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17970,7 +17970,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18049,7 +18049,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18134,7 +18134,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18213,7 +18213,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18298,7 +18298,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18377,7 +18377,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18462,7 +18462,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18541,7 +18541,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18626,7 +18626,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18705,7 +18705,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18790,7 +18790,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18869,7 +18869,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18954,7 +18954,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19033,7 +19033,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19118,7 +19118,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19197,7 +19197,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19282,7 +19282,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19361,7 +19361,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19446,7 +19446,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19525,7 +19525,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19610,7 +19610,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19689,7 +19689,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19774,7 +19774,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19853,7 +19853,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19938,7 +19938,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20017,7 +20017,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20102,7 +20102,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20181,7 +20181,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20266,7 +20266,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20345,7 +20345,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20430,7 +20430,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20509,7 +20509,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20594,7 +20594,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20673,7 +20673,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20758,7 +20758,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20837,7 +20837,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20922,7 +20922,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21001,7 +21001,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21086,7 +21086,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21165,7 +21165,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21250,7 +21250,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21329,7 +21329,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21414,7 +21414,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21493,7 +21493,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21578,7 +21578,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21657,7 +21657,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21742,7 +21742,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21821,7 +21821,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21906,7 +21906,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21985,7 +21985,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -22070,7 +22070,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -22149,7 +22149,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -22234,7 +22234,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -22313,7 +22313,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -22398,7 +22398,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -22477,7 +22477,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T17:46:17.431422Z",
+        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"

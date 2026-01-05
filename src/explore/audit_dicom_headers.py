@@ -409,6 +409,37 @@ def dcmread_cached(path: str | os.PathLike, cache: DicomHeaderCache, *, stop_bef
     return ds
 
 
+class Lung1PathError(ValueError):
+    pass
+
+
+def lung1_patient_study_series_from_path(path: str | os.PathLike) -> tuple[str, str, str]:
+    """Return (patient_id, study_instance_uid, series_instance_uid_folder) from Lung1 folder layout.
+
+    Expected layout:
+    .../<PatientID>/<StudyInstanceUID>/<SeriesInstanceUID>/<instance>.dcm
+
+    Hard-fail if PatientID doesn't contain 'LUNG1' (case-insensitive).
+    """
+
+    p = Path(path)
+    try:
+        series_folder = p.parents[0].name
+        study_instance_uid = p.parents[1].name
+        patient_id = p.parents[2].name
+    except Exception:
+        raise Lung1PathError(f"Path too short to extract PatientID/StudyInstanceUID/SeriesInstanceUID: {path}")
+
+    if not patient_id or "lung1" not in patient_id.lower():
+        raise Lung1PathError(f"Expected PatientID folder containing 'LUNG1' but got '{patient_id}' for path: {path}")
+    if not study_instance_uid:
+        raise Lung1PathError(f"Empty StudyInstanceUID folder name for path: {path}")
+    if not series_folder:
+        raise Lung1PathError(f"Empty SeriesInstanceUID folder name for path: {path}")
+
+    return patient_id, study_instance_uid, series_folder
+
+
 def extract_slice_thickness_mm(ds) -> float | None:
     """Extract SliceThickness (0018,0050) in mm if present and parseable."""
 
@@ -1159,7 +1190,7 @@ def typical_slice_thickness(dicom_paths, double_check=False):
 
 def audit_dicom_header(
     dicom_path,
-    output_json: str | os.PathLike | None = "dicom_header_audit.json",
+    output_json="dicom_header_audit.json",
     *,
     config=None,
     header_cache: DicomHeaderCache | None = None,
@@ -1303,8 +1334,6 @@ def audit_dicom_header(
             },
         }
         if write_json:
-            if output_json is None:
-                raise ValueError("output_json must be provided when write_json=True")
             Path(output_json).write_text(json.dumps(combined, indent=2))
         if not cfg.print_only_violations:
             print(f"\nAudit JSON exported to {output_json}")
@@ -1312,8 +1341,6 @@ def audit_dicom_header(
 
     single = _audit_one(str(dicom_path))
     if write_json:
-        if output_json is None:
-            raise ValueError("output_json must be provided when write_json=True")
         Path(output_json).write_text(json.dumps(single, indent=2))
     if not cfg.print_only_violations:
         print(f"\nAudit JSON exported to {output_json}")
@@ -1322,7 +1349,7 @@ def audit_dicom_header(
 
 def find_tumor_mask_dicoms(
     dicom_path,
-    output_json: str | os.PathLike | None = "dicom_mask_audit.json",
+    output_json="dicom_mask_audit.json",
     *,
     config: MaskFinderConfig | None = None,
     header_cache: DicomHeaderCache | None = None,
@@ -1749,14 +1776,12 @@ def find_tumor_mask_dicoms(
     }
 
     if write_json:
-        if output_json_path is None:
-            raise ValueError("output_json must be provided when write_json=True")
         output_json_path.write_text(json.dumps(combined, indent=2))
 
     # Emit FHIR R4 Bundle (collection) alongside the native JSON.
     if export_fhir:
         if output_json_path is None:
-            raise ValueError("output_json must be provided when export_fhir=True")
+            raise ValueError("export_fhir=True requires output_json to be a valid path")
         fhir_path = output_json_path.with_name(output_json_path.stem + ".fhir.bundle.json")
         export_mask_audit_as_fhir_r4_bundle(combined, fhir_path, patient_identifier_system="urn:dicom:patientid")
         combined["fhir_r4_bundle_file"] = str(fhir_path)
@@ -1775,7 +1800,12 @@ def export_unified_audit_as_fhir_r4_bundle(
 
     timestamp = _fhir_now()
 
-    by_file = unified_audit.get("by_file", []) or []
+    by_patient_container = unified_audit.get("by_patient_id", {}) or {}
+    if not (isinstance(by_patient_container, dict) and isinstance(by_patient_container.get("patient_id"), dict)):
+        raise ValueError(
+            "Unified audit must have by_patient_id shaped as: { 'patient_id': { '<PatientID>': { ... } } }"
+        )
+    by_patient_id = by_patient_container["patient_id"]
 
     patient_resources: dict[str, dict] = {}
     imagingstudy_resources: dict[tuple[str, str], dict] = {}  # (patient_id, study_uid)
@@ -1841,244 +1871,260 @@ def export_unified_audit_as_fhir_r4_bundle(
             }
         )
 
-    for row in by_file:
-        if not isinstance(row, dict):
+    for pid, patient_payload in by_patient_id.items():
+        if not isinstance(patient_payload, dict):
             continue
-        file_path = row.get("file")
+        files = patient_payload.get("files", []) or []
+        for row in files:
+            if not isinstance(row, dict):
+                continue
+            file_path = row.get("file")
 
-        mask = row.get("mask_audit") or {}
-        pid, study_uid = _get_patient_and_study(mask)
-        if not pid or not study_uid:
-            continue
+            # Prefer explicit patient/study on the record (works for CTs too),
+            # fall back to mask audit when present.
+            study_uid = row.get("study_instance_uid")
+            if not study_uid and isinstance(row.get("mask_audit"), dict):
+                _pid, _study = _get_patient_and_study(row.get("mask_audit"))
+                study_uid = _study
+            if not pid or not study_uid:
+                continue
 
-        modality = mask.get("modality")
-        series_uid = mask.get("series_instance_uid")
-        referenced_series_uid = mask.get("referenced_series_instance_uid")
+            dicom_meta = row.get("dicom") or {}
+            modality = dicom_meta.get("modality")
+            series_uid = dicom_meta.get("series_instance_uid")
+            sop_instance_uid = dicom_meta.get("sop_instance_uid")
 
-        patient_ref, imagingstudy_ref = _ensure_patient_and_study(str(pid), str(study_uid), modality, series_uid)
-        if referenced_series_uid:
-            imagingstudy = imagingstudy_resources[(str(pid), str(study_uid))]
-            _ensure_series(imagingstudy, str(referenced_series_uid), None)
+            mask = row.get("mask_audit") or {}
+            referenced_series_uid = mask.get("referenced_series_instance_uid")
 
-        # 1) PHI audit observation (counts only)
-        header_audit = row.get("header_audit") or {}
-        if isinstance(header_audit, dict) and ("phi_tag_count" in header_audit or "private_tag_count" in header_audit):
-            components = []
-
-            def _c(code: str, value_key: str, value):
-                components.append(
-                    {
-                        "code": {
-                            "coding": [
-                                {
-                                    "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                                    "code": code,
-                                }
-                            ]
-                        },
-                        value_key: value,
-                    }
-                )
-
-            _c("phiTagCount", "valueInteger", int(header_audit.get("phi_tag_count", 0) or 0))
-            _c("privateTagCount", "valueInteger", int(header_audit.get("private_tag_count", 0) or 0))
-            _c("potentialPhiTagCount", "valueInteger", int(header_audit.get("total_tag_count", 0) or 0))
-
-            obs = {
-                "resourceType": "Observation",
-                "id": _fhir_id("obs", f"phi|{pid}|{study_uid}|{file_path}"),
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "imaging",
-                                "display": "Imaging",
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                            "code": "dicom-phi-audit",
-                            "display": "DICOM PHI/Private Tag Audit",
-                        }
-                    ],
-                    "text": "DICOM PHI/Private Tag Audit",
-                },
-                "subject": patient_ref,
-                "effectiveDateTime": timestamp,
-                "derivedFrom": [imagingstudy_ref],
-                "component": components,
-            }
-            _add_source_path_extension(obs, file_path)
-            observation_resources.append(obs)
-
-        # 2) Slice thickness observation (one per file when parseable)
-        st = row.get("slice_thickness") or {}
-        st_mm = st.get("mm")
-        if st_mm is not None:
-            components = []
-
-            def _c(code: str, value_key: str, value):
-                components.append(
-                    {
-                        "code": {
-                            "coding": [
-                                {
-                                    "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                                    "code": code,
-                                }
-                            ]
-                        },
-                        value_key: value,
-                    }
-                )
-
-            if mask.get("sop_instance_uid"):
-                _c("sopInstanceUID", "valueString", str(mask.get("sop_instance_uid")))
-            if series_uid:
-                _c("seriesInstanceUID", "valueString", str(series_uid))
-            if modality:
-                _c("modality", "valueString", str(modality))
-
-            obs = {
-                "resourceType": "Observation",
-                "id": _fhir_id("obs", f"thickness|{pid}|{study_uid}|{file_path}"),
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "imaging",
-                                "display": "Imaging",
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                            "code": "sliceThickness",
-                            "display": "DICOM SliceThickness (0018,0050)",
-                        }
-                    ],
-                    "text": "DICOM SliceThickness (0018,0050)",
-                },
-                "subject": patient_ref,
-                "effectiveDateTime": timestamp,
-                "derivedFrom": [imagingstudy_ref],
-                "valueQuantity": {
-                    "value": float(st_mm),
-                    "unit": "mm",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "mm",
-                },
-                "component": components,
-            }
-            _add_source_path_extension(obs, file_path)
-            observation_resources.append(obs)
-
-        # 3) Mask observation (for mask-like objects only)
-        if mask.get("mask_type") in ("SEG", "RTSTRUCT") and not mask.get("error"):
-            series_desc = mask.get("series_description")
-            series_desc_hash = _sha256_hex(series_desc) if series_desc not in (None, "", " ") else None
-
-            deep_completed = bool(mask.get("deep_tag_search_completed", False))
-            scan_sequences_enabled = bool(unified_audit.get("config", {}).get("mask", {}).get("scan_sequences", True))
-
-            components = []
-
-            def _c(code: str, value_key: str, value):
-                components.append(
-                    {
-                        "code": {
-                            "coding": [
-                                {
-                                    "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                                    "code": code,
-                                }
-                            ]
-                        },
-                        value_key: value,
-                    }
-                )
-
-            if modality:
-                _c("modality", "valueString", str(modality))
-            if mask.get("sop_class_uid"):
-                _c("sopClassUID", "valueString", str(mask.get("sop_class_uid")))
-            if mask.get("sop_instance_uid"):
-                _c("sopInstanceUID", "valueString", str(mask.get("sop_instance_uid")))
-            _c("isSEG", "valueBoolean", bool(mask.get("is_seg")))
-            _c("isRTSTRUCT", "valueBoolean", bool(mask.get("is_rtstruct")))
-            _c("maskFound", "valueBoolean", bool(mask.get("mask_found")))
-
-            _c("scanSequencesEnabled", "valueBoolean", bool(scan_sequences_enabled))
-            _c("deepTagSearchCompleted", "valueBoolean", bool(deep_completed))
-
-            if series_desc_hash:
-                _c("seriesDescriptionHash", "valueString", series_desc_hash)
-            if series_uid:
-                _c("maskSeriesInstanceUID", "valueString", str(series_uid))
+            patient_ref, imagingstudy_ref = _ensure_patient_and_study(str(pid), str(study_uid), modality, series_uid)
             if referenced_series_uid:
-                _c("referencedSeriesInstanceUID", "valueString", str(referenced_series_uid))
+                imagingstudy = imagingstudy_resources[(str(pid), str(study_uid))]
+                _ensure_series(imagingstudy, str(referenced_series_uid), None)
 
-            _c("tumorLikeLabelCount", "valueInteger", int(mask.get("tumor_like_label_count", 0) or 0))
+            # 1) PHI audit observation (counts only)
+            header_audit = row.get("header_audit") or {}
+            if isinstance(header_audit, dict) and (
+                "phi_tag_count" in header_audit or "private_tag_count" in header_audit
+            ):
+                components = []
 
-            if deep_completed:
-                labels = mask.get("labels_found") or []
-                tumor_labels = mask.get("tumor_like_labels_found") or []
-
-                def _extract_hashes(xs):
-                    out = []
-                    for x in xs:
-                        if isinstance(x, dict) and "sha256" in x:
-                            out.append(x["sha256"])
-                        elif isinstance(x, str):
-                            out.append(_sha256_hex(x))
-                    return out
-
-                _c("labelHashesSHA256", "valueString", json.dumps(_extract_hashes(labels)))
-                _c("tumorLikeLabelHashesSHA256", "valueString", json.dumps(_extract_hashes(tumor_labels)))
-
-            obs = {
-                "resourceType": "Observation",
-                "id": _fhir_id("obs", f"mask|{pid}|{study_uid}|{file_path}"),
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "imaging",
-                                "display": "Imaging",
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
+                def _c(code: str, value_key: str, value):
+                    components.append(
                         {
-                            "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                            "code": "dicom-mask-audit",
-                            "display": "DICOM SEG/RTSTRUCT Mask Audit",
+                            "code": {
+                                "coding": [
+                                    {
+                                        "system": "http://example.org/fhir/CodeSystem/dicom-audit",
+                                        "code": code,
+                                    }
+                                ]
+                            },
+                            value_key: value,
+                        }
+                    )
+
+                _c("phiTagCount", "valueInteger", int(header_audit.get("phi_tag_count", 0) or 0))
+                _c("privateTagCount", "valueInteger", int(header_audit.get("private_tag_count", 0) or 0))
+                _c("potentialPhiTagCount", "valueInteger", int(header_audit.get("total_tag_count", 0) or 0))
+
+                obs = {
+                    "resourceType": "Observation",
+                    "id": _fhir_id("obs", f"phi|{pid}|{study_uid}|{file_path}"),
+                    "status": "final",
+                    "category": [
+                        {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                    "code": "imaging",
+                                    "display": "Imaging",
+                                }
+                            ]
                         }
                     ],
-                    "text": "DICOM SEG/RTSTRUCT Mask Audit",
-                },
-                "subject": patient_ref,
-                "effectiveDateTime": timestamp,
-                "derivedFrom": [imagingstudy_ref],
-                "component": components,
-            }
-            _add_source_path_extension(obs, file_path)
-            observation_resources.append(obs)
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://example.org/fhir/CodeSystem/dicom-audit",
+                                "code": "dicom-phi-audit",
+                                "display": "DICOM PHI/Private Tag Audit",
+                            }
+                        ],
+                        "text": "DICOM PHI/Private Tag Audit",
+                    },
+                    "subject": patient_ref,
+                    "effectiveDateTime": timestamp,
+                    "derivedFrom": [imagingstudy_ref],
+                    "component": components,
+                }
+                _add_source_path_extension(obs, file_path)
+                observation_resources.append(obs)
+
+            # 2) Slice thickness observation (one per file when parseable)
+            st = row.get("slice_thickness") or {}
+            st_mm = st.get("mm")
+            if st_mm is not None:
+                components = []
+
+                def _c(code: str, value_key: str, value):
+                    components.append(
+                        {
+                            "code": {
+                                "coding": [
+                                    {
+                                        "system": "http://example.org/fhir/CodeSystem/dicom-audit",
+                                        "code": code,
+                                    }
+                                ]
+                            },
+                            value_key: value,
+                        }
+                    )
+
+                if sop_instance_uid:
+                    _c("sopInstanceUID", "valueString", str(sop_instance_uid))
+                if series_uid:
+                    _c("seriesInstanceUID", "valueString", str(series_uid))
+                if modality:
+                    _c("modality", "valueString", str(modality))
+
+                obs = {
+                    "resourceType": "Observation",
+                    "id": _fhir_id("obs", f"thickness|{pid}|{study_uid}|{file_path}"),
+                    "status": "final",
+                    "category": [
+                        {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                    "code": "imaging",
+                                    "display": "Imaging",
+                                }
+                            ]
+                        }
+                    ],
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://example.org/fhir/CodeSystem/dicom-audit",
+                                "code": "sliceThickness",
+                                "display": "DICOM SliceThickness (0018,0050)",
+                            }
+                        ],
+                        "text": "DICOM SliceThickness (0018,0050)",
+                    },
+                    "subject": patient_ref,
+                    "effectiveDateTime": timestamp,
+                    "derivedFrom": [imagingstudy_ref],
+                    "valueQuantity": {
+                        "value": float(st_mm),
+                        "unit": "mm",
+                        "system": "http://unitsofmeasure.org",
+                        "code": "mm",
+                    },
+                    "component": components,
+                }
+                _add_source_path_extension(obs, file_path)
+                observation_resources.append(obs)
+
+            # 3) Mask observation (for mask-like objects only)
+            if isinstance(mask, dict) and mask.get("mask_type") in ("SEG", "RTSTRUCT") and not mask.get("error"):
+                series_desc = mask.get("series_description")
+                series_desc_hash = _sha256_hex(series_desc) if series_desc not in (None, "", " ") else None
+
+                deep_completed = bool(mask.get("deep_tag_search_completed", False))
+                scan_sequences_enabled = bool(
+                    unified_audit.get("config", {}).get("mask", {}).get("scan_sequences", True)
+                )
+
+                components = []
+
+                def _c(code: str, value_key: str, value):
+                    components.append(
+                        {
+                            "code": {
+                                "coding": [
+                                    {
+                                        "system": "http://example.org/fhir/CodeSystem/dicom-audit",
+                                        "code": code,
+                                    }
+                                ]
+                            },
+                            value_key: value,
+                        }
+                    )
+
+                if modality:
+                    _c("modality", "valueString", str(modality))
+                if mask.get("sop_class_uid"):
+                    _c("sopClassUID", "valueString", str(mask.get("sop_class_uid")))
+                if mask.get("sop_instance_uid"):
+                    _c("sopInstanceUID", "valueString", str(mask.get("sop_instance_uid")))
+                _c("isSEG", "valueBoolean", bool(mask.get("is_seg")))
+                _c("isRTSTRUCT", "valueBoolean", bool(mask.get("is_rtstruct")))
+                _c("maskFound", "valueBoolean", bool(mask.get("mask_found")))
+
+                _c("scanSequencesEnabled", "valueBoolean", bool(scan_sequences_enabled))
+                _c("deepTagSearchCompleted", "valueBoolean", bool(deep_completed))
+
+                if series_desc_hash:
+                    _c("seriesDescriptionHash", "valueString", series_desc_hash)
+                if series_uid:
+                    _c("maskSeriesInstanceUID", "valueString", str(series_uid))
+                if referenced_series_uid:
+                    _c("referencedSeriesInstanceUID", "valueString", str(referenced_series_uid))
+
+                _c("tumorLikeLabelCount", "valueInteger", int(mask.get("tumor_like_label_count", 0) or 0))
+
+                if deep_completed:
+                    labels = mask.get("labels_found") or []
+                    tumor_labels = mask.get("tumor_like_labels_found") or []
+
+                    def _extract_hashes(xs):
+                        out = []
+                        for x in xs:
+                            if isinstance(x, dict) and "sha256" in x:
+                                out.append(x["sha256"])
+                            elif isinstance(x, str):
+                                out.append(_sha256_hex(x))
+                        return out
+
+                    _c("labelHashesSHA256", "valueString", json.dumps(_extract_hashes(labels)))
+                    _c("tumorLikeLabelHashesSHA256", "valueString", json.dumps(_extract_hashes(tumor_labels)))
+
+                obs = {
+                    "resourceType": "Observation",
+                    "id": _fhir_id("obs", f"mask|{pid}|{study_uid}|{file_path}"),
+                    "status": "final",
+                    "category": [
+                        {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                    "code": "imaging",
+                                    "display": "Imaging",
+                                }
+                            ]
+                        }
+                    ],
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://example.org/fhir/CodeSystem/dicom-audit",
+                                "code": "dicom-mask-audit",
+                                "display": "DICOM SEG/RTSTRUCT Mask Audit",
+                            }
+                        ],
+                        "text": "DICOM SEG/RTSTRUCT Mask Audit",
+                    },
+                    "subject": patient_ref,
+                    "effectiveDateTime": timestamp,
+                    "derivedFrom": [imagingstudy_ref],
+                    "component": components,
+                }
+                _add_source_path_extension(obs, file_path)
+                observation_resources.append(obs)
 
     entries: list[dict] = []
     for res in patient_resources.values():
@@ -2194,26 +2240,162 @@ def run_unified_dicom_audit(
             if isinstance(a, dict) and a.get("file"):
                 mask_by_file[str(a.get("file"))] = a
 
-    by_file = []
+    # Build patient-centric organization
+    by_patient_id: dict[str, dict] = {}
+
+    # Map patient -> (study, series_folder) -> file list, for principal-series & referenced-series lookups
+    series_files_by_patient: dict[str, dict[tuple[str, str], list[str]]] = defaultdict(lambda: defaultdict(list))
+
     for p in paths:
+        patient_id, study_uid, series_folder = lung1_patient_study_series_from_path(p)
+        series_files_by_patient[patient_id][(study_uid, series_folder)].append(str(p))
+
+    for p in paths:
+        patient_id, study_uid, series_folder = lung1_patient_study_series_from_path(p)
+        ds = None
+        try:
+            ds = dcmread_cached(p, cache, stop_before_pixels=True)
+        except Exception:
+            ds = None
+
+        dicom_meta = {
+            "modality": None,
+            "series_instance_uid": None,
+            "sop_instance_uid": None,
+            "series_description": None,
+        }
+        if ds is not None:
+            try:
+                dicom_meta["modality"] = str(ds.get("Modality")) if ds.get("Modality") not in (None, "", " ") else None
+            except Exception:
+                pass
+            try:
+                dicom_meta["series_instance_uid"] = (
+                    str(ds.get("SeriesInstanceUID")) if ds.get("SeriesInstanceUID") not in (None, "", " ") else None
+                )
+            except Exception:
+                pass
+            try:
+                dicom_meta["sop_instance_uid"] = (
+                    str(ds.get("SOPInstanceUID")) if ds.get("SOPInstanceUID") not in (None, "", " ") else None
+                )
+            except Exception:
+                pass
+            try:
+                dicom_meta["series_description"] = (
+                    str(ds.get("SeriesDescription"))
+                    if ds.get("SeriesDescription") not in (None, "", " ")
+                    else None
+                )
+            except Exception:
+                pass
+
         rec = {
             "file": str(p),
+            "patient_id": patient_id,
+            "study_instance_uid": study_uid,
+            "series_folder": series_folder,
+            "dicom": dicom_meta,
             "header_audit": header_by_file.get(str(p)),
             "mask_audit": mask_by_file.get(str(p)),
             "slice_thickness": thickness_by_file.get(str(p)),
         }
-        by_file.append(rec)
+
+        patient_payload = by_patient_id.setdefault(
+            patient_id,
+            {
+                "patient_id": patient_id,
+                "total_files": 0,
+                "files": [],
+                "strata": {
+                    "mask_files": {"SEG": [], "RTSTRUCT": []},
+                    "seg_masks_by_referenced_series_instance_uid": {},
+                    "rtstruct_masks_by_referenced_series_instance_uid": {},
+                    "principal_series_folders": [],
+                    "referenced_series_representative_files": {},
+                },
+            },
+        )
+
+        patient_payload["total_files"] += 1
+        patient_payload["files"].append(rec)
+
+    # Build per-patient strata
+    for patient_id, patient_payload in by_patient_id.items():
+        files = patient_payload.get("files", [])
+
+        # principal series folders (layout-based: series folders with >2 instances)
+        principal_series = []
+        rep_by_series: dict[str, str] = {}
+        for (study_uid, series_folder), file_list in series_files_by_patient.get(patient_id, {}).items():
+            if len(file_list) <= 2:
+                continue
+            file_list_sorted = sorted(file_list)
+            rep = file_list_sorted[0]
+            principal_series.append(
+                {
+                    "study_instance_uid": study_uid,
+                    "series_folder": series_folder,
+                    "dicom_count": int(len(file_list_sorted)),
+                    "representative_file": rep,
+                }
+            )
+            rep_by_series[series_folder] = rep
+
+        principal_series.sort(key=lambda d: (d.get("study_instance_uid"), d.get("series_folder")))
+        patient_payload["strata"]["principal_series_folders"] = principal_series
+
+        # mask strata
+        seg_by_ref: dict[str, list[str]] = defaultdict(list)
+        rt_by_ref: dict[str, list[str]] = defaultdict(list)
+
+        for rec in files:
+            ma = rec.get("mask_audit")
+            if not isinstance(ma, dict):
+                continue
+            mask_type = ma.get("mask_type")
+            if mask_type not in ("SEG", "RTSTRUCT"):
+                continue
+            patient_payload["strata"]["mask_files"][mask_type].append(rec.get("file"))
+            ref_uid = ma.get("referenced_series_instance_uid")
+            if ref_uid:
+                if mask_type == "SEG":
+                    seg_by_ref[str(ref_uid)].append(rec.get("file"))
+                else:
+                    rt_by_ref[str(ref_uid)].append(rec.get("file"))
+
+        # Keep these deterministic
+        patient_payload["strata"]["mask_files"]["SEG"].sort()
+        patient_payload["strata"]["mask_files"]["RTSTRUCT"].sort()
+
+        patient_payload["strata"]["seg_masks_by_referenced_series_instance_uid"] = {
+            k: sorted(v) for k, v in sorted(seg_by_ref.items(), key=lambda t: t[0])
+        }
+        patient_payload["strata"]["rtstruct_masks_by_referenced_series_instance_uid"] = {
+            k: sorted(v) for k, v in sorted(rt_by_ref.items(), key=lambda t: t[0])
+        }
+
+        # referenced series representative files (for quick "principal series filenames associated with SEG")
+        referenced_rep = {}
+        for ref_uid in set(list(seg_by_ref.keys()) + list(rt_by_ref.keys())):
+            # In this dataset layout, series folder name is SeriesInstanceUID.
+            referenced_rep[ref_uid] = rep_by_series.get(ref_uid)
+        patient_payload["strata"]["referenced_series_representative_files"] = referenced_rep
 
     # Summary counts
     thickness_values = [v.get("mm") for v in thickness_by_file.values() if isinstance(v, dict)]
     thickness_values = [v for v in thickness_values if v is not None]
 
+    by_patient_id_index = by_patient_id
+    by_patient_id = {"patient_id": by_patient_id_index}
+
     unified = {
-        "schema_version": "dicom-unified-audit-1",
+        "schema_version": "dicom-unified-audit-3",
         "created_at": _fhir_now(),
         "inputs": {
             "total_files": int(len(paths)),
             "files": paths if cfg.store_input_files else None,
+            "patient_ids": sorted(by_patient_id_index.keys()),
         },
         "cache_stats": {
             "hits": int(cache.hits),
@@ -2258,20 +2440,67 @@ def run_unified_dicom_audit(
                 "max_value_preview": cfg.mask_finder_config.max_value_preview,
             },
         },
-        "by_file": by_file,
+        "by_patient_id": by_patient_id,
     }
 
     # Optionally redact file paths inside per-file audits to a stable hash.
     if not cfg.store_file_paths_in_audits:
-        for rec in unified.get("by_file", []) or []:
-            try:
-                fp = rec.get("file")
-                rec["file"] = {"sha256": _sha256_hex(fp)}
-            except Exception:
+        def _hash_fp(value: str | None):
+            if value in (None, "", " "):
+                return None
+            return {"sha256": _sha256_hex(str(value))}
+
+        patient_container = unified.get("by_patient_id", {})
+        if not (isinstance(patient_container, dict) and isinstance(patient_container.get("patient_id"), dict)):
+            raise ValueError(
+                "Unified audit must have by_patient_id shaped as: { 'patient_id': { '<PatientID>': { ... } } }"
+            )
+
+        for patient_payload in patient_container["patient_id"].values():
+            if not isinstance(patient_payload, dict):
                 continue
-            for k in ("header_audit", "mask_audit"):
-                if isinstance(rec.get(k), dict) and "file" in rec[k]:
-                    rec[k]["file"] = {"sha256": _sha256_hex(str(rec[k]["file"]))}
+            for rec in patient_payload.get("files", []) or []:
+                if not isinstance(rec, dict):
+                    continue
+                try:
+                    fp = rec.get("file")
+                    rec["file"] = _hash_fp(fp)
+                except Exception:
+                    continue
+                for k in ("header_audit", "mask_audit"):
+                    if isinstance(rec.get(k), dict) and "file" in rec[k]:
+                        rec[k]["file"] = _hash_fp(str(rec[k]["file"]))
+
+            strata = patient_payload.get("strata")
+            if not isinstance(strata, dict):
+                continue
+
+            mask_files = strata.get("mask_files")
+            if isinstance(mask_files, dict):
+                for k in ("SEG", "RTSTRUCT"):
+                    if isinstance(mask_files.get(k), list):
+                        mask_files[k] = [_hash_fp(x) for x in mask_files[k]]
+
+            for map_key in (
+                "seg_masks_by_referenced_series_instance_uid",
+                "rtstruct_masks_by_referenced_series_instance_uid",
+            ):
+                m = strata.get(map_key)
+                if isinstance(m, dict):
+                    for ref_uid, file_list in list(m.items()):
+                        if isinstance(file_list, list):
+                            m[ref_uid] = [_hash_fp(x) for x in file_list]
+
+            ps = strata.get("principal_series_folders")
+            if isinstance(ps, list):
+                for item in ps:
+                    if isinstance(item, dict) and "representative_file" in item:
+                        item["representative_file"] = _hash_fp(item.get("representative_file"))
+
+            reps = strata.get("referenced_series_representative_files")
+            if isinstance(reps, dict):
+                for ref_uid, rep_file in list(reps.items()):
+                    reps[ref_uid] = _hash_fp(rep_file) if rep_file else None
 
     output_json_path = Path(output_json)
     if cfg.write_unified_json:
