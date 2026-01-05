@@ -1,24 +1,14 @@
 {
   "total_files": 136,
-  "mask_files": [
-    "../../data/raw/NSCLC-Radiomics/LUNG1-001/1.3.6.1.4.1.32722.99.99.239341353911714368772597187099978969331/1.3.6.1.4.1.32722.99.99.227938121586608072508444156170535578236/1-1.dcm",
-    "../../data/raw/NSCLC-Radiomics/LUNG1-001/1.3.6.1.4.1.32722.99.99.239341353911714368772597187099978969331/1.2.276.0.7230010.3.1.3.2323910823.20524.1597260509.554/1-1.dcm"
-  ],
   "mask_file_count": 2,
-  "seg_files": [
-    "../../data/raw/NSCLC-Radiomics/LUNG1-001/1.3.6.1.4.1.32722.99.99.239341353911714368772597187099978969331/1.2.276.0.7230010.3.1.3.2323910823.20524.1597260509.554/1-1.dcm"
-  ],
   "seg_file_count": 1,
-  "rtstruct_files": [
-    "../../data/raw/NSCLC-Radiomics/LUNG1-001/1.3.6.1.4.1.32722.99.99.239341353911714368772597187099978969331/1.3.6.1.4.1.32722.99.99.227938121586608072508444156170535578236/1-1.dcm"
-  ],
   "rtstruct_file_count": 1,
-  "masks_by_referenced_series_instance_uid": {
-    "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046": [
-      "../../data/raw/NSCLC-Radiomics/LUNG1-001/1.3.6.1.4.1.32722.99.99.239341353911714368772597187099978969331/1.2.276.0.7230010.3.1.3.2323910823.20524.1597260509.554/1-1.dcm",
-      "../../data/raw/NSCLC-Radiomics/LUNG1-001/1.3.6.1.4.1.32722.99.99.239341353911714368772597187099978969331/1.3.6.1.4.1.32722.99.99.227938121586608072508444156170535578236/1-1.dcm"
-    ]
-  },
+  "patients_without_tumor_mask_info_count": 0,
+  "patients_without_tumor_mask_info_first_patient_id": null,
+  "patients_without_tumor_mask_info_last_patient_id": null,
+  "patients_without_seg_found_count": 0,
+  "patients_without_seg_found_first_patient_id": null,
+  "patients_without_seg_found_last_patient_id": null,
   "audits": [
     {
       "file": "../../data/raw/NSCLC-Radiomics/LUNG1-001/1.3.6.1.4.1.32722.99.99.239341353911714368772597187099978969331/1.2.276.0.7230010.3.1.3.2323910823.20524.1597260509.554/1-1.dcm",

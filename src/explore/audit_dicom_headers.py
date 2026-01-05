@@ -1375,6 +1375,29 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
     rtstruct_files = [x["file"] for x in per_file if x.get("mask_type") == "RTSTRUCT"]
     mask_files = rtstruct_files + seg_files
 
+    # Patient-level summary: which patients have no detected mask objects in the scanned files.
+    all_patient_ids = sorted({a.get("patient_id") for a in per_file if a.get("patient_id")})
+    patients_with_masks = {
+        a.get("patient_id")
+        for a in per_file
+        if a.get("patient_id") and a.get("mask_type") in ("SEG", "RTSTRUCT")
+    }
+    patients_without_masks = sorted(set(all_patient_ids) - set(patients_with_masks))
+    patients_without_masks_count = len(patients_without_masks)
+    patients_without_masks_first = patients_without_masks[0] if patients_without_masks else None
+    patients_without_masks_last = patients_without_masks[-1] if patients_without_masks else None
+
+    # Patient-level summary: which patients have no SEG detected in the scanned files.
+    patients_with_seg = {
+        a.get("patient_id")
+        for a in per_file
+        if a.get("patient_id") and a.get("mask_type") == "SEG"
+    }
+    patients_without_seg = sorted(set(all_patient_ids) - set(patients_with_seg))
+    patients_without_seg_count = len(patients_without_seg)
+    patients_without_seg_first = patients_without_seg[0] if patients_without_seg else None
+    patients_without_seg_last = patients_without_seg[-1] if patients_without_seg else None
+
     # Aggregate: referenced SeriesInstanceUID -> mask files.
     masks_by_referenced_series: dict[str, list[str]] = {}
     for a in per_file:
@@ -1396,13 +1419,15 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
         print(f"Last PatientID with NO SEG found: {patients_without_seg_last}")
     combined = {
         "total_files": len(paths),
-        "mask_files": mask_files,
         "mask_file_count": len(mask_files),
-        "seg_files": seg_files,
         "seg_file_count": len(seg_files),
-        "rtstruct_files": rtstruct_files,
         "rtstruct_file_count": len(rtstruct_files),
-        "masks_by_referenced_series_instance_uid": masks_by_referenced_series,
+        "patients_without_tumor_mask_info_count": patients_without_masks_count,
+        "patients_without_tumor_mask_info_first_patient_id": patients_without_masks_first,
+        "patients_without_tumor_mask_info_last_patient_id": patients_without_masks_last,
+        "patients_without_seg_found_count": patients_without_seg_count,
+        "patients_without_seg_found_first_patient_id": patients_without_seg_first,
+        "patients_without_seg_found_last_patient_id": patients_without_seg_last,
         "audits": per_file,
         "config": {
             "scan_sequences": cfg.scan_sequences,
@@ -1426,20 +1451,20 @@ def find_tumor_mask_dicoms(dicom_path, output_json="dicom_mask_audit.json", *, c
 
 if __name__ == "__main__":
     
-    # dicom_paths = get_dicom(PatientID='LUNG1-001',
-    #                         StudyInstanceUID_index=1,
-    #                         SeriesInstanceUID_index=None,
-    #                         SeriesNumber=None,
-    #                         InstanceNumber=None)
-    
-    dicom_paths = get_dicom(PatientID=None,
-                            StudyInstanceUID_index=None,
+    dicom_paths = get_dicom(PatientID='LUNG1-001',
+                            StudyInstanceUID_index=1,
                             SeriesInstanceUID_index=None,
                             SeriesNumber=None,
                             InstanceNumber=None)
     
+    # dicom_paths = get_dicom(PatientID=None,
+    #                         StudyInstanceUID_index=None,
+    #                         SeriesInstanceUID_index=None,
+    #                         SeriesNumber=None,
+    #                         InstanceNumber=None)
+    
     audit = False
-    find_masks = False
+    find_masks = True
     
     # # Check slice thickness
     # dicom_paths = get_dicom(StudyInstanceUID_index=2)
