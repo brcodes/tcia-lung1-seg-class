@@ -8,4 +8,5 @@ pytest
 # Clinical/workflow integration
 fhirclient        # Epic/FHIR API integration
 requests
-python-dotenv     # For managing secrets safely
+python-dotenv 
+duckdb    # For managing secrets safely
