@@ -1880,19 +1880,14 @@ def export_unified_audit_as_fhir_r4_bundle(
                 continue
             file_path = row.get("file")
 
-            # Prefer explicit patient/study on the record (works for CTs too),
-            # fall back to mask audit when present.
             study_uid = row.get("study_instance_uid")
-            if not study_uid and isinstance(row.get("mask_audit"), dict):
-                _pid, _study = _get_patient_and_study(row.get("mask_audit"))
-                study_uid = _study
             if not pid or not study_uid:
                 continue
 
             dicom_meta = row.get("dicom") or {}
-            modality = dicom_meta.get("modality")
-            series_uid = dicom_meta.get("series_instance_uid")
-            sop_instance_uid = dicom_meta.get("sop_instance_uid")
+            modality = None
+            series_uid = row.get("series_instance_uid")  # dataset layout: series folder name is SeriesInstanceUID
+            sop_instance_uid = row.get("sop_instance_uid")
 
             mask = row.get("mask_audit") or {}
             referenced_series_uid = mask.get("referenced_series_instance_uid")
@@ -1962,7 +1957,7 @@ def export_unified_audit_as_fhir_r4_bundle(
                 observation_resources.append(obs)
 
             # 2) Slice thickness observation (one per file when parseable)
-            st = row.get("slice_thickness") or {}
+            st = dicom_meta.get("slice_thickness") or {}
             st_mm = st.get("mm")
             if st_mm is not None:
                 components = []
@@ -2252,59 +2247,90 @@ def run_unified_dicom_audit(
 
     for p in paths:
         patient_id, study_uid, series_folder = lung1_patient_study_series_from_path(p)
-        ds = None
+        dicom_meta = {}
+        if cfg.run_slice_thickness:
+            dicom_meta["slice_thickness"] = thickness_by_file.get(str(p))
+
+        sop_instance_uid = None
         try:
             ds = dcmread_cached(p, cache, stop_before_pixels=True)
+            sop_raw = None
+            try:
+                sop_raw = ds.get("SOPInstanceUID")
+            except Exception:
+                sop_raw = None
+            if sop_raw not in (None, "", " "):
+                sop_instance_uid = str(sop_raw)
         except Exception:
-            ds = None
+            sop_instance_uid = None
 
-        dicom_meta = {
-            "modality": None,
-            "series_instance_uid": None,
-            "sop_instance_uid": None,
-            "series_description": None,
-        }
-        if ds is not None:
-            try:
-                dicom_meta["modality"] = str(ds.get("Modality")) if ds.get("Modality") not in (None, "", " ") else None
-            except Exception:
-                pass
-            try:
-                dicom_meta["series_instance_uid"] = (
-                    str(ds.get("SeriesInstanceUID")) if ds.get("SeriesInstanceUID") not in (None, "", " ") else None
-                )
-            except Exception:
-                pass
-            try:
-                dicom_meta["sop_instance_uid"] = (
-                    str(ds.get("SOPInstanceUID")) if ds.get("SOPInstanceUID") not in (None, "", " ") else None
-                )
-            except Exception:
-                pass
-            try:
-                dicom_meta["series_description"] = (
-                    str(ds.get("SeriesDescription"))
-                    if ds.get("SeriesDescription") not in (None, "", " ")
-                    else None
-                )
-            except Exception:
-                pass
+        filename = Path(p).name
+        series_num: str | None = None
+        instance_num: str | None = None
+
+        m = _DICOM_FILENAME_RE.match(filename)
+        if not m:
+            # Distinguish "missing number" vs "format error" for the common X-Y.dcm layout.
+            if filename.lower().endswith(".dcm") and "-" in filename:
+                stem = filename[:-4]
+                left, right = stem.split("-", 1)
+                if left.strip() == "":
+                    series_num = "series_num_missing"
+                elif left.strip().isdigit():
+                    series_num = left.strip()
+                else:
+                    series_num = "filename_format_error"
+
+                if right.strip() == "":
+                    instance_num = "instance_num_missing"
+                elif right.strip().isdigit():
+                    instance_num = right.strip()
+                else:
+                    instance_num = "filename_format_error"
+
+                if series_num in ("series_num_missing", "filename_format_error"):
+                    print(f"WARNING: series_num parse issue ({series_num}) for filename: {filename}")
+                if instance_num in ("instance_num_missing", "filename_format_error"):
+                    print(f"WARNING: instance_num parse issue ({instance_num}) for filename: {filename}")
+            else:
+                series_num = "filename_format_error"
+                instance_num = "filename_format_error"
+                print(f"WARNING: filename format error for series/instance parse: {filename}")
+        else:
+            series_num = str(m.group("series"))
+            instance_num = str(m.group("instance"))
+
+        ha = header_by_file.get(str(p))
+        if isinstance(ha, dict) and "file" in ha:
+            ha = {k: v for k, v in ha.items() if k != "file"}
+
+        ma = mask_by_file.get(str(p))
+        if isinstance(ma, dict):
+            drop_keys = {
+                "file",
+                "patient_id",
+                "study_instance_uid",
+                "sop_instance_uid",
+                "series_instance_uid",
+            }
+            if any(k in ma for k in drop_keys):
+                ma = {k: v for k, v in ma.items() if k not in drop_keys}
 
         rec = {
             "file": str(p),
-            "patient_id": patient_id,
             "study_instance_uid": study_uid,
-            "series_folder": series_folder,
+            "series_instance_uid": series_folder,
+            "sop_instance_uid": sop_instance_uid,
+            "series_num": series_num,
+            "instance_num": instance_num,
             "dicom": dicom_meta,
-            "header_audit": header_by_file.get(str(p)),
-            "mask_audit": mask_by_file.get(str(p)),
-            "slice_thickness": thickness_by_file.get(str(p)),
+            "header_audit": ha,
+            "mask_audit": ma,
         }
 
         patient_payload = by_patient_id.setdefault(
             patient_id,
             {
-                "patient_id": patient_id,
                 "total_files": 0,
                 "files": [],
                 "strata": {
@@ -2390,7 +2416,7 @@ def run_unified_dicom_audit(
     by_patient_id = {"patient_id": by_patient_id_index}
 
     unified = {
-        "schema_version": "dicom-unified-audit-3",
+        "schema_version": "dicom-unified-audit-4",
         "created_at": _fhir_now(),
         "inputs": {
             "total_files": int(len(paths)),

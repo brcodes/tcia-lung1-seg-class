@@ -1,7 +1,7 @@
 {
   "resourceType": "Bundle",
   "type": "collection",
-  "timestamp": "2026-01-05T18:33:32.127179Z",
+  "timestamp": "2026-01-06T14:48:25.174158Z",
   "entry": [
     {
       "fullUrl": "urn:uuid:patient-f291a7525ec1094675750b0d",
@@ -31,24 +31,16 @@
             "value": "urn:oid:1.3.6.1.4.1.32722.99.99.239341353911714368772597187099978969331"
           }
         ],
-        "started": "2026-01-05T18:33:32.127179Z",
+        "started": "2026-01-06T14:48:25.174158Z",
         "series": [
           {
-            "uid": "1.2.276.0.7230010.3.1.3.2323910823.20524.1597260509.554",
-            "modality": {
-              "system": "http://dicom.nema.org/resources/ontology/DCM",
-              "code": "SEG"
-            }
+            "uid": "1.2.276.0.7230010.3.1.3.2323910823.20524.1597260509.554"
           },
           {
             "uid": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
           },
           {
-            "uid": "1.3.6.1.4.1.32722.99.99.227938121586608072508444156170535578236",
-            "modality": {
-              "system": "http://dicom.nema.org/resources/ontology/DCM",
-              "code": "RTSTRUCT"
-            }
+            "uid": "1.3.6.1.4.1.32722.99.99.227938121586608072508444156170535578236"
           }
         ]
       }
@@ -83,7 +75,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -162,7 +154,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -174,33 +166,11 @@
               "coding": [
                 {
                   "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "SEG"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
                   "code": "sopClassUID"
                 }
               ]
             },
             "valueString": "1.2.840.10008.5.1.4.1.1.66.4"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "sopInstanceUID"
-                }
-              ]
-            },
-            "valueString": "1.2.276.0.7230010.3.1.4.2323910823.20524.1597260509.555"
           },
           {
             "code": {
@@ -340,7 +310,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -419,7 +389,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -431,33 +401,11 @@
               "coding": [
                 {
                   "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "RTSTRUCT"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
                   "code": "sopClassUID"
                 }
               ]
             },
             "valueString": "1.2.840.10008.5.1.4.1.1.481.3"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "sopInstanceUID"
-                }
-              ]
-            },
-            "valueString": "1.3.6.1.4.1.32722.99.99.64684745821360996063673150344859517587"
           },
           {
             "code": {
@@ -586,7 +534,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -665,7 +613,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -699,17 +647,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -750,7 +687,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -829,7 +766,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -863,17 +800,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -914,7 +840,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -993,7 +919,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1027,17 +953,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -1078,7 +993,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1157,7 +1072,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1191,17 +1106,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -1242,7 +1146,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1321,7 +1225,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1355,17 +1259,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -1406,7 +1299,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1485,7 +1378,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1519,17 +1412,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -1570,7 +1452,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1649,7 +1531,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1683,17 +1565,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -1734,7 +1605,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1813,7 +1684,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1847,17 +1718,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -1898,7 +1758,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -1977,7 +1837,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2011,17 +1871,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -2062,7 +1911,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2141,7 +1990,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2175,17 +2024,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -2226,7 +2064,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2305,7 +2143,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2339,17 +2177,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -2390,7 +2217,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2469,7 +2296,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2503,17 +2330,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -2554,7 +2370,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2633,7 +2449,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2667,17 +2483,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -2718,7 +2523,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2797,7 +2602,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2831,17 +2636,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -2882,7 +2676,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2961,7 +2755,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -2995,17 +2789,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -3046,7 +2829,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3125,7 +2908,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3159,17 +2942,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -3210,7 +2982,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3289,7 +3061,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3323,17 +3095,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -3374,7 +3135,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3453,7 +3214,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3487,17 +3248,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -3538,7 +3288,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3617,7 +3367,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3651,17 +3401,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -3702,7 +3441,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3781,7 +3520,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3815,17 +3554,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -3866,7 +3594,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3945,7 +3673,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -3979,17 +3707,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -4030,7 +3747,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4109,7 +3826,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4143,17 +3860,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -4194,7 +3900,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4273,7 +3979,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4307,17 +4013,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -4358,7 +4053,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4437,7 +4132,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4471,17 +4166,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -4522,7 +4206,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4601,7 +4285,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4635,17 +4319,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -4686,7 +4359,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4765,7 +4438,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4799,17 +4472,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -4850,7 +4512,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4929,7 +4591,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -4963,17 +4625,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -5014,7 +4665,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5093,7 +4744,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5127,17 +4778,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -5178,7 +4818,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5257,7 +4897,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5291,17 +4931,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -5342,7 +4971,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5421,7 +5050,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5455,17 +5084,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -5506,7 +5124,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5585,7 +5203,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5619,17 +5237,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -5670,7 +5277,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5749,7 +5356,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5783,17 +5390,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -5834,7 +5430,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5913,7 +5509,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -5947,17 +5543,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -5998,7 +5583,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6077,7 +5662,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6111,17 +5696,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -6162,7 +5736,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6241,7 +5815,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6275,17 +5849,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -6326,7 +5889,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6405,7 +5968,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6439,17 +6002,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -6490,7 +6042,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6569,7 +6121,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6603,17 +6155,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -6654,7 +6195,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6733,7 +6274,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6767,17 +6308,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -6818,7 +6348,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6897,7 +6427,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -6931,17 +6461,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -6982,7 +6501,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7061,7 +6580,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7095,17 +6614,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -7146,7 +6654,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7225,7 +6733,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7259,17 +6767,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -7310,7 +6807,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7389,7 +6886,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7423,17 +6920,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -7474,7 +6960,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7553,7 +7039,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7587,17 +7073,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -7638,7 +7113,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7717,7 +7192,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7751,17 +7226,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -7802,7 +7266,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7881,7 +7345,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -7915,17 +7379,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -7966,7 +7419,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8045,7 +7498,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8079,17 +7532,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -8130,7 +7572,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8209,7 +7651,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8243,17 +7685,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -8294,7 +7725,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8373,7 +7804,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8407,17 +7838,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -8458,7 +7878,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8537,7 +7957,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8571,17 +7991,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -8622,7 +8031,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8701,7 +8110,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8735,17 +8144,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -8786,7 +8184,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8865,7 +8263,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -8899,17 +8297,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -8950,7 +8337,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9029,7 +8416,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9063,17 +8450,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -9114,7 +8490,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9193,7 +8569,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9227,17 +8603,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -9278,7 +8643,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9357,7 +8722,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9391,17 +8756,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -9442,7 +8796,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9521,7 +8875,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9555,17 +8909,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -9606,7 +8949,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9685,7 +9028,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9719,17 +9062,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -9770,7 +9102,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9849,7 +9181,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -9883,17 +9215,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -9934,7 +9255,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10013,7 +9334,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10047,17 +9368,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -10098,7 +9408,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10177,7 +9487,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10211,17 +9521,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -10262,7 +9561,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10341,7 +9640,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10375,17 +9674,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -10426,7 +9714,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10505,7 +9793,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10539,17 +9827,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -10590,7 +9867,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10669,7 +9946,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10703,17 +9980,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -10754,7 +10020,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10833,7 +10099,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10867,17 +10133,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -10918,7 +10173,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -10997,7 +10252,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11031,17 +10286,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -11082,7 +10326,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11161,7 +10405,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11195,17 +10439,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -11246,7 +10479,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11325,7 +10558,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11359,17 +10592,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -11410,7 +10632,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11489,7 +10711,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11523,17 +10745,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -11574,7 +10785,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11653,7 +10864,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11687,17 +10898,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -11738,7 +10938,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11817,7 +11017,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11851,17 +11051,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -11902,7 +11091,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -11981,7 +11170,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12015,17 +11204,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -12066,7 +11244,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12145,7 +11323,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12179,17 +11357,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -12230,7 +11397,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12309,7 +11476,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12343,17 +11510,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -12394,7 +11550,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12473,7 +11629,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12507,17 +11663,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -12558,7 +11703,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12637,7 +11782,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12671,17 +11816,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -12722,7 +11856,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12801,7 +11935,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12835,17 +11969,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -12886,7 +12009,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12965,7 +12088,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -12999,17 +12122,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -13050,7 +12162,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13129,7 +12241,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13163,17 +12275,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -13214,7 +12315,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13293,7 +12394,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13327,17 +12428,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -13378,7 +12468,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13457,7 +12547,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13491,17 +12581,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -13542,7 +12621,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13621,7 +12700,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13655,17 +12734,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -13706,7 +12774,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13785,7 +12853,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13819,17 +12887,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -13870,7 +12927,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13949,7 +13006,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -13983,17 +13040,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -14034,7 +13080,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14113,7 +13159,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14147,17 +13193,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -14198,7 +13233,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14277,7 +13312,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14311,17 +13346,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -14362,7 +13386,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14441,7 +13465,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14475,17 +13499,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -14526,7 +13539,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14605,7 +13618,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14639,17 +13652,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -14690,7 +13692,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14769,7 +13771,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14803,17 +13805,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -14854,7 +13845,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14933,7 +13924,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -14967,17 +13958,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -15018,7 +13998,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15097,7 +14077,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15131,17 +14111,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -15182,7 +14151,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15261,7 +14230,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15295,17 +14264,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -15346,7 +14304,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15425,7 +14383,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15459,17 +14417,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -15510,7 +14457,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15589,7 +14536,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15623,17 +14570,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -15674,7 +14610,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15753,7 +14689,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15787,17 +14723,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -15838,7 +14763,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15917,7 +14842,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -15951,17 +14876,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -16002,7 +14916,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16081,7 +14995,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16115,17 +15029,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -16166,7 +15069,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16245,7 +15148,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16279,17 +15182,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -16330,7 +15222,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16409,7 +15301,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16443,17 +15335,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -16494,7 +15375,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16573,7 +15454,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16607,17 +15488,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -16658,7 +15528,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16737,7 +15607,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16771,17 +15641,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -16822,7 +15681,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16901,7 +15760,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -16935,17 +15794,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -16986,7 +15834,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17065,7 +15913,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17099,17 +15947,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -17150,7 +15987,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17229,7 +16066,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17263,17 +16100,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -17314,7 +16140,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17393,7 +16219,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17427,17 +16253,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -17478,7 +16293,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17557,7 +16372,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17591,17 +16406,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -17642,7 +16446,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17721,7 +16525,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17755,17 +16559,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -17806,7 +16599,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17885,7 +16678,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -17919,17 +16712,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -17970,7 +16752,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18049,7 +16831,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18083,17 +16865,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -18134,7 +16905,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18213,7 +16984,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18247,17 +17018,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -18298,7 +17058,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18377,7 +17137,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18411,17 +17171,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -18462,7 +17211,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18541,7 +17290,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18575,17 +17324,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -18626,7 +17364,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18705,7 +17443,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18739,17 +17477,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -18790,7 +17517,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18869,7 +17596,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -18903,17 +17630,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -18954,7 +17670,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19033,7 +17749,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19067,17 +17783,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -19118,7 +17823,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19197,7 +17902,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19231,17 +17936,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -19282,7 +17976,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19361,7 +18055,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19395,17 +18089,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -19446,7 +18129,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19525,7 +18208,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19559,17 +18242,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -19610,7 +18282,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19689,7 +18361,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19723,17 +18395,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -19774,7 +18435,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19853,7 +18514,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -19887,17 +18548,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -19938,7 +18588,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20017,7 +18667,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20051,17 +18701,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -20102,7 +18741,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20181,7 +18820,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20215,17 +18854,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -20266,7 +18894,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20345,7 +18973,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20379,17 +19007,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -20430,7 +19047,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20509,7 +19126,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20543,17 +19160,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -20594,7 +19200,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20673,7 +19279,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20707,17 +19313,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -20758,7 +19353,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20837,7 +19432,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -20871,17 +19466,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -20922,7 +19506,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21001,7 +19585,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21035,17 +19619,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -21086,7 +19659,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21165,7 +19738,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21199,17 +19772,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -21250,7 +19812,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21329,7 +19891,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21363,17 +19925,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -21414,7 +19965,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21493,7 +20044,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21527,17 +20078,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -21578,7 +20118,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21657,7 +20197,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21691,17 +20231,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -21742,7 +20271,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21821,7 +20350,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21855,17 +20384,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -21906,7 +20424,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -21985,7 +20503,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -22019,17 +20537,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -22070,7 +20577,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -22149,7 +20656,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -22183,17 +20690,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -22234,7 +20730,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -22313,7 +20809,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -22347,17 +20843,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
@@ -22398,7 +20883,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -22477,7 +20962,7 @@
         "subject": {
           "reference": "Patient/patient-f291a7525ec1094675750b0d"
         },
-        "effectiveDateTime": "2026-01-05T18:33:32.127179Z",
+        "effectiveDateTime": "2026-01-06T14:48:25.174158Z",
         "derivedFrom": [
           {
             "reference": "ImagingStudy/imagingstudy-799d7f2c950e99f855e5931c"
@@ -22511,17 +20996,6 @@
               ]
             },
             "valueString": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046"
-          },
-          {
-            "code": {
-              "coding": [
-                {
-                  "system": "http://example.org/fhir/CodeSystem/dicom-audit",
-                  "code": "modality"
-                }
-              ]
-            },
-            "valueString": "CT"
           }
         ],
         "extension": [
