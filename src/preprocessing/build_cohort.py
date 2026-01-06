@@ -8,7 +8,7 @@ Input (default):
   ../../data/raw/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.csv
 
 Cohort definition (FINAL per user clarification):
-  Exclude rows where Stage.Overall is an NA-like literal token
+  Exclude rows where Overall.Stage is an NA-like literal token
   (case-insensitive, after trimming whitespace). All other rows are eligible.
 
   NA-like tokens (config in code via NA_TOKENS):
@@ -117,7 +117,7 @@ def read_raw_csv_as_strings(path: Path) -> Tuple[pd.DataFrame, Dict]:
 
 
 def validate_manifest(df: pd.DataFrame) -> None:
-    required = ["PatientID", "Stage.Overall"]
+    required = ["PatientID", "Overall.Stage"]
     missing = [c for c in required if c not in df.columns]
     if missing:
         raise ValueError(f"Input CSV is missing required columns: {missing}")
@@ -151,12 +151,12 @@ def build_tables(con: duckdb.DuckDBPyConnection) -> None:
         CREATE TABLE {ELIG_TABLE} AS
         SELECT
           r.*,
-          trim(coalesce("Stage.Overall", '')) AS stage_overall_trimmed,
-          upper(trim(coalesce("Stage.Overall", ''))) AS stage_overall_token,
-          (upper(trim(coalesce("Stage.Overall", ''))) IN ({na_list_sql})) AS flag_stage_overall_is_na,
-          NOT (upper(trim(coalesce("Stage.Overall", ''))) IN ({na_list_sql})) AS is_eligible,
+          trim(coalesce("Overall.Stage", '')) AS stage_overall_trimmed,
+          upper(trim(coalesce("Overall.Stage", ''))) AS stage_overall_token,
+          (upper(trim(coalesce("Overall.Stage", ''))) IN ({na_list_sql})) AS flag_stage_overall_is_na,
+          NOT (upper(trim(coalesce("Overall.Stage", ''))) IN ({na_list_sql})) AS is_eligible,
           CASE
-            WHEN (upper(trim(coalesce("Stage.Overall", ''))) IN ({na_list_sql})) THEN 'stage_overall_is_na'
+            WHEN (upper(trim(coalesce("Overall.Stage", ''))) IN ({na_list_sql})) THEN 'stage_overall_is_na'
             ELSE NULL
           END AS exclusion_reason
         FROM {RAW_TABLE} r;
@@ -210,7 +210,7 @@ def compute_summary(con: duckdb.DuckDBPyConnection, run_meta: RunMetadata, raw_c
             "duckdb_path": run_meta.duckdb_path,
             "cohort_definition_version": run_meta.cohort_definition_version,
             "cohort_definition": {
-                "excluded_if": f"upper(trim(Stage.Overall)) IN {list(run_meta.na_tokens)}",
+                "excluded_if": f"upper(trim(Overall.Stage)) IN {list(run_meta.na_tokens)}",
                 "na_tokens": list(run_meta.na_tokens),
                 "exclusion_reason_codes": ["stage_overall_is_na"],
             },

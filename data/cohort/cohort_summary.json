@@ -1,0 +1,52 @@
+{
+  "run_metadata": {
+    "run_utc": "2026-01-06T18:52:31+00:00",
+    "input_path": "../../data/raw/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.csv",
+    "input_sha256": "132f72b58b9660bf5e6b24b9817b335f1896360bc253e1f2034a3ffee593e6fd",
+    "duckdb_path": "../../data/cohort/cohort.duckdb",
+    "cohort_definition_version": "v4-duckdb",
+    "cohort_definition": {
+      "excluded_if": "upper(trim(Overall.Stage)) IN ['NA', 'N/A']",
+      "na_tokens": [
+        "NA",
+        "N/A"
+      ],
+      "exclusion_reason_codes": [
+        "stage_overall_is_na"
+      ]
+    }
+  },
+  "raw_csv_characteristics": {
+    "rows": 422,
+    "columns": 10,
+    "column_names": [
+      "PatientID",
+      "age",
+      "clinical.T.Stage",
+      "Clinical.N.Stage",
+      "Clinical.M.Stage",
+      "Overall.Stage",
+      "Histology",
+      "gender",
+      "Survival.time",
+      "deadstatus.event"
+    ]
+  },
+  "counts": {
+    "rows_in_raw_table": 422,
+    "unique_patients_in_raw_table": 422,
+    "eligible": 421,
+    "excluded": 1
+  },
+  "exclusion_breakdown": [
+    {
+      "exclusion_reason": "stage_overall_is_na",
+      "n": 1
+    }
+  ],
+  "consort": {
+    "assessed_for_eligibility": 422,
+    "excluded": 1,
+    "included_in_cohort": 421
+  }
+}
