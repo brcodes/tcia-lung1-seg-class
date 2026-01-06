@@ -2144,7 +2144,7 @@ def run_unified_dicom_audit(
     dicom_path,
     *,
     config: UnifiedAuditConfig | None = None,
-    output_json: str | os.PathLike = "dicom_unified_audit.json",
+    output_json: str | os.PathLike = "dicom_audit.json",
     patient_identifier_system: str = "urn:dicom:patientid",
 ) -> dict:
     """Run the unified audit and write a single JSON + optional FHIR bundle."""
@@ -2159,6 +2159,7 @@ def run_unified_dicom_audit(
 
     # Deterministic order
     paths = list(paths)
+    paths.sort()
 
     # In-run header cache
     cache = DicomHeaderCache(datasets_by_path={})
@@ -2419,9 +2420,10 @@ def run_unified_dicom_audit(
         "schema_version": "dicom-unified-audit-4",
         "created_at": _fhir_now(),
         "inputs": {
+            "base_dir": str(cfg.base_dir_for_layout),
             "total_files": int(len(paths)),
-            "files": paths if cfg.store_input_files else None,
-            "patient_ids": sorted(by_patient_id_index.keys()),
+            "file_first": (paths[0] if (cfg.store_input_files and paths) else None),
+            "file_last": (paths[-1] if (cfg.store_input_files and paths) else None),
         },
         "cache_stats": {
             "hits": int(cache.hits),
@@ -2438,7 +2440,7 @@ def run_unified_dicom_audit(
             "rtstruct_file_count": mask_combined.get("rtstruct_file_count") if isinstance(mask_combined, dict) else None,
         },
         "config": {
-            "unified": {
+            "audit_pipeline": {
                 "run_metadata_summary": cfg.run_metadata_summary,
                 "run_phi_audit": cfg.run_phi_audit,
                 "run_slice_thickness": cfg.run_slice_thickness,
@@ -2447,7 +2449,7 @@ def run_unified_dicom_audit(
                 "store_file_paths_in_audits": cfg.store_file_paths_in_audits,
                 "base_dir_for_layout": cfg.base_dir_for_layout,
             },
-            "header": {
+            "phi": {
                 "include_all_headers": cfg.header_audit_config.include_all_headers,
                 "scan_sequences": cfg.header_audit_config.scan_sequences,
                 "flag_private_tags": cfg.header_audit_config.flag_private_tags,
@@ -2456,7 +2458,7 @@ def run_unified_dicom_audit(
                 "print_tag_details": cfg.header_audit_config.print_tag_details,
                 "max_value_preview": cfg.header_audit_config.max_value_preview,
             },
-            "mask": {
+            "masks": {
                 "scan_sequences": cfg.mask_finder_config.scan_sequences,
                 "deep_tag_search": cfg.mask_finder_config.deep_tag_search,
                 "redact_values": cfg.mask_finder_config.redact_values,
@@ -2550,10 +2552,10 @@ if __name__ == "__main__":
         InstanceNumber=None,
     )
 
-    print("\nRunning unified DICOM audit")
+    print("\nRunning DICOM audit pipeline")
     run_unified_dicom_audit(
         dicom_paths,
-        output_json="dicom_unified_audit.json",
+        output_json="dicom_audit.json",
         config=UnifiedAuditConfig(
             run_metadata_summary=True,
             run_phi_audit=True,
