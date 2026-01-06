@@ -53,6 +53,10 @@ import re
 from collections import defaultdict
 
 
+_DEFAULT_AUDIT_OUTPUT_DIR = Path(__file__).resolve().parents[2] / "data" / "audit_dicoms"
+_DEFAULT_UNIFIED_AUDIT_JSON = _DEFAULT_AUDIT_OUTPUT_DIR / "dicom_audit.json"
+
+
 _DICOM_FILENAME_RE = re.compile(r"^(?P<series>\d+)-(?P<instance>\d+)\.dcm$")
 
 
@@ -1874,6 +1878,80 @@ def export_unified_audit_as_fhir_r4_bundle(
     for pid, patient_payload in by_patient_id.items():
         if not isinstance(patient_payload, dict):
             continue
+
+        # Ensure Patient resource exists even if we emit only patient-level summary.
+        if pid not in patient_resources:
+            patient_resources[str(pid)] = {
+                "resourceType": "Patient",
+                "id": _fhir_id("patient", str(pid)),
+                "identifier": [{"system": patient_identifier_system, "value": str(pid)}],
+            }
+        patient_ref = {"reference": f"Patient/{patient_resources[str(pid)]['id']}"}
+
+        # Patient-level principal series summary (derived from dataset layout).
+        ps = patient_payload.get("principal_series") if isinstance(patient_payload.get("principal_series"), dict) else None
+        has_ps = bool(ps.get("has_principal_series")) if ps else False
+        ps_uid = ps.get("series_instance_uid") if ps else None
+        ps_n = ps.get("num_dicoms") if ps else None
+
+        ps_components: list[dict] = []
+
+        def _c_ps(code: str, value_key: str, value):
+            ps_components.append(
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://example.org/fhir/CodeSystem/dicom-audit",
+                                "code": code,
+                            }
+                        ]
+                    },
+                    value_key: value,
+                }
+            )
+
+        _c_ps("hasPrincipalSeries", "valueBoolean", bool(has_ps))
+        if ps_uid not in (None, "", " "):
+            _c_ps("principalSeriesInstanceUID", "valueString", str(ps_uid))
+        if ps_n is not None:
+            try:
+                _c_ps("principalSeriesDicomCount", "valueInteger", int(ps_n))
+            except Exception:
+                pass
+
+        observation_resources.append(
+            {
+                "resourceType": "Observation",
+                "id": _fhir_id("obs", f"principal-series|{pid}"),
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "imaging",
+                                "display": "Imaging",
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://example.org/fhir/CodeSystem/dicom-audit",
+                            "code": "dicom-principal-series",
+                            "display": "DICOM Principal Series Summary",
+                        }
+                    ],
+                    "text": "DICOM Principal Series Summary",
+                },
+                "subject": patient_ref,
+                "effectiveDateTime": timestamp,
+                "component": ps_components,
+            }
+        )
+
         files = patient_payload.get("files", []) or []
         for row in files:
             if not isinstance(row, dict):
@@ -2144,7 +2222,7 @@ def run_unified_dicom_audit(
     dicom_path,
     *,
     config: UnifiedAuditConfig | None = None,
-    output_json: str | os.PathLike = "dicom_audit.json",
+    output_json: str | os.PathLike = _DEFAULT_UNIFIED_AUDIT_JSON,
     patient_identifier_system: str = "urn:dicom:patientid",
 ) -> dict:
     """Run the unified audit and write a single JSON + optional FHIR bundle."""
@@ -2333,6 +2411,11 @@ def run_unified_dicom_audit(
             patient_id,
             {
                 "total_files": 0,
+                "principal_series": {
+                    "has_principal_series": False,
+                    "series_instance_uid": None,
+                    "num_dicoms": None,
+                },
                 "files": [],
                 "strata": {
                     "mask_files": {"SEG": [], "RTSTRUCT": []},
@@ -2371,6 +2454,34 @@ def run_unified_dicom_audit(
 
         principal_series.sort(key=lambda d: (d.get("study_instance_uid"), d.get("series_folder")))
         patient_payload["strata"]["principal_series_folders"] = principal_series
+
+        # Patient-level principal series (single representative): pick the largest principal series folder.
+        # Output shape requested:
+        #   by_patient_id['patient_id'][PatientID]['principal_series'] = {
+        #       'has_principal_series': bool,
+        #       'series_instance_uid': str|None,
+        #       'num_dicoms': int|None,
+        #   }
+        if principal_series:
+            best = max(
+                principal_series,
+                key=lambda d: (
+                    int(d.get("dicom_count") or 0),
+                    str(d.get("study_instance_uid") or ""),
+                    str(d.get("series_folder") or ""),
+                ),
+            )
+            patient_payload["principal_series"] = {
+                "has_principal_series": True,
+                "series_instance_uid": best.get("series_folder"),
+                "num_dicoms": int(best.get("dicom_count") or 0),
+            }
+        else:
+            patient_payload["principal_series"] = {
+                "has_principal_series": False,
+                "series_instance_uid": None,
+                "num_dicoms": None,
+            }
 
         # mask strata
         seg_by_ref: dict[str, list[str]] = defaultdict(list)
@@ -2531,6 +2642,7 @@ def run_unified_dicom_audit(
                     reps[ref_uid] = _hash_fp(rep_file) if rep_file else None
 
     output_json_path = Path(output_json)
+    output_json_path.parent.mkdir(parents=True, exist_ok=True)
     if cfg.write_unified_json:
         output_json_path.write_text(json.dumps(unified, indent=2))
 
@@ -2555,7 +2667,7 @@ if __name__ == "__main__":
     print("\nRunning DICOM audit pipeline")
     run_unified_dicom_audit(
         dicom_paths,
-        output_json="dicom_audit.json",
+        output_json=_DEFAULT_UNIFIED_AUDIT_JSON,
         config=UnifiedAuditConfig(
             run_metadata_summary=True,
             run_phi_audit=True,

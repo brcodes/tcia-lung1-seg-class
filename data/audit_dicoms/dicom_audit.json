@@ -1,6 +1,6 @@
 {
   "schema_version": "dicom-unified-audit-4",
-  "created_at": "2026-01-06T15:18:16.001409Z",
+  "created_at": "2026-01-06T20:38:40.575664Z",
   "inputs": {
     "base_dir": "../../data/raw/NSCLC-Radiomics",
     "total_files": 136,
@@ -88,6 +88,11 @@
     "patient_id": {
       "LUNG1-001": {
         "total_files": 136,
+        "principal_series": {
+          "has_principal_series": true,
+          "series_instance_uid": "1.3.6.1.4.1.32722.99.99.298991776521342375010861296712563382046",
+          "num_dicoms": 134
+        },
         "files": [
           {
             "file": "../../data/raw/NSCLC-Radiomics/LUNG1-001/1.3.6.1.4.1.32722.99.99.239341353911714368772597187099978969331/1.2.276.0.7230010.3.1.3.2323910823.20524.1597260509.554/1-1.dcm",
@@ -23556,5 +23561,5 @@
       }
     }
   },
-  "fhir_r4_bundle_file": "dicom_audit.fhir.bundle.json"
+  "fhir_r4_bundle_file": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/audit_dicoms/dicom_audit.fhir.bundle.json"
 }
