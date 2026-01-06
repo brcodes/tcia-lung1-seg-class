@@ -17,11 +17,13 @@ Cohort definition (FINAL per user clarification):
 
 Outputs (default directory: ./outputs):
   Always written (Parquet):
+        - cleaned.parquet             (raw manifest reduced to PatientID + Overall.Stage)
     - eligibility_table.parquet   (all patients + flags + exclusion_reason)
     - cohort.parquet              (eligible only)
     - exclusions.parquet          (ineligible only)
     - cohort_summary.json         (counts, CONSORT-style + run metadata)
   Optionally written (CSV, if --write-csv):
+        - cleaned.csv
     - eligibility_table.csv
     - cohort.csv
     - exclusions.csv
@@ -65,12 +67,47 @@ DEFAULT_OUTPUT_DIR = Path("../../data/cohort")
 DEFAULT_DUCKDB_PATH = Path("../../data/cohort/cohort.duckdb")
 
 RAW_TABLE = "patient_manifest_raw"
+CLEANED_TABLE = "cleaned"
 ELIG_TABLE = "eligibility"
 COHORT_TABLE = "cohort"
 EXCLUSIONS_TABLE = "exclusions"
 
 # NA-like tokens observed/expected in the CSV; comparison is case-insensitive after trimming.
 NA_TOKENS = ("NA", "N/A")
+
+DEFAULT_CLEANING_SQL = Path(__file__).with_suffix("").parent / "cleaning.sql"
+DEFAULT_ELIGIBILITY_SQL = Path(__file__).with_suffix("").parent / "eligibility.sql"
+
+
+def run_sql_template(*, con: duckdb.DuckDBPyConnection, sql_path: Path, replacements: Dict[str, str] | None = None) -> None:
+    if not sql_path.exists():
+        raise FileNotFoundError(f"SQL file not found at: {sql_path}")
+
+    sql = sql_path.read_text(encoding="utf-8")
+    if replacements:
+        for key, value in replacements.items():
+            sql = sql.replace(key, value)
+
+    # Execute scripts deterministically statement-by-statement.
+    # This avoids relying on multi-statement behavior that can vary across drivers/versions,
+    # and prevents stale tables from previous runs from persisting unnoticed.
+    non_comment_lines: list[str] = []
+    for line in sql.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("--"):
+            continue
+        non_comment_lines.append(line)
+    sql_no_comments = "\n".join(non_comment_lines)
+
+    for statement in sql_no_comments.split(";"):
+        statement = statement.strip()
+        if statement:
+            con.execute(statement)
+
+
+def build_cleaned(con: duckdb.DuckDBPyConnection) -> None:
+    """Creates CLEANED_TABLE from RAW_TABLE via cleaning.sql."""
+    run_sql_template(con=con, sql_path=DEFAULT_CLEANING_SQL)
 
 
 @dataclass(frozen=True)
@@ -81,6 +118,10 @@ class RunMetadata:
     duckdb_path: str
     cohort_definition_version: str
     na_tokens: Tuple[str, ...]
+    cleaning_sql_path: str
+    cleaning_sql_sha256: str
+    eligibility_sql_path: str
+    eligibility_sql_sha256: str
 
 
 def utc_now_iso() -> str:
@@ -143,31 +184,15 @@ def build_tables(con: duckdb.DuckDBPyConnection) -> None:
     """
     Creates ELIG_TABLE, COHORT_TABLE, EXCLUSIONS_TABLE from RAW_TABLE.
     """
-    na_list_sql = ", ".join([f"'{t}'" for t in NA_TOKENS])
 
-    con.execute(f"DROP TABLE IF EXISTS {ELIG_TABLE};")
-    con.execute(
-        f"""
-        CREATE TABLE {ELIG_TABLE} AS
-        SELECT
-          r.*,
-          trim(coalesce("Overall.Stage", '')) AS stage_overall_trimmed,
-          upper(trim(coalesce("Overall.Stage", ''))) AS stage_overall_token,
-          (upper(trim(coalesce("Overall.Stage", ''))) IN ({na_list_sql})) AS flag_stage_overall_is_na,
-          NOT (upper(trim(coalesce("Overall.Stage", ''))) IN ({na_list_sql})) AS is_eligible,
-          CASE
-            WHEN (upper(trim(coalesce("Overall.Stage", ''))) IN ({na_list_sql})) THEN 'stage_overall_is_na'
-            ELSE NULL
-          END AS exclusion_reason
-        FROM {RAW_TABLE} r;
-        """
+    # Quote tokens for SQL IN (...) list; escape single-quotes defensively.
+    na_list_sql = ", ".join(["'" + t.replace("'", "''") + "'" for t in NA_TOKENS])
+
+    run_sql_template(
+        con=con,
+        sql_path=DEFAULT_ELIGIBILITY_SQL,
+        replacements={"{{NA_LIST_SQL}}": na_list_sql},
     )
-
-    con.execute(f"DROP TABLE IF EXISTS {COHORT_TABLE};")
-    con.execute(f"CREATE TABLE {COHORT_TABLE} AS SELECT * FROM {ELIG_TABLE} WHERE is_eligible = TRUE;")
-
-    con.execute(f"DROP TABLE IF EXISTS {EXCLUSIONS_TABLE};")
-    con.execute(f"CREATE TABLE {EXCLUSIONS_TABLE} AS SELECT * FROM {ELIG_TABLE} WHERE is_eligible = FALSE;")
 
 
 def export_table_parquet(con: duckdb.DuckDBPyConnection, table: str, out_path: Path) -> None:
@@ -189,6 +214,8 @@ def export_table_csv(con: duckdb.DuckDBPyConnection, table: str, out_path: Path)
 def compute_summary(con: duckdb.DuckDBPyConnection, run_meta: RunMetadata, raw_csv_meta: Dict) -> Dict:
     total_rows = con.execute(f"SELECT COUNT(*) FROM {RAW_TABLE};").fetchone()[0]
     total_patients = con.execute(f"SELECT COUNT(DISTINCT PatientID) FROM {RAW_TABLE};").fetchone()[0]
+    cleaned_rows = con.execute(f"SELECT COUNT(*) FROM {CLEANED_TABLE};").fetchone()[0]
+    cleaned_patients = con.execute(f"SELECT COUNT(DISTINCT PatientID) FROM {CLEANED_TABLE};").fetchone()[0]
     eligible = con.execute(f"SELECT COUNT(*) FROM {COHORT_TABLE};").fetchone()[0]
     excluded = con.execute(f"SELECT COUNT(*) FROM {EXCLUSIONS_TABLE};").fetchone()[0]
 
@@ -209,6 +236,10 @@ def compute_summary(con: duckdb.DuckDBPyConnection, run_meta: RunMetadata, raw_c
             "input_sha256": run_meta.input_sha256,
             "duckdb_path": run_meta.duckdb_path,
             "cohort_definition_version": run_meta.cohort_definition_version,
+            "cleaning_sql_path": run_meta.cleaning_sql_path,
+            "cleaning_sql_sha256": run_meta.cleaning_sql_sha256,
+            "eligibility_sql_path": run_meta.eligibility_sql_path,
+            "eligibility_sql_sha256": run_meta.eligibility_sql_sha256,
             "cohort_definition": {
                 "excluded_if": f"upper(trim(Overall.Stage)) IN {list(run_meta.na_tokens)}",
                 "na_tokens": list(run_meta.na_tokens),
@@ -219,6 +250,8 @@ def compute_summary(con: duckdb.DuckDBPyConnection, run_meta: RunMetadata, raw_c
         "counts": {
             "rows_in_raw_table": int(total_rows),
             "unique_patients_in_raw_table": int(total_patients),
+            "rows_in_cleaned_table": int(cleaned_rows),
+            "unique_patients_in_cleaned_table": int(cleaned_patients),
             "eligible": int(eligible),
             "excluded": int(excluded),
         },
@@ -260,6 +293,10 @@ def build_cohort(
         duckdb_path=str(duckdb_path),
         cohort_definition_version="v4-duckdb",
         na_tokens=NA_TOKENS,
+        cleaning_sql_path=str(DEFAULT_CLEANING_SQL),
+        cleaning_sql_sha256=sha256_file(DEFAULT_CLEANING_SQL),
+        eligibility_sql_path=str(DEFAULT_ELIGIBILITY_SQL),
+        eligibility_sql_sha256=sha256_file(DEFAULT_ELIGIBILITY_SQL),
     )
 
     con = duckdb.connect(str(duckdb_path))
@@ -268,13 +305,17 @@ def build_cohort(
     con.execute(f"DROP TABLE IF EXISTS {RAW_TABLE};")
     con.execute(f"CREATE TABLE {RAW_TABLE} AS SELECT * FROM raw_df;")
 
+    build_cleaned(con)
     build_tables(con)
+
+    export_table_parquet(con, CLEANED_TABLE, output_dir / "cleaned.parquet")
 
     export_table_parquet(con, ELIG_TABLE, output_dir / "eligibility_table.parquet")
     export_table_parquet(con, COHORT_TABLE, output_dir / "cohort.parquet")
     export_table_parquet(con, EXCLUSIONS_TABLE, output_dir / "exclusions.parquet")
 
     if write_csv:
+        export_table_csv(con, CLEANED_TABLE, output_dir / "cleaned.csv")
         export_table_csv(con, ELIG_TABLE, output_dir / "eligibility_table.csv")
         export_table_csv(con, COHORT_TABLE, output_dir / "cohort.csv")
         export_table_csv(con, EXCLUSIONS_TABLE, output_dir / "exclusions.csv")

@@ -1,10 +1,14 @@
 {
   "run_metadata": {
-    "run_utc": "2026-01-06T18:52:31+00:00",
+    "run_utc": "2026-01-06T19:37:18+00:00",
     "input_path": "../../data/raw/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.csv",
     "input_sha256": "132f72b58b9660bf5e6b24b9817b335f1896360bc253e1f2034a3ffee593e6fd",
     "duckdb_path": "../../data/cohort/cohort.duckdb",
     "cohort_definition_version": "v4-duckdb",
+    "cleaning_sql_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/src/preprocessing/cleaning.sql",
+    "cleaning_sql_sha256": "3eb7fbf4b9813fd58e9637157686472756894f5a39d68faa4300423d3e7386cc",
+    "eligibility_sql_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/src/preprocessing/eligibility.sql",
+    "eligibility_sql_sha256": "9ed503c8e980167aff0f3f15e292cb62adf329094e1479c876d3a0bd33dc8275",
     "cohort_definition": {
       "excluded_if": "upper(trim(Overall.Stage)) IN ['NA', 'N/A']",
       "na_tokens": [
@@ -35,6 +39,8 @@
   "counts": {
     "rows_in_raw_table": 422,
     "unique_patients_in_raw_table": 422,
+    "rows_in_cleaned_table": 422,
+    "unique_patients_in_cleaned_table": 422,
     "eligible": 421,
     "excluded": 1
   },
