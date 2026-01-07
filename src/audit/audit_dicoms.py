@@ -486,6 +486,328 @@ def extract_slice_thickness_mm(ds) -> float | None:
             return None
 
 
+def _parse_float_value(raw) -> tuple[float | None, str | None]:
+    if raw in (None, "", " "):
+        return None, None
+    try:
+        return float(raw), None
+    except Exception as e:
+        try:
+            return float(str(raw).strip()), None
+        except Exception as e2:
+            return None, f"float_parse_error: {e2 or e}"
+
+
+def _parse_int_value(raw) -> tuple[int | None, str | None]:
+    if raw in (None, "", " "):
+        return None, None
+    try:
+        return int(raw), None
+    except Exception as e:
+        try:
+            return int(float(raw)), None
+        except Exception as e2:
+            return None, f"int_parse_error: {e2 or e}"
+
+
+def _parse_str_value(raw) -> tuple[str | None, str | None]:
+    if raw in (None, "", " "):
+        return None, None
+    try:
+        s = str(raw).strip()
+    except Exception as e:
+        return None, f"str_parse_error: {e}"
+    if s == "":
+        return None, None
+    return s, None
+
+
+def _parse_float_list(raw, expected_len: int | None = None) -> tuple[list[float] | None, str | None]:
+    if raw in (None, "", " "):
+        return None, None
+
+    seq = None
+    if isinstance(raw, (list, tuple)):
+        seq = list(raw)
+    elif isinstance(raw, str):
+        parts = [p.strip() for p in raw.replace(",", "\\").split("\\") if p.strip() != ""]
+        seq = parts if parts else [raw]
+    else:
+        try:
+            from collections.abc import Iterable
+
+            if isinstance(raw, Iterable) and not isinstance(raw, (bytes, bytearray)):
+                seq = list(raw)
+        except Exception:
+            seq = None
+        if seq is None:
+            seq = [raw]
+
+    values: list[float] = []
+    for item in seq:
+        if item in (None, "", " "):
+            continue
+        try:
+            values.append(float(item))
+        except Exception as e:
+            return None, f"float_list_parse_error: {e}"
+
+    if not values:
+        return None, None
+    if expected_len is not None and len(values) != expected_len:
+        return None, f"expected_{expected_len}_values_got_{len(values)}"
+
+    return values, None
+
+
+def extract_ct_geometry_meta(ds) -> dict:
+    """Collect CT geometry metadata needed for downstream validation."""
+
+    pixel_spacing, pixel_spacing_err = _parse_float_list(ds.get("PixelSpacing"), expected_len=2)
+    orientation, orientation_err = _parse_float_list(ds.get("ImageOrientationPatient"), expected_len=6)
+    spacing_between_slices, spacing_between_slices_err = _parse_float_value(ds.get("SpacingBetweenSlices"))
+    gantry_tilt, gantry_tilt_err = _parse_float_value(ds.get("GantryDetectorTilt"))
+    frame_uid, frame_uid_err = _parse_str_value(ds.get("FrameOfReferenceUID"))
+    rows, rows_err = _parse_int_value(ds.get("Rows"))
+    columns, columns_err = _parse_int_value(ds.get("Columns"))
+
+    return {
+        "pixel_spacing_mm": {
+            "value": pixel_spacing,
+            "present": pixel_spacing is not None,
+            "error": pixel_spacing_err,
+            "source_tag": "(0028,0030)",
+        },
+        "image_orientation_patient": {
+            "value": orientation,
+            "present": orientation is not None,
+            "error": orientation_err,
+            "source_tag": "(0020,0037)",
+        },
+        "spacing_between_slices_mm": {
+            "value": spacing_between_slices,
+            "present": spacing_between_slices is not None,
+            "error": spacing_between_slices_err,
+            "source_tag": "(0018,0088)",
+        },
+        "gantry_detector_tilt_deg": {
+            "value": gantry_tilt,
+            "present": gantry_tilt is not None,
+            "error": gantry_tilt_err,
+            "source_tag": "(0018,1120)",
+        },
+        "frame_of_reference_uid": {
+            "value": frame_uid,
+            "present": frame_uid is not None,
+            "error": frame_uid_err,
+            "source_tag": "(0020,0052)",
+        },
+        "rows": {
+            "value": rows,
+            "present": rows is not None,
+            "error": rows_err,
+            "source_tag": "(0028,0010)",
+        },
+        "columns": {
+            "value": columns,
+            "present": columns is not None,
+            "error": columns_err,
+            "source_tag": "(0028,0011)",
+        },
+    }
+
+
+def extract_hu_rescale_meta(ds) -> dict:
+    """Capture rescale slope/intercept/type for HU normalization checks."""
+
+    slope, slope_err = _parse_float_value(ds.get("RescaleSlope"))
+    intercept, intercept_err = _parse_float_value(ds.get("RescaleIntercept"))
+    rescale_type, type_err = _parse_str_value(ds.get("RescaleType"))
+
+    errors = [err for err in (slope_err, intercept_err, type_err) if err]
+    error_msg = "; ".join(errors) if errors else None
+    valid = slope is not None and intercept is not None
+
+    return {
+        "slope": slope,
+        "intercept": intercept,
+        "type": rescale_type,
+        "valid": bool(valid),
+        "error": error_msg,
+        "source_tags": {
+            "slope": "(0028,1053)",
+            "intercept": "(0028,1052)",
+            "type": "(0028,1054)",
+        },
+    }
+
+
+def extract_seg_grid_meta(ds) -> dict:
+    """Collect SEG grid metadata (rows/cols/spacing/frame UID)."""
+
+    rows, rows_err = _parse_int_value(ds.get("Rows"))
+    columns, columns_err = _parse_int_value(ds.get("Columns"))
+
+    pixel_spacing = None
+    pixel_spacing_err = None
+    spacing_between_slices = None
+    spacing_between_slices_err = None
+
+    try:
+        shared = ds.get("SharedFunctionalGroupsSequence")
+        if shared:
+            first = shared[0]
+            pm_seq = getattr(first, "PixelMeasuresSequence", None)
+            if pm_seq:
+                pm = pm_seq[0]
+                pixel_spacing, pixel_spacing_err = _parse_float_list(getattr(pm, "PixelSpacing", None), expected_len=2)
+                spacing_between_slices, spacing_between_slices_err = _parse_float_value(getattr(pm, "SpacingBetweenSlices", None))
+    except Exception as e:
+        if pixel_spacing_err is None:
+            pixel_spacing_err = str(e)
+        if spacing_between_slices_err is None:
+            spacing_between_slices_err = str(e)
+
+    if pixel_spacing is None:
+        fallback, fallback_err = _parse_float_list(ds.get("PixelSpacing"), expected_len=2)
+        if fallback is not None:
+            pixel_spacing = fallback
+        if pixel_spacing_err is None:
+            pixel_spacing_err = fallback_err
+
+    if pixel_spacing is None:
+        try:
+            per_frame = ds.get("PerFrameFunctionalGroupsSequence")
+            if per_frame:
+                first = per_frame[0]
+                pm_seq = getattr(first, "PixelMeasuresSequence", None)
+                if pm_seq:
+                    pm = pm_seq[0]
+                    pixel_spacing, pixel_spacing_err = _parse_float_list(getattr(pm, "PixelSpacing", None), expected_len=2)
+                    spacing_between_slices, spacing_between_slices_err = _parse_float_value(getattr(pm, "SpacingBetweenSlices", None))
+        except Exception as e:
+            if pixel_spacing_err is None:
+                pixel_spacing_err = str(e)
+            if spacing_between_slices_err is None:
+                spacing_between_slices_err = str(e)
+
+    if spacing_between_slices is None:
+        fallback_spacing, fallback_spacing_err = _parse_float_value(ds.get("SpacingBetweenSlices"))
+        if fallback_spacing is not None:
+            spacing_between_slices = fallback_spacing
+        if spacing_between_slices_err is None:
+            spacing_between_slices_err = fallback_spacing_err
+
+    frame_uid, frame_uid_err = _parse_str_value(ds.get("FrameOfReferenceUID"))
+
+    if frame_uid is None:
+        try:
+            shared = ds.get("SharedFunctionalGroupsSequence")
+            if shared:
+                first = shared[0]
+                frame_seq = getattr(first, "FrameOfReferenceSequence", None)
+                if frame_seq:
+                    frame_elem = frame_seq[0]
+                    frame_uid, frame_uid_err = _parse_str_value(getattr(frame_elem, "FrameOfReferenceUID", None))
+        except Exception as e:
+            if frame_uid_err is None:
+                frame_uid_err = str(e)
+
+    return {
+        "rows": {
+            "value": rows,
+            "present": rows is not None,
+            "error": rows_err,
+            "source_tag": "(0028,0010)",
+        },
+        "columns": {
+            "value": columns,
+            "present": columns is not None,
+            "error": columns_err,
+            "source_tag": "(0028,0011)",
+        },
+        "pixel_spacing_mm": {
+            "value": pixel_spacing,
+            "present": pixel_spacing is not None,
+            "error": pixel_spacing_err,
+            "source_tag": "PixelMeasures.PixelSpacing",
+        },
+        "spacing_between_slices_mm": {
+            "value": spacing_between_slices,
+            "present": spacing_between_slices is not None,
+            "error": spacing_between_slices_err,
+            "source_tag": "PixelMeasures.SpacingBetweenSlices",
+        },
+        "frame_of_reference_uid": {
+            "value": frame_uid,
+            "present": frame_uid is not None,
+            "error": frame_uid_err,
+            "source_tag": "FrameOfReferenceUID",
+        },
+    }
+
+
+def _compare_seg_geometry_to_ct(
+    seg_info: dict | None,
+    ct_geometry: dict | None,
+    ct_slice_thickness_mm: float | None,
+    tol_xy: float = 1e-3,
+    tol_z: float = 1e-2,
+) -> dict:
+    """Compare SEG grid metadata against CT geometry with tolerances."""
+
+    def _value(d: dict | None, key: str):
+        if not isinstance(d, dict):
+            return None
+        val = d.get(key)
+        if isinstance(val, dict):
+            return val.get("value")
+        return None
+
+    seg_rows = _value(seg_info, "rows")
+    seg_cols = _value(seg_info, "columns")
+    seg_ps = _value(seg_info, "pixel_spacing_mm")
+    seg_spacing_z = _value(seg_info, "spacing_between_slices_mm")
+    seg_for = _value(seg_info, "frame_of_reference_uid")
+
+    ct_rows = _value(ct_geometry, "rows")
+    ct_cols = _value(ct_geometry, "columns")
+    ct_ps = _value(ct_geometry, "pixel_spacing_mm")
+    ct_spacing_z = _value(ct_geometry, "spacing_between_slices_mm")
+    ct_for = _value(ct_geometry, "frame_of_reference_uid")
+
+    pixel_spacing_match = None
+    if seg_ps is not None and ct_ps is not None and len(seg_ps) == 2 and len(ct_ps) == 2:
+        pixel_spacing_match = all(abs(seg_ps[i] - ct_ps[i]) <= tol_xy for i in range(2))
+
+    matrix_match = None
+    if seg_rows is not None and seg_cols is not None and ct_rows is not None and ct_cols is not None:
+        matrix_match = seg_rows == ct_rows and seg_cols == ct_cols
+
+    spacing_match = None
+    seg_ref_spacing = seg_spacing_z
+    ct_ref_spacing = ct_spacing_z if ct_spacing_z is not None else ct_slice_thickness_mm
+    if seg_ref_spacing is not None and ct_ref_spacing is not None:
+        spacing_match = abs(seg_ref_spacing - ct_ref_spacing) <= tol_z
+
+    frame_match = None
+    if seg_for and ct_for:
+        frame_match = seg_for == ct_for
+
+    comparisons = [v for v in (pixel_spacing_match, matrix_match, spacing_match, frame_match) if v is not None]
+    overall = None
+    if comparisons:
+        overall = all(comparisons)
+
+    return {
+        "match": overall,
+        "pixel_spacing": pixel_spacing_match,
+        "matrix": matrix_match,
+        "spacing_between_slices": spacing_match,
+        "frame_of_reference": frame_match,
+    }
+
+
 def summarize_paths_layout(
     dicom_paths: list[str],
     *,
@@ -2331,6 +2653,9 @@ def run_unified_dicom_audit(
             dicom_meta["slice_thickness"] = thickness_by_file.get(str(p))
 
         sop_instance_uid = None
+        modality = None
+        sop_class_uid = None
+        ds = None
         try:
             ds = dcmread_cached(p, cache, stop_before_pixels=True)
             sop_raw = None
@@ -2340,8 +2665,30 @@ def run_unified_dicom_audit(
                 sop_raw = None
             if sop_raw not in (None, "", " "):
                 sop_instance_uid = str(sop_raw)
+
+            try:
+                modality_raw = ds.get("Modality")
+                modality = str(modality_raw).strip().upper() if modality_raw not in (None, "", " ") else None
+            except Exception:
+                modality = None
+
+            try:
+                sop_class = ds.get("SOPClassUID")
+                sop_class_uid = str(sop_class).strip() if sop_class not in (None, "", " ") else None
+            except Exception:
+                sop_class_uid = None
         except Exception:
             sop_instance_uid = None
+            ds = None
+            modality = None
+            sop_class_uid = None
+
+        if ds is not None:
+            if modality == "CT" or sop_class_uid == "1.2.840.10008.5.1.4.1.1.2":
+                geometry_meta = extract_ct_geometry_meta(ds)
+                hu_meta = extract_hu_rescale_meta(ds)
+                dicom_meta["geometry"] = geometry_meta
+                dicom_meta["hu_rescale"] = hu_meta
 
         filename = Path(p).name
         series_num: str | None = None
@@ -2394,6 +2741,10 @@ def run_unified_dicom_audit(
             }
             if any(k in ma for k in drop_keys):
                 ma = {k: v for k, v in ma.items() if k not in drop_keys}
+
+            if ds is not None and (ma.get("mask_type") == "SEG" or modality == "SEG"):
+                seg_grid_meta = extract_seg_grid_meta(ds)
+                ma["seg_grid_info"] = seg_grid_meta
 
         rec = {
             "file": str(p),
@@ -2475,13 +2826,34 @@ def run_unified_dicom_audit(
                 "has_principal_series": True,
                 "series_instance_uid": best.get("series_folder"),
                 "num_dicoms": int(best.get("dicom_count") or 0),
+                "representative_file": best.get("representative_file"),
             }
         else:
             patient_payload["principal_series"] = {
                 "has_principal_series": False,
                 "series_instance_uid": None,
                 "num_dicoms": None,
+                "representative_file": None,
             }
+
+        # Attach principal series geometry/hu metadata where available
+        principal_geometry = None
+        principal_hu = None
+        principal_slice_thickness = None
+        representative_file = patient_payload["principal_series"].get("representative_file")
+        if representative_file:
+            for rec in files:
+                if rec.get("file") == representative_file:
+                    dicom_meta_rec = rec.get("dicom", {})
+                    principal_geometry = dicom_meta_rec.get("geometry")
+                    principal_hu = dicom_meta_rec.get("hu_rescale")
+                    slice_meta = dicom_meta_rec.get("slice_thickness") or {}
+                    principal_slice_thickness = slice_meta.get("mm")
+                    break
+
+        patient_payload["principal_series"]["geometry"] = principal_geometry
+        patient_payload["principal_series"]["hu_rescale"] = principal_hu
+        patient_payload["principal_series"]["slice_thickness_mm"] = principal_slice_thickness
 
         # mask strata
         seg_by_ref: dict[str, list[str]] = defaultdict(list)
@@ -2519,6 +2891,37 @@ def run_unified_dicom_audit(
             # In this dataset layout, series folder name is SeriesInstanceUID.
             referenced_rep[ref_uid] = rep_by_series.get(ref_uid)
         patient_payload["strata"]["referenced_series_representative_files"] = referenced_rep
+
+        # Compute SEG grid alignment vs principal CT geometry
+        for rec in files:
+            ma = rec.get("mask_audit")
+            if not isinstance(ma, dict):
+                continue
+            if ma.get("mask_type") != "SEG":
+                continue
+            seg_info = ma.get("seg_grid_info")
+            if not isinstance(seg_info, dict):
+                ma["seg_grid_matches_ct"] = {
+                    "match": None,
+                    "pixel_spacing": None,
+                    "matrix": None,
+                    "spacing_between_slices": None,
+                    "frame_of_reference": None,
+                    "reason": "seg_grid_info_missing",
+                }
+                continue
+            if principal_geometry:
+                comparison = _compare_seg_geometry_to_ct(seg_info, principal_geometry, principal_slice_thickness)
+                ma["seg_grid_matches_ct"] = comparison
+            else:
+                ma["seg_grid_matches_ct"] = {
+                    "match": None,
+                    "pixel_spacing": None,
+                    "matrix": None,
+                    "spacing_between_slices": None,
+                    "frame_of_reference": None,
+                    "reason": "principal_ct_geometry_missing",
+                }
 
     # Summary counts
     thickness_values = [v.get("mm") for v in thickness_by_file.values() if isinstance(v, dict)]
