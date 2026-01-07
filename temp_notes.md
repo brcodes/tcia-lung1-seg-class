@@ -1,1 +1,0 @@
-(CREATE COHORT MANIFEST)-> cohort list -> cohort manifest -> (DCM TO NIFTI VANILLA CONVERSION) cohort dcm into hard nifti cache -> (VALIDATION SCR:) cached nii splits based on cohort manifest, Prepro'd individually (cache) after each fold split for CV (ephemeral T,V sets), Global Prepro on ea. of best Ttot and Test (Later: smaller derivations for home and gpu testing).
