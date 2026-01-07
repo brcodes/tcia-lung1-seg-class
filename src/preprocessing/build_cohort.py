@@ -8,8 +8,11 @@ Input (default):
   ../../data/raw/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.csv
 
 Cohort definition (FINAL per user clarification):
-  Exclude rows where Overall.Stage is an NA-like literal token
-  (case-insensitive, after trimming whitespace). All other rows are eligible.
+    Exclude rows where Overall.Stage is an NA-like literal token
+    (case-insensitive, after trimming whitespace) OR when the DICOM audit
+    preprocessing signals are absent/not-ready. Only patients with
+    ct_seg_and_linkage = TRUE and ct_ser_valid_for_downstream_preprocessing = 'OK'
+    remain eligible.
 
   NA-like tokens (config in code via NA_TOKENS):
     - "NA"
@@ -65,12 +68,14 @@ import pandas as pd
 DEFAULT_INPUT = Path("../../data/raw/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.csv")
 DEFAULT_OUTPUT_DIR = Path("../../data/cohort")
 DEFAULT_DUCKDB_PATH = Path("../../data/cohort/cohort.duckdb")
+DEFAULT_AUDIT_ELIGIBILITY_CSV = Path("../../data/audit_dicoms/patient_eligibility.csv")
 
 RAW_TABLE = "patient_manifest_raw"
 CLEANED_TABLE = "cleaned"
 ELIG_TABLE = "eligibility"
 COHORT_TABLE = "cohort"
 EXCLUSIONS_TABLE = "exclusions"
+AUDIT_ELIGIBILITY_TABLE = "audit_preprocessing_eligibility"
 
 # NA-like tokens observed/expected in the CSV; comparison is case-insensitive after trimming.
 NA_TOKENS = ("NA", "N/A")
@@ -122,6 +127,8 @@ class RunMetadata:
     cleaning_sql_sha256: str
     eligibility_sql_path: str
     eligibility_sql_sha256: str
+    audit_eligibility_csv_path: str
+    audit_eligibility_csv_sha256: str
 
 
 def utc_now_iso() -> str:
@@ -180,7 +187,7 @@ def validate_manifest(df: pd.DataFrame) -> None:
         )
 
 
-def build_tables(con: duckdb.DuckDBPyConnection) -> None:
+def build_tables(con: duckdb.DuckDBPyConnection, *, audit_table: str) -> None:
     """
     Creates ELIG_TABLE, COHORT_TABLE, EXCLUSIONS_TABLE from RAW_TABLE.
     """
@@ -191,7 +198,10 @@ def build_tables(con: duckdb.DuckDBPyConnection) -> None:
     run_sql_template(
         con=con,
         sql_path=DEFAULT_ELIGIBILITY_SQL,
-        replacements={"{{NA_LIST_SQL}}": na_list_sql},
+        replacements={
+            "{{NA_LIST_SQL}}": na_list_sql,
+            "{{AUDIT_ELIG_TABLE}}": audit_table,
+        },
     )
 
 
@@ -211,7 +221,13 @@ def export_table_csv(con: duckdb.DuckDBPyConnection, table: str, out_path: Path)
     )
 
 
-def compute_summary(con: duckdb.DuckDBPyConnection, run_meta: RunMetadata, raw_csv_meta: Dict) -> Dict:
+def compute_summary(
+    con: duckdb.DuckDBPyConnection,
+    run_meta: RunMetadata,
+    raw_csv_meta: Dict,
+    *,
+    audit_table: str,
+) -> Dict:
     total_rows = con.execute(f"SELECT COUNT(*) FROM {RAW_TABLE};").fetchone()[0]
     total_patients = con.execute(f"SELECT COUNT(DISTINCT PatientID) FROM {RAW_TABLE};").fetchone()[0]
     cleaned_rows = con.execute(f"SELECT COUNT(*) FROM {CLEANED_TABLE};").fetchone()[0]
@@ -229,6 +245,31 @@ def compute_summary(con: duckdb.DuckDBPyConnection, run_meta: RunMetadata, raw_c
         """
     ).fetchall()
 
+    audit_total_rows = con.execute(f"SELECT COUNT(*) FROM {audit_table};").fetchone()[0]
+    audit_missing_patients = con.execute(
+        f"SELECT COUNT(*) FROM {ELIG_TABLE} WHERE audit_has_preprocessing_row = FALSE;"
+    ).fetchone()[0]
+    audit_warn_patients = con.execute(
+        f"SELECT COUNT(*) FROM {ELIG_TABLE} WHERE flag_ct_ser_decision_warn = TRUE;"
+    ).fetchone()[0]
+    audit_failure_patients = con.execute(
+        f"SELECT COUNT(*) FROM {ELIG_TABLE} WHERE flag_ct_ser_decision_failure = TRUE;"
+    ).fetchone()[0]
+    audit_ok_patients = con.execute(
+        f"SELECT COUNT(*) FROM {ELIG_TABLE} WHERE flag_ct_ser_decision_ok = TRUE;"
+    ).fetchone()[0]
+    audit_seg_linkage_false = con.execute(
+        f"""
+        SELECT COUNT(*)
+        FROM {ELIG_TABLE}
+        WHERE audit_has_preprocessing_row = TRUE
+          AND coalesce(flag_ct_seg_and_linkage_true, FALSE) = FALSE;
+        """
+    ).fetchone()[0]
+    audit_decision_missing = con.execute(
+        f"SELECT COUNT(*) FROM {ELIG_TABLE} WHERE coalesce(flag_ct_ser_decision_missing, FALSE) = TRUE;"
+    ).fetchone()[0]
+
     return {
         "run_metadata": {
             "run_utc": run_meta.run_utc,
@@ -240,10 +281,23 @@ def compute_summary(con: duckdb.DuckDBPyConnection, run_meta: RunMetadata, raw_c
             "cleaning_sql_sha256": run_meta.cleaning_sql_sha256,
             "eligibility_sql_path": run_meta.eligibility_sql_path,
             "eligibility_sql_sha256": run_meta.eligibility_sql_sha256,
+            "audit_eligibility_csv_path": run_meta.audit_eligibility_csv_path,
+            "audit_eligibility_csv_sha256": run_meta.audit_eligibility_csv_sha256,
             "cohort_definition": {
-                "excluded_if": f"upper(trim(Overall.Stage)) IN {list(run_meta.na_tokens)}",
+                "excluded_if": (
+                    "stage token in "
+                    f"{list(run_meta.na_tokens)} OR missing DICOM audit row OR "
+                    "ct_seg_and_linkage != TRUE OR ct_ser_valid_for_downstream_preprocessing != 'OK'"
+                ),
                 "na_tokens": list(run_meta.na_tokens),
-                "exclusion_reason_codes": ["stage_overall_is_na"],
+                "exclusion_reason_codes": [
+                    "stage_overall_is_na",
+                    "dicom_audit_missing",
+                    "ct_seg_and_linkage_not_true",
+                    "ct_ser_preproc_failure",
+                    "ct_ser_preproc_warn",
+                    "ct_ser_preproc_missing",
+                ],
             },
         },
         "raw_csv_characteristics": raw_csv_meta,
@@ -254,6 +308,15 @@ def compute_summary(con: duckdb.DuckDBPyConnection, run_meta: RunMetadata, raw_c
             "unique_patients_in_cleaned_table": int(cleaned_patients),
             "eligible": int(eligible),
             "excluded": int(excluded),
+        },
+        "preprocessing_audit": {
+            "rows_in_audit": int(audit_total_rows),
+            "patients_missing_in_audit": int(audit_missing_patients),
+            "patients_ok": int(audit_ok_patients),
+            "patients_warn": int(audit_warn_patients),
+            "patients_failure": int(audit_failure_patients),
+            "patients_seg_linkage_false": int(audit_seg_linkage_false),
+            "patients_preproc_decision_missing": int(audit_decision_missing),
         },
         "exclusion_breakdown": [{"exclusion_reason": r[0], "n": int(r[1])} for r in reasons],
         "consort": {
@@ -269,6 +332,7 @@ def build_cohort(
     input_path: Path = DEFAULT_INPUT,
     output_dir: Path = DEFAULT_OUTPUT_DIR,
     duckdb_path: Path = DEFAULT_DUCKDB_PATH,
+    audit_eligibility_csv: Path = DEFAULT_AUDIT_ELIGIBILITY_CSV,
     write_csv: bool = False,
 ) -> Dict:
     """
@@ -280,6 +344,51 @@ def build_cohort(
     """
     if not input_path.exists():
         raise FileNotFoundError(f"Input CSV not found at: {input_path}")
+
+    audit_eligibility_csv = Path(audit_eligibility_csv)
+    if not audit_eligibility_csv.exists():
+        raise FileNotFoundError(
+            "Audit eligibility CSV not found. Run the DICOM audit to generate patient_eligibility.csv first: "
+            f"{audit_eligibility_csv}"
+        )
+
+    audit_df = pd.read_csv(
+        audit_eligibility_csv,
+        dtype=str,
+        keep_default_na=False,
+        na_filter=False,
+        encoding="utf-8",
+    )
+
+    required_audit_columns = {
+        "patient_id",
+        "ct_seg_and_linkage",
+        "ct_seg_and_linkage_reasons_json",
+        "ct_seg_linked_files_json",
+        "ct_ser_valid_for_downstream_preprocessing",
+        "ct_ser_issues_json",
+        "ct_ser_warnings_json",
+        "ct_ser_segments_json",
+    }
+    missing_audit_columns = required_audit_columns.difference(audit_df.columns)
+    if missing_audit_columns:
+        raise ValueError(
+            "Audit eligibility CSV is missing required columns: " + ", ".join(sorted(missing_audit_columns))
+        )
+
+    audit_df["patient_id"] = audit_df["patient_id"].astype(str)
+    blank_audit_ids = audit_df["patient_id"].str.strip() == ""
+    if blank_audit_ids.any():
+        raise ValueError("Audit eligibility CSV contains blank patient_id values.")
+
+    duplicate_audit_ids = audit_df["patient_id"].duplicated(keep=False)
+    if duplicate_audit_ids.any():
+        dup_ids = sorted(set(audit_df.loc[duplicate_audit_ids, "patient_id"]))
+        raise ValueError(
+            "Audit eligibility CSV must have one row per patient. Duplicates detected: "
+            + ", ".join(dup_ids[:20])
+            + ("..." if len(dup_ids) > 20 else "")
+        )
 
     df, raw_csv_meta = read_raw_csv_as_strings(input_path)
     validate_manifest(df)
@@ -297,6 +406,8 @@ def build_cohort(
         cleaning_sql_sha256=sha256_file(DEFAULT_CLEANING_SQL),
         eligibility_sql_path=str(DEFAULT_ELIGIBILITY_SQL),
         eligibility_sql_sha256=sha256_file(DEFAULT_ELIGIBILITY_SQL),
+        audit_eligibility_csv_path=str(audit_eligibility_csv),
+        audit_eligibility_csv_sha256=sha256_file(audit_eligibility_csv),
     )
 
     con = duckdb.connect(str(duckdb_path))
@@ -305,8 +416,14 @@ def build_cohort(
     con.execute(f"DROP TABLE IF EXISTS {RAW_TABLE};")
     con.execute(f"CREATE TABLE {RAW_TABLE} AS SELECT * FROM raw_df;")
 
+    con.register("audit_df", audit_df)
+    con.execute(f"DROP TABLE IF EXISTS {AUDIT_ELIGIBILITY_TABLE};")
+    con.execute(
+        f"CREATE TABLE {AUDIT_ELIGIBILITY_TABLE} AS SELECT * FROM audit_df;"
+    )
+
     build_cleaned(con)
-    build_tables(con)
+    build_tables(con, audit_table=AUDIT_ELIGIBILITY_TABLE)
 
     export_table_parquet(con, CLEANED_TABLE, output_dir / "cleaned.parquet")
 
@@ -320,7 +437,7 @@ def build_cohort(
         export_table_csv(con, COHORT_TABLE, output_dir / "cohort.csv")
         export_table_csv(con, EXCLUSIONS_TABLE, output_dir / "exclusions.csv")
 
-    summary = compute_summary(con, run_meta, raw_csv_meta)
+    summary = compute_summary(con, run_meta, raw_csv_meta, audit_table=AUDIT_ELIGIBILITY_TABLE)
     (output_dir / "cohort_summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
 
     con.close()

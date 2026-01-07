@@ -14,3 +14,27 @@ dataset_root/
 
 
 python src/train/train.py --config configs/azure.yaml
+
+
+this audit process is good. my flow is going to be- create cohort elig. conditions parquet (already complete) - create manifest from eligibility conditions met/not met from a raw_manifest csv and from my raw_dicom audit .json (json being what THIS script makes.). i will then do an ENTIRE eligible dicoms set -> nifti conversion (no stats-based preprocessing, just a load, rotate. etc.). Finally, my preprocessing_validation.py script (doesnt exist yet) will split these hard-saved niftis, prepro each Train,Test,Val set indiv. based on Actual stats (normalization, eg) for 5fold CV, and then prepro the Train_Final and Test set, saving final derived 2 splits as hard data for training. Issue: I want this dicom audit, then, to include data that is useful for the preprocessing_validation.py script. under the "dicom" key there is slice thickness which is great. But what other dicom metadata would i use in a full suite of preprocessing dicoms for the dual-task of i) lung tumor segmentation (voxel masks) and ii) cancer stage classification. training (fine-tuning) a swin-unetr with dual heads.
+
+Note 1/7- Eligibility will have to be determined by a third factor as well
+Currently;
+1. has label based on raw manifest.csv
+Needs
+2. CT present, SEG present, SEG points to CT
+3. Valid CT and SEG Geometry for Preprocessing Operations to be Successful
+
+Prepro will then take the stuff calculated in 3. (though peripheral), and determine drift factors in various splits (fingerprint accumulation in split, correlation with stage, possibly other..)
+
+
+1. header-only, yes
+2. masks are all SEG and can be id'd as such with slice 
+"by_patient_id"["patient_id"][PatientID]["files"][i]["mask_audit"]["is_seg"] (this slice should be true, and there is only One SEG per PatientID)
+
+Other notes: since my eligibility.sql includes (based on this Json) any PatientIDs with A) a principal series folder "by_patient_id"["patient_id"][PatientID]["principal_series"]["has_principal_series"] (true)
+B) a SEG file "by_patient_id"["patient_id"][PatientID]["files"][i]["mask_audit"]["is_seg"] (search over  i files and finds One true)
+C) a pointer from That SEG file to the series_instance_uid of the CT series itself ("by_patient_id"["patient_id"][PatientID]["files"][seg_i]["mask_audit"]["referenced_series_instance_uid"]  MATCHES  "by_patient_id"["patient_id"][PatientID]["principal_series"]["series_instance_uid"])
+
+The basic CT to Seg validation metadata is already included. Please only include the steps you wrote above which do not include this data being written.
+

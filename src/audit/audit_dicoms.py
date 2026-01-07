@@ -1,3 +1,4 @@
+import csv
 import json
 import hashlib
 from datetime import datetime, timezone
@@ -805,6 +806,111 @@ def _compare_seg_geometry_to_ct(
         "matrix": matrix_match,
         "spacing_between_slices": spacing_match,
         "frame_of_reference": frame_match,
+    }
+
+
+_DECISION_OK = "OK"
+_DECISION_WARN = "WARN"
+_DECISION_FAIL = "FAILURE"
+
+
+def _evaluate_preprocessing_readiness(patient_payload: dict) -> dict:
+    """Replicate preprocessing validation logic on the in-memory patient payload."""
+
+    def _entry_present(entry: dict | None, key: str) -> bool:
+        if not isinstance(entry, dict):
+            return False
+        value = entry.get(key)
+        if isinstance(value, dict):
+            if value.get("present") is False:
+                return False
+            return value.get("value") is not None
+        return value is not None
+
+    issues: list[str] = []
+    warnings: list[str] = []
+
+    principal = patient_payload.get("principal_series") or {}
+    if not principal.get("has_principal_series"):
+        issues.append("principal_series_missing")
+        return {
+            "decision": _DECISION_FAIL,
+            "issues": issues,
+            "warnings": warnings,
+            "segments": [],
+        }
+
+    geometry = principal.get("geometry")
+    if not isinstance(geometry, dict):
+        issues.append("principal_geometry_missing")
+    else:
+        if not _entry_present(geometry, "pixel_spacing_mm"):
+            issues.append("principal_geometry.pixel_spacing_missing")
+        if not _entry_present(geometry, "rows") or not _entry_present(geometry, "columns"):
+            warnings.append("principal_geometry.matrix_size_missing")
+        if not _entry_present(geometry, "image_orientation_patient"):
+            warnings.append("principal_geometry.orientation_missing")
+        if not _entry_present(geometry, "frame_of_reference_uid"):
+            warnings.append("principal_geometry.frame_uid_missing")
+
+    hu_meta = principal.get("hu_rescale")
+    if not isinstance(hu_meta, dict) or not hu_meta.get("valid"):
+        issues.append("principal_hu_rescale_invalid")
+    elif hu_meta.get("error"):
+        warnings.append(f"principal_hu_rescale_warning:{hu_meta['error']}")
+
+    if principal.get("slice_thickness_mm") is None:
+        warnings.append("principal_slice_thickness_missing")
+
+    seg_records: list[dict] = []
+    for rec in patient_payload.get("files", []) or []:
+        if not isinstance(rec, dict):
+            continue
+        ma = rec.get("mask_audit")
+        if not isinstance(ma, dict):
+            continue
+        if ma.get("mask_type") == "SEG":
+            seg_records.append(rec)
+
+    if not seg_records:
+        issues.append("segmentation_missing")
+
+    segments_summary: list[dict] = []
+    for seg_rec in seg_records:
+        ma = seg_rec.get("mask_audit") or {}
+        seg_info = ma.get("seg_grid_info")
+        match_info = ma.get("seg_grid_matches_ct")
+        seg_file = seg_rec.get("file")
+
+        if not isinstance(seg_info, dict):
+            issues.append(f"seg_grid_info_missing:{seg_file}")
+            segments_summary.append({"file": seg_file, "match": None, "details": None})
+            continue
+
+        if not isinstance(match_info, dict):
+            warnings.append(f"seg_alignment_unknown:{seg_file}")
+            segments_summary.append({"file": seg_file, "match": None, "details": None})
+            continue
+
+        match_state = match_info.get("match")
+        if match_state is False:
+            issues.append(f"seg_alignment_failed:{seg_file}")
+        elif match_state is None:
+            warnings.append(f"seg_alignment_indeterminate:{seg_file}")
+
+        segments_summary.append({"file": seg_file, "match": match_state, "details": match_info})
+
+    decision = _DECISION_OK
+    if issues:
+        decision = _DECISION_FAIL
+    elif warnings:
+        decision = _DECISION_WARN
+
+    return {
+        "decision": decision,
+        "issues": issues,
+        "warnings": warnings,
+        "segments": segments_summary,
     }
 
 
@@ -2781,6 +2887,8 @@ def run_unified_dicom_audit(
         patient_payload["total_files"] += 1
         patient_payload["files"].append(rec)
 
+    flat_patient_rows: list[dict] = []
+
     # Build per-patient strata
     for patient_id, patient_payload in by_patient_id.items():
         files = patient_payload.get("files", [])
@@ -2923,12 +3031,60 @@ def run_unified_dicom_audit(
                     "reason": "principal_ct_geometry_missing",
                 }
 
+        # Eligibility signals
+        principal_info = patient_payload.get("principal_series") or {}
+        linkage_reasons: list[str] = []
+        if not principal_info.get("has_principal_series"):
+            linkage_reasons.append("principal_series_missing")
+        principal_series_uid = principal_info.get("series_instance_uid")
+        seg_files_linked: list[str] = []
+        if principal_info.get("has_principal_series") and principal_series_uid:
+            seg_link_map = patient_payload.get("strata", {}).get("seg_masks_by_referenced_series_instance_uid", {})
+            seg_files_linked = list(seg_link_map.get(str(principal_series_uid), []))
+            all_seg_files = patient_payload.get("strata", {}).get("mask_files", {}).get("SEG", []) or []
+            if not all_seg_files:
+                linkage_reasons.append("segmentation_missing")
+            elif not seg_files_linked:
+                linkage_reasons.append("segmentation_not_linked_to_principal_series")
+
+        ct_seg_and_linkage = len(linkage_reasons) == 0
+
+        preprocessing_eval = _evaluate_preprocessing_readiness(patient_payload)
+
+        patient_payload["eligibility"] = {
+            "ct_seg_and_linkage": {
+                "value": bool(ct_seg_and_linkage),
+                "reasons": linkage_reasons,
+                "linked_seg_files": seg_files_linked,
+            },
+            "ct_ser_valid_for_downstream_preprocessing": preprocessing_eval,
+        }
+
+        flat_patient_rows.append(
+            {
+                "patient_id": patient_id,
+                "ct_seg_and_linkage": "TRUE" if ct_seg_and_linkage else "FALSE",
+                "ct_seg_and_linkage_reasons_json": json.dumps(linkage_reasons, ensure_ascii=True),
+                "ct_seg_linked_files_json": json.dumps(seg_files_linked, ensure_ascii=True),
+                "ct_ser_valid_for_downstream_preprocessing": preprocessing_eval["decision"],
+                "ct_ser_issues_json": json.dumps(preprocessing_eval["issues"], ensure_ascii=True),
+                "ct_ser_warnings_json": json.dumps(preprocessing_eval["warnings"], ensure_ascii=True),
+                "ct_ser_segments_json": json.dumps(preprocessing_eval["segments"], ensure_ascii=True),
+            }
+        )
+
     # Summary counts
     thickness_values = [v.get("mm") for v in thickness_by_file.values() if isinstance(v, dict)]
     thickness_values = [v for v in thickness_values if v is not None]
 
     by_patient_id_index = by_patient_id
     by_patient_id = {"patient_id": by_patient_id_index}
+
+    decision_counts: dict[str, int] = {_DECISION_OK: 0, _DECISION_WARN: 0, _DECISION_FAIL: 0}
+    for row in flat_patient_rows:
+        decision = row.get("ct_ser_valid_for_downstream_preprocessing")
+        if decision in decision_counts:
+            decision_counts[decision] += 1
 
     unified = {
         "schema_version": "dicom-unified-audit-4",
@@ -2952,6 +3108,9 @@ def run_unified_dicom_audit(
             "mask_file_count": mask_combined.get("mask_file_count") if isinstance(mask_combined, dict) else None,
             "seg_file_count": mask_combined.get("seg_file_count") if isinstance(mask_combined, dict) else None,
             "rtstruct_file_count": mask_combined.get("rtstruct_file_count") if isinstance(mask_combined, dict) else None,
+            "ct_seg_and_linkage_true_count": int(sum(row.get("ct_seg_and_linkage") == "TRUE" for row in flat_patient_rows)),
+            "ct_seg_and_linkage_false_count": int(sum(row.get("ct_seg_and_linkage") == "FALSE" for row in flat_patient_rows)),
+            "ct_ser_decision_counts": decision_counts,
         },
         "config": {
             "audit_pipeline": {
@@ -3046,6 +3205,25 @@ def run_unified_dicom_audit(
 
     output_json_path = Path(output_json)
     output_json_path.parent.mkdir(parents=True, exist_ok=True)
+
+    eligibility_csv_path = output_json_path.with_name("patient_eligibility.csv")
+    with open(eligibility_csv_path, "w", newline="", encoding="utf-8") as f_csv:
+        fieldnames = [
+            "patient_id",
+            "ct_seg_and_linkage",
+            "ct_seg_and_linkage_reasons_json",
+            "ct_seg_linked_files_json",
+            "ct_ser_valid_for_downstream_preprocessing",
+            "ct_ser_issues_json",
+            "ct_ser_warnings_json",
+            "ct_ser_segments_json",
+        ]
+        writer = csv.DictWriter(f_csv, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in flat_patient_rows:
+            writer.writerow(row)
+
+    unified.setdefault("derived_files", {})["patient_eligibility_csv"] = str(eligibility_csv_path)
     if cfg.write_unified_json:
         output_json_path.write_text(json.dumps(unified, indent=2))
 
