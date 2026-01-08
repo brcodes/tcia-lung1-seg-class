@@ -3206,24 +3206,45 @@ def run_unified_dicom_audit(
     output_json_path = Path(output_json)
     output_json_path.parent.mkdir(parents=True, exist_ok=True)
 
-    eligibility_csv_path = output_json_path.with_name("patient_eligibility.csv")
-    with open(eligibility_csv_path, "w", newline="", encoding="utf-8") as f_csv:
-        fieldnames = [
-            "patient_id",
-            "ct_seg_and_linkage",
-            "ct_seg_and_linkage_reasons_json",
-            "ct_seg_linked_files_json",
-            "ct_ser_valid_for_downstream_preprocessing",
-            "ct_ser_issues_json",
-            "ct_ser_warnings_json",
-            "ct_ser_segments_json",
-        ]
-        writer = csv.DictWriter(f_csv, fieldnames=fieldnames)
-        writer.writeheader()
-        for row in flat_patient_rows:
-            writer.writerow(row)
+    fieldnames = [
+        "patient_id",
+        "ct_seg_and_linkage",
+        "ct_seg_and_linkage_reasons_json",
+        "ct_seg_linked_files_json",
+        "ct_ser_valid_for_downstream_preprocessing",
+        "ct_ser_issues_json",
+        "ct_ser_warnings_json",
+        "ct_ser_segments_json",
+    ]
 
-    unified.setdefault("derived_files", {})["patient_eligibility_csv"] = str(eligibility_csv_path)
+    unified["eligibility_table"] = flat_patient_rows
+
+    derived_files = unified.setdefault("derived_files", {})
+
+    flattened_written_path = None
+    flatten_error: str | None = None
+
+    try:
+        import pandas as pd  # type: ignore
+
+        df_flat = pd.DataFrame(flat_patient_rows, columns=fieldnames)
+        flattened_parquet_path = output_json_path.with_name("patient_eligibility_flat.parquet")
+        df_flat.to_parquet(flattened_parquet_path, index=False)
+        flattened_written_path = str(flattened_parquet_path)
+    except Exception as exc:  # pragma: no cover - fallback path
+        flatten_error = str(exc)
+        fallback_csv_path = output_json_path.with_name("patient_eligibility_flat.csv")
+        with open(fallback_csv_path, "w", newline="", encoding="utf-8") as f_csv:
+            writer = csv.DictWriter(f_csv, fieldnames=fieldnames)
+            writer.writeheader()
+            for row in flat_patient_rows:
+                writer.writerow(row)
+        flattened_written_path = str(fallback_csv_path)
+
+    if flattened_written_path:
+        derived_files["patient_eligibility_flat"] = flattened_written_path
+        if flatten_error:
+            derived_files["patient_eligibility_flat_fallback_reason"] = flatten_error
     if cfg.write_unified_json:
         output_json_path.write_text(json.dumps(unified, indent=2))
 

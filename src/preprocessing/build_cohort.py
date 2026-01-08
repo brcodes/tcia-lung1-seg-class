@@ -19,17 +19,21 @@ Cohort definition (FINAL per user clarification):
     - "N/A"
 
 Outputs (default directory: ./outputs):
-  Always written (Parquet):
-        - cleaned.parquet             (raw manifest reduced to PatientID + Overall.Stage)
-    - eligibility_table.parquet   (all patients + flags + exclusion_reason)
-    - cohort.parquet              (eligible only)
-    - exclusions.parquet          (ineligible only)
-    - cohort_summary.json         (counts, CONSORT-style + run metadata)
-  Optionally written (CSV, if --write-csv):
-        - cleaned.csv
-    - eligibility_table.csv
-    - cohort.csv
-    - exclusions.csv
+    Always written (Parquet):
+                - cleaned.parquet             (raw manifest reduced to PatientID + Overall.Stage)
+        - eligibility_table.parquet   (all patients + flags + exclusion_reason)
+        - cohort.parquet              (eligible only)
+        - exclusions.parquet          (ineligible only)
+        - cohort_summary.json         (counts, CONSORT-style + run metadata)
+    Optionally written (CSV, if --write-csv):
+                - cleaned.csv
+        - eligibility_table.csv
+        - cohort.csv
+        - exclusions.csv
+
+Prerequisite audit artifact:
+        ../../data/audit_dicoms/dicom_audit.json (and its flattened derivative
+        patient_eligibility_flat.parquet) produced by run_unified_dicom_audit.
 
 Why DuckDB:
   - Embedded SQL engine (no server)
@@ -59,7 +63,7 @@ import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import duckdb
 import pandas as pd
@@ -68,7 +72,8 @@ import pandas as pd
 DEFAULT_INPUT = Path("../../data/raw/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.csv")
 DEFAULT_OUTPUT_DIR = Path("../../data/cohort")
 DEFAULT_DUCKDB_PATH = Path("../../data/cohort/cohort.duckdb")
-DEFAULT_AUDIT_ELIGIBILITY_CSV = Path("../../data/audit_dicoms/patient_eligibility.csv")
+DEFAULT_AUDIT_UNIFIED_JSON = Path("../../data/audit_dicoms/dicom_audit.json")
+DEFAULT_AUDIT_ELIGIBILITY_FLAT = Path("../../data/audit_dicoms/patient_eligibility_flat.parquet")
 
 RAW_TABLE = "patient_manifest_raw"
 CLEANED_TABLE = "cleaned"
@@ -82,6 +87,75 @@ NA_TOKENS = ("NA", "N/A")
 
 DEFAULT_CLEANING_SQL = Path(__file__).with_suffix("").parent / "cleaning.sql"
 DEFAULT_ELIGIBILITY_SQL = Path(__file__).with_suffix("").parent / "eligibility.sql"
+
+AUDIT_ELIGIBILITY_COLUMNS = [
+    "patient_id",
+    "ct_seg_and_linkage",
+    "ct_seg_and_linkage_reasons_json",
+    "ct_seg_linked_files_json",
+    "ct_ser_valid_for_downstream_preprocessing",
+    "ct_ser_issues_json",
+    "ct_ser_warnings_json",
+    "ct_ser_segments_json",
+]
+
+
+def _sanitize_flat_row(row: Dict[str, Any]) -> Dict[str, str]:
+    sanitized: Dict[str, str] = {}
+    for field in AUDIT_ELIGIBILITY_COLUMNS:
+        value = row.get(field) if isinstance(row, dict) else None
+        sanitized[field] = "" if value is None else str(value)
+    return sanitized
+
+
+def _json_dumps(value: Any) -> str:
+    return json.dumps(value, ensure_ascii=True)
+
+
+def _rows_from_unified_payload(unified: Dict[str, Any]) -> list[Dict[str, str]]:
+    rows: list[Dict[str, str]] = []
+
+    existing = unified.get("eligibility_table")
+    if isinstance(existing, list):
+        for raw in existing:
+            if isinstance(raw, dict):
+                rows.append(_sanitize_flat_row(raw))
+        if rows or existing:
+            return rows
+
+    patient_container = unified.get("by_patient_id")
+    if not isinstance(patient_container, dict):
+        return rows
+
+    patient_map = patient_container.get("patient_id")
+    if not isinstance(patient_map, dict):
+        return rows
+
+    for patient_id, payload in patient_map.items():
+        if not isinstance(payload, dict):
+            continue
+
+        eligibility = payload.get("eligibility")
+        if not isinstance(eligibility, dict):
+            continue
+
+        ct_seg = eligibility.get("ct_seg_and_linkage") or {}
+        ct_ser = eligibility.get("ct_ser_valid_for_downstream_preprocessing") or {}
+
+        row = {
+            "patient_id": str(patient_id),
+            "ct_seg_and_linkage": "TRUE" if bool(ct_seg.get("value")) else "FALSE",
+            "ct_seg_and_linkage_reasons_json": _json_dumps(ct_seg.get("reasons") or []),
+            "ct_seg_linked_files_json": _json_dumps(ct_seg.get("linked_seg_files") or []),
+            "ct_ser_valid_for_downstream_preprocessing": str(ct_ser.get("decision") or ""),
+            "ct_ser_issues_json": _json_dumps(ct_ser.get("issues") or []),
+            "ct_ser_warnings_json": _json_dumps(ct_ser.get("warnings") or []),
+            "ct_ser_segments_json": _json_dumps(ct_ser.get("segments") or []),
+        }
+
+        rows.append(_sanitize_flat_row(row))
+
+    return rows
 
 
 def run_sql_template(*, con: duckdb.DuckDBPyConnection, sql_path: Path, replacements: Dict[str, str] | None = None) -> None:
@@ -127,8 +201,10 @@ class RunMetadata:
     cleaning_sql_sha256: str
     eligibility_sql_path: str
     eligibility_sql_sha256: str
-    audit_eligibility_csv_path: str
-    audit_eligibility_csv_sha256: str
+    audit_unified_json_path: str
+    audit_unified_json_sha256: str
+    audit_eligibility_flat_path: str | None
+    audit_eligibility_flat_sha256: str | None
 
 
 def utc_now_iso() -> str:
@@ -141,6 +217,12 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: f.read(1024 * 1024), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def sha256_file_optional(path: Optional[Path]) -> Optional[str]:
+    if path is None or not path.exists():
+        return None
+    return sha256_file(path)
 
 
 def read_raw_csv_as_strings(path: Path) -> Tuple[pd.DataFrame, Dict]:
@@ -281,8 +363,10 @@ def compute_summary(
             "cleaning_sql_sha256": run_meta.cleaning_sql_sha256,
             "eligibility_sql_path": run_meta.eligibility_sql_path,
             "eligibility_sql_sha256": run_meta.eligibility_sql_sha256,
-            "audit_eligibility_csv_path": run_meta.audit_eligibility_csv_path,
-            "audit_eligibility_csv_sha256": run_meta.audit_eligibility_csv_sha256,
+            "audit_unified_json_path": run_meta.audit_unified_json_path,
+            "audit_unified_json_sha256": run_meta.audit_unified_json_sha256,
+            "audit_eligibility_flat_path": run_meta.audit_eligibility_flat_path,
+            "audit_eligibility_flat_sha256": run_meta.audit_eligibility_flat_sha256,
             "cohort_definition": {
                 "excluded_if": (
                     "stage token in "
@@ -332,7 +416,8 @@ def build_cohort(
     input_path: Path = DEFAULT_INPUT,
     output_dir: Path = DEFAULT_OUTPUT_DIR,
     duckdb_path: Path = DEFAULT_DUCKDB_PATH,
-    audit_eligibility_csv: Path = DEFAULT_AUDIT_ELIGIBILITY_CSV,
+    audit_unified_json: Path = DEFAULT_AUDIT_UNIFIED_JSON,
+    audit_eligibility_flat: Optional[Path] = None,
     write_csv: bool = False,
 ) -> Dict:
     """
@@ -345,55 +430,57 @@ def build_cohort(
     if not input_path.exists():
         raise FileNotFoundError(f"Input CSV not found at: {input_path}")
 
-    audit_eligibility_csv = Path(audit_eligibility_csv)
-    if not audit_eligibility_csv.exists():
+    audit_unified_json = Path(audit_unified_json)
+    if not audit_unified_json.exists():
         raise FileNotFoundError(
-            "Audit eligibility CSV not found. Run the DICOM audit to generate patient_eligibility.csv first: "
-            f"{audit_eligibility_csv}"
+            "Unified DICOM audit JSON not found. Run the DICOM audit to generate dicom_audit.json first: "
+            f"{audit_unified_json}"
         )
 
-    audit_df = pd.read_csv(
-        audit_eligibility_csv,
-        dtype=str,
-        keep_default_na=False,
-        na_filter=False,
-        encoding="utf-8",
-    )
+    with audit_unified_json.open("r", encoding="utf-8") as f_json:
+        audit_unified_payload = json.load(f_json)
 
-    required_audit_columns = {
-        "patient_id",
-        "ct_seg_and_linkage",
-        "ct_seg_and_linkage_reasons_json",
-        "ct_seg_linked_files_json",
-        "ct_ser_valid_for_downstream_preprocessing",
-        "ct_ser_issues_json",
-        "ct_ser_warnings_json",
-        "ct_ser_segments_json",
-    }
+    flat_rows = _rows_from_unified_payload(audit_unified_payload)
+    audit_df = pd.DataFrame(flat_rows, columns=AUDIT_ELIGIBILITY_COLUMNS)
+
+    required_audit_columns = set(AUDIT_ELIGIBILITY_COLUMNS)
     missing_audit_columns = required_audit_columns.difference(audit_df.columns)
     if missing_audit_columns:
         raise ValueError(
-            "Audit eligibility CSV is missing required columns: " + ", ".join(sorted(missing_audit_columns))
+            "Audit eligibility data is missing required columns: " + ", ".join(sorted(missing_audit_columns))
         )
 
     audit_df["patient_id"] = audit_df["patient_id"].astype(str)
     blank_audit_ids = audit_df["patient_id"].str.strip() == ""
     if blank_audit_ids.any():
-        raise ValueError("Audit eligibility CSV contains blank patient_id values.")
+        raise ValueError("Audit eligibility data contains blank patient_id values.")
 
     duplicate_audit_ids = audit_df["patient_id"].duplicated(keep=False)
     if duplicate_audit_ids.any():
         dup_ids = sorted(set(audit_df.loc[duplicate_audit_ids, "patient_id"]))
         raise ValueError(
-            "Audit eligibility CSV must have one row per patient. Duplicates detected: "
+            "Audit eligibility data must have one row per patient. Duplicates detected: "
             + ", ".join(dup_ids[:20])
             + ("..." if len(dup_ids) > 20 else "")
         )
+
+    derived_files = audit_unified_payload.get("derived_files")
+    derived_flat_path: Optional[Path] = None
+    if isinstance(derived_files, dict):
+        flat_entry = derived_files.get("patient_eligibility_flat")
+        if isinstance(flat_entry, str) and flat_entry.strip():
+            derived_flat_path = Path(flat_entry)
+
+    audit_flat_override = Path(audit_eligibility_flat) if audit_eligibility_flat is not None else None
+    audit_flat_path = audit_flat_override or derived_flat_path
 
     df, raw_csv_meta = read_raw_csv_as_strings(input_path)
     validate_manifest(df)
 
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    audit_flat_path_str = str(audit_flat_path) if audit_flat_path else None
+    audit_flat_sha = sha256_file_optional(audit_flat_path)
 
     run_meta = RunMetadata(
         run_utc=utc_now_iso(),
@@ -406,8 +493,10 @@ def build_cohort(
         cleaning_sql_sha256=sha256_file(DEFAULT_CLEANING_SQL),
         eligibility_sql_path=str(DEFAULT_ELIGIBILITY_SQL),
         eligibility_sql_sha256=sha256_file(DEFAULT_ELIGIBILITY_SQL),
-        audit_eligibility_csv_path=str(audit_eligibility_csv),
-        audit_eligibility_csv_sha256=sha256_file(audit_eligibility_csv),
+        audit_unified_json_path=str(audit_unified_json),
+        audit_unified_json_sha256=sha256_file(audit_unified_json),
+        audit_eligibility_flat_path=audit_flat_path_str,
+        audit_eligibility_flat_sha256=audit_flat_sha,
     )
 
     con = duckdb.connect(str(duckdb_path))
