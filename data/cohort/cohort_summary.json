@@ -1,22 +1,33 @@
 {
   "run_metadata": {
-    "run_utc": "2026-01-06T19:37:18+00:00",
+    "run_utc": "2026-01-08T18:08:59+00:00",
     "input_path": "../../data/raw/NSCLC-Radiomics-Lung1.clinical-version3-Oct-2019.patient-manifest.csv",
     "input_sha256": "132f72b58b9660bf5e6b24b9817b335f1896360bc253e1f2034a3ffee593e6fd",
     "duckdb_path": "../../data/cohort/cohort.duckdb",
     "cohort_definition_version": "v4-duckdb",
-    "cleaning_sql_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/src/preprocessing/cleaning.sql",
+    "cleaning_sql_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/src/audit/cleaning.sql",
     "cleaning_sql_sha256": "3eb7fbf4b9813fd58e9637157686472756894f5a39d68faa4300423d3e7386cc",
-    "eligibility_sql_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/src/preprocessing/eligibility.sql",
-    "eligibility_sql_sha256": "9ed503c8e980167aff0f3f15e292cb62adf329094e1479c876d3a0bd33dc8275",
+    "eligibility_sql_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/src/audit/eligibility.sql",
+    "eligibility_sql_sha256": "095b8f94cd95c58136e28b992429c1d603f79f6f555bb188d2771c819f7a43c7",
+    "audit_unified_json_path": "../../data/audit_dicoms/dicom_audit.json",
+    "audit_unified_json_sha256": "20c7022f57e9b82229af37bff5757377f47c1274d2b75f9dbd8ec76f8f703882",
+    "audit_eligibility_flat_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/audit_dicoms/patient_eligibility_flat.csv",
+    "audit_eligibility_flat_sha256": "a3e032babe902a5f25354f16d78a74ad2f8301e63e82a194ff8d7cb4d68cccc6",
+    "audit_flattened_parquet_path": "/Users/brycerogers/Documents/tcia-lung1-seg-class/data/audit_dicoms/dicom_audit.flattened.json",
+    "audit_flattened_parquet_sha256": "40478826ca031c89f22f4184dc32b400b74ad86bb40aa885786028e43c47aa27",
     "cohort_definition": {
-      "excluded_if": "upper(trim(Overall.Stage)) IN ['NA', 'N/A']",
+      "excluded_if": "stage token in ['NA', 'N/A'] OR missing DICOM audit row OR ct_seg_and_linkage != TRUE OR ct_ser_valid_for_downstream_preprocessing != 'OK'",
       "na_tokens": [
         "NA",
         "N/A"
       ],
       "exclusion_reason_codes": [
-        "stage_overall_is_na"
+        "stage_overall_is_na",
+        "dicom_audit_missing",
+        "ct_seg_and_linkage_not_true",
+        "ct_ser_preproc_failure",
+        "ct_ser_preproc_warn",
+        "ct_ser_preproc_missing"
       ]
     }
   },
@@ -41,10 +52,23 @@
     "unique_patients_in_raw_table": 422,
     "rows_in_cleaned_table": 422,
     "unique_patients_in_cleaned_table": 422,
-    "eligible": 421,
-    "excluded": 1
+    "eligible": 1,
+    "excluded": 421
+  },
+  "preprocessing_audit": {
+    "rows_in_audit": 1,
+    "patients_missing_in_audit": 421,
+    "patients_ok": 1,
+    "patients_warn": 0,
+    "patients_failure": 0,
+    "patients_seg_linkage_false": 0,
+    "patients_preproc_decision_missing": 0
   },
   "exclusion_breakdown": [
+    {
+      "exclusion_reason": "dicom_audit_missing",
+      "n": 420
+    },
     {
       "exclusion_reason": "stage_overall_is_na",
       "n": 1
@@ -52,7 +76,7 @@
   ],
   "consort": {
     "assessed_for_eligibility": 422,
-    "excluded": 1,
-    "included_in_cohort": 421
+    "excluded": 421,
+    "included_in_cohort": 1
   }
 }

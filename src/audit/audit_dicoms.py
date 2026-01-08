@@ -6,6 +6,7 @@ from pathlib import Path
 import os
 import sys
 from dataclasses import dataclass
+from typing import Any
 
 
 # Define a set of DICOM tags commonly considered PHI under HIPAA
@@ -90,6 +91,92 @@ def _fhir_id(prefix: str, stable_key: str, n: int = 24) -> str:
 def _fhir_now() -> str:
     # FHIR instant/dateTime should be ISO8601; use UTC Z.
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _json_pointer_escape(token: str) -> str:
+    token = "" if token is None else str(token)
+    return token.replace("~", "~0").replace("/", "~1")
+
+
+def _json_pointer_unescape(token: str) -> str:
+    token = "" if token is None else str(token)
+    return token.replace("~1", "/").replace("~0", "~")
+
+
+def _flatten_unified_payload(payload: Any) -> list[dict[str, Any]]:
+    """Flatten a JSON-like payload into JSON Pointer rows for downstream SQL."""
+
+    rows: list[dict[str, Any]] = []
+
+    def _value_kind(value: Any) -> str:
+        if isinstance(value, dict):
+            return "object"
+        if isinstance(value, list):
+            return "array"
+        if isinstance(value, str):
+            return "string"
+        if isinstance(value, bool):
+            return "boolean"
+        if value is None:
+            return "null"
+        if isinstance(value, (int, float)):
+            return "number"
+        return type(value).__name__
+
+    def _parent_pointer(pointer: str) -> str | None:
+        if pointer == "/":
+            return None
+        parent = pointer.rsplit("/", 1)[0]
+        return parent if parent else "/"
+
+    def _build_pointer(base: str, token: str) -> str:
+        escaped = _json_pointer_escape(token)
+        if base == "/":
+            return "/" + escaped
+        return base + "/" + escaped
+
+    def _walk(value: Any, pointer: str, *, array_index: int | None = None) -> None:
+        kind = _value_kind(value)
+        parent_pointer = _parent_pointer(pointer)
+        segment = "" if pointer == "/" else pointer.rsplit("/", 1)[1]
+        segment = _json_pointer_unescape(segment)
+
+        try:
+            value_json = json.dumps(value, ensure_ascii=True, sort_keys=True)
+        except Exception:
+            value_json = None
+
+        if kind in {"string", "boolean", "number"}:
+            scalar_repr = json.dumps(value, ensure_ascii=True)
+        elif kind == "null":
+            scalar_repr = "null"
+        else:
+            scalar_repr = None
+
+        rows.append(
+            {
+                "json_pointer": pointer,
+                "parent_pointer": parent_pointer,
+                "path_segment": segment,
+                "value_kind": kind,
+                "value_scalar": scalar_repr,
+                "value_json": value_json,
+                "is_container": kind in {"object", "array"},
+                "array_index": array_index,
+            }
+        )
+
+        if isinstance(value, dict):
+            for key, child in value.items():
+                child_pointer = _build_pointer(pointer, key)
+                _walk(child, child_pointer)
+        elif isinstance(value, list):
+            for idx, child in enumerate(value):
+                child_pointer = _build_pointer(pointer, str(idx))
+                _walk(child, child_pointer, array_index=idx)
+
+    _walk(payload, "/")
+    return rows
 
 
 def export_mask_audit_as_fhir_r4_bundle(
@@ -3245,6 +3332,25 @@ def run_unified_dicom_audit(
         derived_files["patient_eligibility_flat"] = flattened_written_path
         if flatten_error:
             derived_files["patient_eligibility_flat_fallback_reason"] = flatten_error
+
+    flattened_unified_parquet_path = output_json_path.with_name(output_json_path.stem + ".flattened.parquet")
+    derived_files["unified_flattened"] = str(flattened_unified_parquet_path)
+
+    flattened_unified_rows = _flatten_unified_payload(unified)
+
+    flattened_unified_error: str | None = None
+    try:
+        import pandas as pd  # type: ignore
+
+        df_unified_flat = pd.DataFrame(flattened_unified_rows)
+        df_unified_flat.to_parquet(flattened_unified_parquet_path, index=False)
+    except Exception as exc:  # pragma: no cover - fallback path
+        flattened_unified_error = str(exc)
+        fallback_flattened_json = output_json_path.with_name(output_json_path.stem + ".flattened.json")
+        derived_files["unified_flattened"] = str(fallback_flattened_json)
+        derived_files["unified_flattened_fallback_reason"] = flattened_unified_error
+        flattened_unified_rows = _flatten_unified_payload(unified)
+        Path(fallback_flattened_json).write_text(json.dumps(flattened_unified_rows, indent=2), encoding="utf-8")
     if cfg.write_unified_json:
         output_json_path.write_text(json.dumps(unified, indent=2))
 

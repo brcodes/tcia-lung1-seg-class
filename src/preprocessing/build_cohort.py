@@ -32,8 +32,8 @@ Outputs (default directory: ./outputs):
         - exclusions.csv
 
 Prerequisite audit artifact:
-        ../../data/audit_dicoms/dicom_audit.json (and its flattened derivative
-        patient_eligibility_flat.parquet) produced by run_unified_dicom_audit.
+    ../../data/audit_dicoms/dicom_audit.json (plus patient_eligibility_flat.parquet
+    and dicom_audit.flattened.parquet) produced by run_unified_dicom_audit.
 
 Why DuckDB:
   - Embedded SQL engine (no server)
@@ -74,6 +74,7 @@ DEFAULT_OUTPUT_DIR = Path("../../data/cohort")
 DEFAULT_DUCKDB_PATH = Path("../../data/cohort/cohort.duckdb")
 DEFAULT_AUDIT_UNIFIED_JSON = Path("../../data/audit_dicoms/dicom_audit.json")
 DEFAULT_AUDIT_ELIGIBILITY_FLAT = Path("../../data/audit_dicoms/patient_eligibility_flat.parquet")
+AUDIT_FLATTENED_TABLE = "audit_flattened"
 
 RAW_TABLE = "patient_manifest_raw"
 CLEANED_TABLE = "cleaned"
@@ -205,6 +206,8 @@ class RunMetadata:
     audit_unified_json_sha256: str
     audit_eligibility_flat_path: str | None
     audit_eligibility_flat_sha256: str | None
+    audit_flattened_parquet_path: str | None
+    audit_flattened_parquet_sha256: str | None
 
 
 def utc_now_iso() -> str:
@@ -367,6 +370,8 @@ def compute_summary(
             "audit_unified_json_sha256": run_meta.audit_unified_json_sha256,
             "audit_eligibility_flat_path": run_meta.audit_eligibility_flat_path,
             "audit_eligibility_flat_sha256": run_meta.audit_eligibility_flat_sha256,
+            "audit_flattened_parquet_path": run_meta.audit_flattened_parquet_path,
+            "audit_flattened_parquet_sha256": run_meta.audit_flattened_parquet_sha256,
             "cohort_definition": {
                 "excluded_if": (
                     "stage token in "
@@ -440,6 +445,12 @@ def build_cohort(
     with audit_unified_json.open("r", encoding="utf-8") as f_json:
         audit_unified_payload = json.load(f_json)
 
+    def _resolve_derived_path(path_str: str) -> Path:
+        candidate = Path(path_str)
+        if not candidate.is_absolute():
+            candidate = audit_unified_json.parent / candidate
+        return candidate
+
     flat_rows = _rows_from_unified_payload(audit_unified_payload)
     audit_df = pd.DataFrame(flat_rows, columns=AUDIT_ELIGIBILITY_COLUMNS)
 
@@ -466,13 +477,30 @@ def build_cohort(
 
     derived_files = audit_unified_payload.get("derived_files")
     derived_flat_path: Optional[Path] = None
+    derived_flattened_path: Optional[Path] = None
     if isinstance(derived_files, dict):
         flat_entry = derived_files.get("patient_eligibility_flat")
         if isinstance(flat_entry, str) and flat_entry.strip():
-            derived_flat_path = Path(flat_entry)
+            derived_flat_path = _resolve_derived_path(flat_entry)
+        flattened_entry = derived_files.get("unified_flattened")
+        if isinstance(flattened_entry, str) and flattened_entry.strip():
+            derived_flattened_path = _resolve_derived_path(flattened_entry)
 
     audit_flat_override = Path(audit_eligibility_flat) if audit_eligibility_flat is not None else None
     audit_flat_path = audit_flat_override or derived_flat_path
+
+    audit_flattened_df: Optional[pd.DataFrame] = None
+    audit_flattened_path: Optional[Path] = None
+    if derived_flattened_path and derived_flattened_path.exists():
+        audit_flattened_path = derived_flattened_path
+        try:
+            if derived_flattened_path.suffix.lower() == ".parquet":
+                audit_flattened_df = pd.read_parquet(derived_flattened_path)
+            elif derived_flattened_path.suffix.lower() in {".json", ".ndjson"}:
+                flattened_payload = json.loads(derived_flattened_path.read_text(encoding="utf-8"))
+                audit_flattened_df = pd.DataFrame(flattened_payload)
+        except Exception:
+            audit_flattened_df = None
 
     df, raw_csv_meta = read_raw_csv_as_strings(input_path)
     validate_manifest(df)
@@ -481,6 +509,10 @@ def build_cohort(
 
     audit_flat_path_str = str(audit_flat_path) if audit_flat_path else None
     audit_flat_sha = sha256_file_optional(audit_flat_path)
+    audit_flattened_path_str = str(audit_flattened_path) if audit_flattened_path else (
+        str(derived_flattened_path) if derived_flattened_path else None
+    )
+    audit_flattened_sha = sha256_file_optional(audit_flattened_path)
 
     run_meta = RunMetadata(
         run_utc=utc_now_iso(),
@@ -497,6 +529,8 @@ def build_cohort(
         audit_unified_json_sha256=sha256_file(audit_unified_json),
         audit_eligibility_flat_path=audit_flat_path_str,
         audit_eligibility_flat_sha256=audit_flat_sha,
+        audit_flattened_parquet_path=audit_flattened_path_str,
+        audit_flattened_parquet_sha256=audit_flattened_sha,
     )
 
     con = duckdb.connect(str(duckdb_path))
@@ -510,6 +544,11 @@ def build_cohort(
     con.execute(
         f"CREATE TABLE {AUDIT_ELIGIBILITY_TABLE} AS SELECT * FROM audit_df;"
     )
+
+    if audit_flattened_df is not None:
+        con.register("audit_flattened_df", audit_flattened_df)
+        con.execute(f"DROP TABLE IF EXISTS {AUDIT_FLATTENED_TABLE};")
+        con.execute(f"CREATE TABLE {AUDIT_FLATTENED_TABLE} AS SELECT * FROM audit_flattened_df;")
 
     build_cleaned(con)
     build_tables(con, audit_table=AUDIT_ELIGIBILITY_TABLE)
