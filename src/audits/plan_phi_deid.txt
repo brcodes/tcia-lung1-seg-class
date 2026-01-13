@@ -1,0 +1,117 @@
+Raw DICOMs (already TCIA-de-identified UIDs)
+        ↓
+[1] Ingest & inventory
+    - Read all DICOMs with pydicom
+    - Extract:
+      • PatientID
+      • StudyInstanceUID
+      • SeriesInstanceUID
+      • SOPInstanceUID
+      • FrameOfReferenceUID
+      • All referenced UIDs (SEG, RTSTRUCT, etc.)
+    - Build UID mapping table: old_uid → new_uid (deterministic, salted hash)
+
+        ↓
+[2] HIPAA Safe Harbor PHI removal
+    - Remove/blank all PHI-related tags:
+      • Names, IDs, MRNs, accession numbers
+      • Birth dates, full dates (keep year if needed)
+      • Addresses, phone, email, institution
+      • Free-text “Comments” fields
+    - Log each removed/cleaned tag
+
+        ↓
+[3] DICOM PS3.15 Appendix E profile application
+    - Apply Basic Attribute Confidentiality Profile:
+      • Remove: PHI-bearing attributes
+      • Clean: required but sensitive attributes
+      • Zero: optional attributes that may leak PHI
+      • Strip all private tags (safe default)
+    - Use a local JSON/table encoding of PS3.15 rules
+    - Log actions per tag per instance
+
+        ↓
+[4] Deterministic UID remapping (core identity graph)
+    - For every UID in mapping table:
+      • StudyInstanceUID
+      • SeriesInstanceUID
+      • SOPInstanceUID
+      • FrameOfReferenceUID
+      • Any other UIDs you choose to normalize
+    - Replace:
+      • Identity tags (Study/Series/SOP/FrameOfReference)
+      • All references:
+        – ReferencedSeriesSequence
+        – ReferencedSOPInstanceUID
+        – SourceImageSequence
+        – SegmentSequence / DerivationImageSequence
+        – Registration / RTSTRUCT references, etc.
+    - Guarantee:
+      • One-to-one mapping
+      • Deterministic (same input → same output)
+      • Non-reversible (salted hash)
+    - Log old_uid → new_uid for every UID type
+
+        ↓
+[5] Burned-in text scan (automated QC)
+    - Use OpenCV + Tesseract (or similar) to:
+      • Detect candidate text regions
+      • Run OCR
+      • Flag instances with non-empty OCR output
+    - Log:
+      • burned_in_text_scan: {passed/flagged}
+      • Optional: sample OCR text (for debugging, not for release)
+
+        ↓
+[6] Write de-identified DICOMs
+    - Save modified DICOMs:
+      • Either in-place
+      • Or into a parallel output tree (recommended for first runs)
+    - Compute SHA256 checksum per file
+    - Log:
+      • output_path
+      • checksum
+      • write_status
+
+        ↓
+[7] File/dir renaming driven by UID mapping (your part)
+    - After all headers are updated:
+      • Rename patient dirs using new PatientID (or hash)
+      • Rename study dirs using new StudyInstanceUID
+      • Rename series dirs using new SeriesInstanceUID
+      • Optionally rename files using new SOPInstanceUID
+    - All renames use the same mapping table from [1]/[4]
+    - This makes the filetree a mirror of the DICOM identity graph
+    - Log:
+      • old_path → new_path
+      • rename_status
+
+        ↓
+[8] Audit log + manifest export
+    - For the entire run, produce:
+      • JSONL / JSON audit log:
+        – Per-instance:
+          · old_uid → new_uid (all types)
+          · tags_removed / tags_cleaned / tags_retained
+          · burned_in_text_scan result
+          · checksum
+          · input_path, output_path
+        – Per-run:
+          · script version
+          · PS3.15 profile version
+          · timestamp
+          · config hash
+      • Optional CSV/Parquet manifest:
+        – patient_id, study_uid, series_uid, sop_uid
+        – modality, body_part, series_description
+        – seg_target_series_uid (for SEG/RTSTRUCT)
+    - This becomes your “clinical IT–ready” evidence of behavior
+
+        ↓
+Final dataset
+    - HIPAA Safe Harbor–aligned
+    - DICOM PS3.15 Appendix E–aligned
+    - Deterministically remapped UIDs (your namespace)
+    - Filetree synchronized to new UIDs
+    - SEG/CT/RTSTRUCT linkages preserved and verifiable
+    - Fully logged and audit-ready

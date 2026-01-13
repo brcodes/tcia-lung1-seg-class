@@ -38,3 +38,40 @@ C) a pointer from That SEG file to the series_instance_uid of the CT series itse
 
 The basic CT to Seg validation metadata is already included. Please only include the steps you wrote above which do not include this data being written.
 
+project_root/
+  data_raw/
+    dicom_input/              # original DICOMs
+  data_deid/
+    dicom_output/             # de-identified DICOMs
+  audits/
+    deid/
+      deid_audit.jsonl        # per-instance PHI/PS3.15/burned-in log
+    uid/
+      uid_map.parquet         # UID graph (old→new, types, parents)
+    metadata/
+      metadata_audit.parquet  # generic non-PHI DICOM metadata
+    ct_prepro/
+      ct_prepro_audit.json    # CT series-level geometry + decisions
+  scripts/
+    deid_pipeline.py
+    audit_writers.py
+
+
+
+
+ De‑ID audit
+
+→ proves legal compliance
+→ small, JSONL, human‑readable
+UID map
+
+→ proves deterministic identity graph
+→ compact, machine‑friendly
+Metadata audit
+
+→ proves dataset integrity
+→ supports ML reproducibility
+CT preprocessing audit
+
+→ proves preprocessing decisions
+→ supports ML pipeline transparency
