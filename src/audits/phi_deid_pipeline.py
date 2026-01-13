@@ -51,6 +51,7 @@ class DeidConfig:
     ps3_15_rules_path: Path  # JSON file with PS3.15 rules
     overwrite_existing_output: bool = False
     keep_tcai_uids_as_backup: bool = True  # store old UID in private tags if needed
+    full_tree_deid: bool = True  # hash patient dir + filename (secure default)
 
 
 @dataclass
@@ -100,6 +101,17 @@ def deterministic_uid(old_uid: str, salt: str) -> str:
     digest = h.hexdigest()[:24]
     # Example synthetic UID root; replace with your org's root if desired
     return f"1.2.826.0.1.3680043.10.543.{int(digest, 16)}"
+
+
+def deterministic_token(value: str, salt: str, prefix: str, length: int = 16) -> str:
+    """
+    Deterministic salted token for filesystem-safe names (e.g., patient dir).
+    """
+    h = hashlib.sha256()
+    h.update(salt.encode("utf-8"))
+    h.update(value.encode("utf-8"))
+    digest = h.hexdigest()[:length]
+    return f"{prefix}-{digest}"
 
 
 def load_ps3_15_rules(path: Path) -> Dict[str, Any]:
@@ -599,8 +611,11 @@ def process_instance(
     # Burned-in text scan
     burned_in_status, ocr_sample = scan_burned_in_text(ds)
 
-    # Write de-identified DICOM
-    out_path = out_base / patient_id / new_uids.study_uid / new_uids.series_uid / orig_filename
+    # Write de-identified DICOM (optionally hash patient dir + filename)
+    patient_dir = deterministic_token(patient_id, cfg.salt, prefix="pt") if cfg.full_tree_deid else patient_id
+    out_filename = f"{new_uids.sop_uid}.dcm" if cfg.full_tree_deid else orig_filename
+
+    out_path = out_base / patient_dir / new_uids.study_uid / new_uids.series_uid / out_filename
     out_path.parent.mkdir(parents=True, exist_ok=True)
     ds.save_as(out_path, write_like_original=False)
     checksum = sha256_file(out_path)
