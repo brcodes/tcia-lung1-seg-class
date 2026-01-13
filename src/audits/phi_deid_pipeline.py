@@ -22,6 +22,7 @@ ct_prepro_audit.json by a separate module.
 import json
 import os
 import hashlib
+import hmac
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Any, Optional, List, Tuple, Iterable
@@ -112,6 +113,24 @@ def deterministic_token(value: str, salt: str, prefix: str, length: int = 16) ->
     h.update(value.encode("utf-8"))
     digest = h.hexdigest()[:length]
     return f"{prefix}-{digest}"
+
+
+def stable_path_text(path: Path, root: Optional[Path] = None) -> str:
+    """Return a stable string for a path, preferring root-relative when possible."""
+    try:
+        if root is not None:
+            return str(path.resolve().relative_to(root.resolve()))
+    except Exception:
+        pass
+    return str(path.resolve())
+
+
+def path_token(path: Path, salt: str, domain: str, root: Optional[Path] = None, length: int = 32) -> str:
+    """Deterministic HMAC-based token for paths (never emit raw filesystem paths)."""
+    normalized = stable_path_text(path, root=root)
+    msg = f"{domain}:{normalized}".encode("utf-8")
+    digest = hmac.new(salt.encode("utf-8"), msg, hashlib.sha256).hexdigest()[:length]
+    return f"{domain}-tok-{digest}"
 
 
 def load_ps3_15_rules(path: Path) -> Dict[str, Any]:
@@ -570,6 +589,7 @@ def extract_ct_geometry(ds: Dataset) -> Dict[str, Any]:
 def process_instance(
     ds: Dataset,
     in_path: Path,
+    input_root: Path,
     out_base: Path,
     patient_id: str,
     orig_filename: str,
@@ -620,6 +640,9 @@ def process_instance(
     ds.save_as(out_path, write_like_original=False)
     checksum = sha256_file(out_path)
 
+    input_path_token = path_token(in_path, cfg.salt, domain="input_path", root=input_root)
+    output_path_token = path_token(out_path, cfg.salt, domain="output_path", root=out_base)
+
     # Metadata for metadata audit
     meta = extract_metadata(ds)
     writers.metadata.add_instance(
@@ -647,8 +670,8 @@ def process_instance(
 
     writers.deid_writer.log_instance(
         sop_uid=meta["sop_uid"],
-        input_path=in_path,
-        output_path=out_path,
+        input_path_token=input_path_token,
+        output_path_token=output_path_token,
         modality=meta["modality"],
         tags_removed=tags_removed,
         tags_cleaned=tags_cleaned,
@@ -720,12 +743,13 @@ def run_phi_deid_pipeline(
     max_error_reports = 5  # avoid flooding stdout
 
     for in_path in in_paths_iter:
+        input_path_token = path_token(in_path, cfg.salt, domain="input_path", root=paths_cfg.input_root)
         try:
             ds = pydicom.dcmread(in_path)
         except Exception as exc:
             num_failed += 1
             if num_failed <= max_error_reports:
-                print(f"[read_fail] {in_path}: {exc}")
+                print(f"[read_fail] input_path_token={input_path_token}: {exc.__class__.__name__}: {exc}")
             continue
 
         patient_id = str(ds.get("PatientID", "")) or "anon"
@@ -735,6 +759,7 @@ def run_phi_deid_pipeline(
             result = process_instance(
                 ds=ds,
                 in_path=in_path,
+                input_root=paths_cfg.input_root,
                 out_base=paths_cfg.output_root,
                 patient_id=patient_id,
                 orig_filename=orig_filename,
@@ -748,10 +773,10 @@ def run_phi_deid_pipeline(
         except Exception as exc:
             num_failed += 1
             if num_failed <= max_error_reports:
-                import traceback
-
-                tb = traceback.format_exc(limit=1)
-                print(f"[process_fail] {in_path}: {exc}\n{tb}")
+                print(
+                    f"[process_fail] input_path_token={input_path_token}: "
+                    f"{exc.__class__.__name__}: {exc}"
+                )
             continue
 
     return {

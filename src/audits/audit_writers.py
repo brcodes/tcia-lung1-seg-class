@@ -58,8 +58,8 @@ class DeidAuditWriter:
     def log_instance(
         self,
         sop_uid: str,
-        input_path: Path,
-        output_path: Path,
+        input_path_token: str,
+        output_path_token: str,
         modality: Optional[str],
         tags_removed: List[str],
         tags_cleaned: List[str],
@@ -69,14 +69,15 @@ class DeidAuditWriter:
     ) -> None:
         record = {
             "sop_uid": sop_uid,
-            "input_path": str(input_path),
-            "output_path": str(output_path),
+            "input_path_token": input_path_token,
+            "output_path_token": output_path_token,
             "modality": modality,
             "tags_removed": tags_removed,
             "tags_cleaned": tags_cleaned,
             "private_tags_stripped": private_tags_stripped,
             "burned_in_text_scan": burned_in_text_scan,
             "checksum_sha256": checksum_sha256,
+            "path_token_scheme": "hmac_sha256_v1",
             "script_version": self.script_version,
             "ps3_15_profile_version": self.ps3_15_profile_version,
             "timestamp": iso_now(),

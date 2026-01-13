@@ -56,7 +56,7 @@ def build_config():
     salt = os.getenv("DEID_SALT")
     if not salt:
         raise ValueError("Env var DEID_SALT must be set for deterministic UID hashing. Load it with: set -a; source .env; set +a")
-    print(f"Using DEID_SALT: {salt}")
+    # Deliberately avoid printing DEID_SALT to prevent leaking secrets.
 
     deid_cfg = DeidConfig(
         salt=salt,
