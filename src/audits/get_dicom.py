@@ -52,10 +52,17 @@ def get_dicom(
         if not patient_dirs:
             raise FileNotFoundError(f"No patient directories found in {base_dir}")
     else:
-        patient_dir = os.path.join(base_dir, PatientID)
-        if not os.path.isdir(patient_dir):
-            raise FileNotFoundError(f"Patient directory not found: {patient_dir}")
-        patient_dirs = [patient_dir]
+        if isinstance(PatientID, (list, tuple, set)):
+            requested_ids = list(PatientID)
+        else:
+            requested_ids = [PatientID]
+
+        patient_dirs = []
+        for pid in requested_ids:
+            patient_dir = os.path.join(base_dir, pid)
+            if not os.path.isdir(patient_dir):
+                raise FileNotFoundError(f"Patient directory not found: {patient_dir}")
+            patient_dirs.append(patient_dir)
 
     matches = []
 
@@ -218,9 +225,9 @@ def get_dicom(
 
 if __name__ == "__main__":
     dicom_paths = get_dicom(
-        PatientID="LUNG1-001",
+        PatientID=["LUNG1-001","LUNG1-002"],
         StudyInstanceUID_index=1,
-        SeriesInstanceUID_index=1,
-        SeriesNumber=1,
-        InstanceNumber=1,
+        SeriesInstanceUID_index=None,
+        SeriesNumber=None,
+        InstanceNumber=None,
     )
