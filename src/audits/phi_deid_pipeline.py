@@ -29,6 +29,7 @@ from typing import Dict, Any, Optional, List, Tuple, Iterable
 import numpy as np
 import pydicom
 from pydicom.dataset import Dataset
+from pydicom.datadict import tag_for_keyword
 from pydicom.uid import generate_uid
 
 import cv2
@@ -167,20 +168,27 @@ def remove_phi_tags(ds: Dataset) -> Tuple[List[str], List[str]]:
     ]
 
     for kw in remove_keywords:
-        if kw in ds:
-            del ds[kw]
+        tag = tag_for_keyword(kw)
+        if tag is None:
+            # Skip unknown keywords to avoid pydicom warnings
+            continue
+        if tag in ds:
+            del ds[tag]
             tags_removed.append(kw)
 
     # Example cleaning: keep year only, or blank entirely
     for kw in clean_keywords:
-        if kw in ds:
-            original = str(ds.get(kw, ""))
-            if original and len(original) >= 4:
-                # Keep year only; you may choose to blank
-                ds[kw].value = original[:4]
+        tag = tag_for_keyword(kw)
+        if tag is None:
+            continue
+        if tag in ds:
+            original = str(ds.get(tag, ""))
+            if original:
+                # Blank date-like fields to avoid invalid VR warnings (e.g., "2014")
+                ds[tag].value = ""
                 tags_cleaned.append(kw)
             else:
-                del ds[kw]
+                del ds[tag]
                 tags_removed.append(kw)
 
     # Free-text comments — blanket removal (conservative)
@@ -191,8 +199,11 @@ def remove_phi_tags(ds: Dataset) -> Tuple[List[str], List[str]]:
         "ProtocolName",  # optional; may contain PHI
     ]
     for kw in comment_keywords:
-        if kw in ds:
-            del ds[kw]
+        tag = tag_for_keyword(kw)
+        if tag is None:
+            continue
+        if tag in ds:
+            del ds[tag]
             tags_removed.append(kw)
 
     return tags_removed, tags_cleaned
@@ -207,20 +218,29 @@ def apply_ps3_15_rules(ds: Dataset, rules: Dict[str, Any]) -> Tuple[List[str], L
     tags_cleaned: List[str] = []
 
     for kw in rules.get("remove", []):
-        if kw in ds:
-            del ds[kw]
+        tag = tag_for_keyword(kw)
+        if tag is None:
+            continue
+        if tag in ds:
+            del ds[tag]
             tags_removed.append(kw)
 
     for kw in rules.get("clean", []):
-        if kw in ds:
+        tag = tag_for_keyword(kw)
+        if tag is None:
+            continue
+        if tag in ds:
             # Implement your specific cleaning logic; here we blank
-            ds[kw].value = ""
+            ds[tag].value = ""
             tags_cleaned.append(kw)
 
     for kw in rules.get("zero", []):
-        if kw in ds:
+        tag = tag_for_keyword(kw)
+        if tag is None:
+            continue
+        if tag in ds:
             # Zero numeric / length-based fields
-            elem = ds[kw]
+            elem = ds[tag]
             try:
                 if isinstance(elem.value, (int, float)):
                     elem.value = 0
@@ -231,7 +251,7 @@ def apply_ps3_15_rules(ds: Dataset, rules: Dict[str, Any]) -> Tuple[List[str], L
                 tags_cleaned.append(kw)
             except Exception:
                 # Fallback: remove
-                del ds[kw]
+                del ds[tag]
                 tags_removed.append(kw)
 
     return tags_removed, tags_cleaned
@@ -679,6 +699,8 @@ def run_phi_deid_pipeline(
     else:
         in_paths_iter = [Path(p) for p in dicom_paths]
 
+    max_error_reports = 5  # avoid flooding stdout
+
     for in_path in in_paths_iter:
         try:
             rel = in_path.relative_to(paths_cfg.input_root)
@@ -689,8 +711,10 @@ def run_phi_deid_pipeline(
 
         try:
             ds = pydicom.dcmread(in_path)
-        except Exception:
+        except Exception as exc:
             num_failed += 1
+            if num_failed <= max_error_reports:
+                print(f"[read_fail] {in_path}: {exc}")
             continue
 
         try:
@@ -705,8 +729,13 @@ def run_phi_deid_pipeline(
             if result["ct_geometry"] is not None:
                 ct_geometry_records.append(result["ct_geometry"])
             num_processed += 1
-        except Exception:
+        except Exception as exc:
             num_failed += 1
+            if num_failed <= max_error_reports:
+                import traceback
+
+                tb = traceback.format_exc(limit=1)
+                print(f"[process_fail] {in_path}: {exc}\n{tb}")
             continue
 
     return {

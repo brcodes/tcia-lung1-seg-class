@@ -1,0 +1,35 @@
+{
+  "script_version": "ct_geometry_0.1.0",
+  "timestamp": "2026-01-13T20:47:15Z",
+  "series": [
+    {
+      "series_uid": "1.2.826.0.1.3680043.10.543.72032598012408622925833566813",
+      "study_uid": "1.2.826.0.1.3680043.10.543.17776131040333537417283926760",
+      "num_slices": 134,
+      "slice_thickness": 3.0,
+      "pixel_spacing": [
+        0.9765625,
+        0.9765625
+      ],
+      "z_spacing_mean": 3.0,
+      "z_spacing_std": 0.0,
+      "orientation_matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "volume_extent_mm": [
+        500.0,
+        500.0,
+        399.0
+      ],
+      "is_uniform_spacing": true,
+      "requires_resampling": false,
+      "recommended_preprocessing_pipeline": "resample_iso_1mm_clip_hu",
+      "notes": null
+    }
+  ]
+}

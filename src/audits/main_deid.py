@@ -142,7 +142,7 @@ def main():
     repo_root, paths_cfg, deid_cfg = build_config()
 
     dicom_selection = get_dicom(
-        PatientID=["LUNG1-001", "LUNG1-002"],
+        PatientID=["LUNG1-001"],
         StudyInstanceUID_index=1,
         SeriesInstanceUID_index=None,
         SeriesNumber=None,
