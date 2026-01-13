@@ -25,6 +25,8 @@ from audit_writers import (
     CTPreproAudit,
 )
 
+from get_dicom import get_dicom
+
 from phi_deid_pipeline import (
     run_phi_deid_pipeline,
     DeidConfig,
@@ -42,20 +44,21 @@ def build_config():
     Central place to define paths and settings.
     Modify these for your environment.
     """
-    project_root = Path(__file__).resolve().parent
+    script_root = Path(__file__).resolve().parent
+    repo_root = script_root.parents[1]
 
     paths_cfg = PathsConfig(
-        input_root=project_root / "data_raw" / "dicom_input",
-        output_root=project_root / "data_deid" / "dicom_output",
+        input_root=repo_root / "data" / "raw" / "NSCLC-Radiomics",
+        output_root=repo_root / "data" / "de-id",
     )
 
     deid_cfg = DeidConfig(
         salt="YOUR_SALT_HERE",  # replace with a stable secret
-        ps3_15_rules_path=project_root / "ps3_15_rules.json",
+        ps3_15_rules_path=script_root / "ps3_15_rules.json",
         overwrite_existing_output=False,
     )
 
-    return project_root, paths_cfg, deid_cfg
+    return repo_root, paths_cfg, deid_cfg
 
 
 # ----------------------------------------------------------------------
@@ -136,11 +139,34 @@ def aggregate_ct_geometry(ct_records):
 # ----------------------------------------------------------------------
 
 def main():
-    project_root, paths_cfg, deid_cfg = build_config()
+    repo_root, paths_cfg, deid_cfg = build_config()
+
+    dicom_selection = get_dicom(
+        PatientID=["LUNG1-001", "LUNG1-002"],
+        StudyInstanceUID_index=1,
+        SeriesInstanceUID_index=None,
+        SeriesNumber=None,
+        InstanceNumber=None,
+        base_dir=str(paths_cfg.input_root),
+    )
+
+    if isinstance(dicom_selection, (str, Path)):
+        dicom_paths = [Path(dicom_selection)]
+    else:
+        dicom_paths = [Path(p) for p in dicom_selection]
+
+    if not dicom_paths:
+        raise ValueError("get_dicom returned no paths; cannot run de-id pipeline.")
+
+    print(f"Found {len(dicom_paths)} DICOMs to process via get_dicom().")
+
+    audit_root = repo_root / "data" / "audits"
+    for subdir in ["deid", "uid", "metadata", "ct_prepro"]:
+        (audit_root / subdir).mkdir(parents=True, exist_ok=True)
 
     # Instantiate audit writers
     deid_writer = DeidAuditWriter(
-        output_path=project_root / "audits" / "deid" / "deid_audit.jsonl",
+        output_path=audit_root / "deid" / "deid_audit.jsonl",
         script_version="deid_pipeline_0.3.0",
         ps3_15_profile_version="Basic_Confidentiality_1.0",
     )
@@ -160,21 +186,22 @@ def main():
         paths_cfg=paths_cfg,
         cfg=deid_cfg,
         writers=writers,
+        dicom_paths=dicom_paths,
     )
 
     # Close deid JSONL writer
     deid_writer.close()
 
     # Write UID map + metadata Parquet
-    uid_map.to_parquet(project_root / "audits" / "uid" / "uid_map.parquet")
-    metadata.to_parquet(project_root / "audits" / "metadata" / "metadata_audit.parquet")
+    uid_map.to_parquet(audit_root / "uid" / "uid_map.parquet")
+    metadata.to_parquet(audit_root / "metadata" / "metadata_audit.parquet")
 
     # Aggregate CT geometry → write ct_prepro_audit.json
     aggregated = aggregate_ct_geometry(result["ct_geometry_records"])
     for series in aggregated:
         ct_prepro.add_series(**series)
 
-    ct_prepro.to_json(project_root / "audits" / "ct_prepro" / "ct_prepro_audit.json")
+    ct_prepro.to_json(audit_root / "ct_prepro" / "ct_prepro_audit.json")
 
     # Summary
     print("\n=== PHI De-ID Pipeline Complete ===")
@@ -182,7 +209,7 @@ def main():
     print(f"Failed:    {result['num_failed']}")
     print(f"CT series: {len(aggregated)}")
     print(f"Timestamp: {result['timestamp']}")
-    print("Audit outputs written to ./audits/")
+    print("Audit outputs written to ../data/audits/")
     print("===================================\n")
 
 

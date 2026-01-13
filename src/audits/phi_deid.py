@@ -647,20 +647,21 @@ def run_phi_deid_pipeline(
     paths_cfg: PathsConfig,
     cfg: DeidConfig,
     writers: Writers,
+    dicom_paths: Optional[Iterable[Any]] = None,
 ) -> Dict[str, Any]:
     """
     Run PHI de-identification over a DICOM tree.
 
-    This function:
-    - Loads PS3.15 rules
-    - Iterates DICOM files
-    - Applies process_instance
-    - Returns:
-        {
-          'ct_geometry_records': List[Dict],
-          'num_processed': int,
-          'num_failed': int
-        }
+        This function:
+        - Loads PS3.15 rules
+        - Iterates DICOM files (walks input_root when dicom_paths is None; otherwise uses the provided list)
+        - Applies process_instance
+        - Returns:
+                {
+                    'ct_geometry_records': List[Dict],
+                    'num_processed': int,
+                    'num_failed': int
+                }
 
     The ct_geometry_records list can be passed to a separate CT
     preprocessing audit module to build ct_prepro_audit.json.
@@ -671,8 +672,19 @@ def run_phi_deid_pipeline(
     num_processed = 0
     num_failed = 0
 
-    for in_path in iter_dicom_files(paths_cfg.input_root):
-        rel = in_path.relative_to(paths_cfg.input_root)
+    if dicom_paths is None:
+        in_paths_iter: Iterable[Path] = iter_dicom_files(paths_cfg.input_root)
+    elif isinstance(dicom_paths, (str, Path)):
+        in_paths_iter = [Path(dicom_paths)]
+    else:
+        in_paths_iter = [Path(p) for p in dicom_paths]
+
+    for in_path in in_paths_iter:
+        try:
+            rel = in_path.relative_to(paths_cfg.input_root)
+        except Exception:
+            rel = Path(in_path.name)
+
         out_path = paths_cfg.output_root / rel
 
         try:
