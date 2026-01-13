@@ -15,6 +15,7 @@ This script:
 This is the top-level orchestrator for the four-audit architecture.
 """
 
+import os
 from pathlib import Path
 from collections import defaultdict
 
@@ -52,8 +53,13 @@ def build_config():
         output_root=repo_root / "data" / "de-id",
     )
 
+    salt = os.getenv("DEID_SALT")
+    if not salt:
+        raise ValueError("Env var DEID_SALT must be set for deterministic UID hashing. Load it with: set -a; source .env; set +a")
+    print(f"Using DEID_SALT: {salt}")
+
     deid_cfg = DeidConfig(
-        salt="YOUR_SALT_HERE",  # replace with a stable secret
+        salt=salt,
         ps3_15_rules_path=script_root / "ps3_15_rules.json",
         overwrite_existing_output=False,
     )

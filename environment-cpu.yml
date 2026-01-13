@@ -1,3 +1,11 @@
+# build‑time configuration
+#should not contain:
+# secrets
+# salts
+# API keys
+# passwords
+# anything that must be stable + private
+
 name: tcia-lung1-seg-class-cpu
 channels:
   - conda-forge

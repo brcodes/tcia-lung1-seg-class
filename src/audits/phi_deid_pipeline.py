@@ -558,7 +558,9 @@ def extract_ct_geometry(ds: Dataset) -> Dict[str, Any]:
 def process_instance(
     ds: Dataset,
     in_path: Path,
-    out_path: Path,
+    out_base: Path,
+    patient_id: str,
+    orig_filename: str,
     cfg: DeidConfig,
     ps3_15_rules: Dict[str, Any],
     writers: Writers,
@@ -598,6 +600,7 @@ def process_instance(
     burned_in_status, ocr_sample = scan_burned_in_text(ds)
 
     # Write de-identified DICOM
+    out_path = out_base / patient_id / new_uids.study_uid / new_uids.series_uid / orig_filename
     out_path.parent.mkdir(parents=True, exist_ok=True)
     ds.save_as(out_path, write_like_original=False)
     checksum = sha256_file(out_path)
@@ -703,13 +706,6 @@ def run_phi_deid_pipeline(
 
     for in_path in in_paths_iter:
         try:
-            rel = in_path.relative_to(paths_cfg.input_root)
-        except Exception:
-            rel = Path(in_path.name)
-
-        out_path = paths_cfg.output_root / rel
-
-        try:
             ds = pydicom.dcmread(in_path)
         except Exception as exc:
             num_failed += 1
@@ -717,11 +713,16 @@ def run_phi_deid_pipeline(
                 print(f"[read_fail] {in_path}: {exc}")
             continue
 
+        patient_id = str(ds.get("PatientID", "")) or "anon"
+        orig_filename = in_path.name
+
         try:
             result = process_instance(
                 ds=ds,
                 in_path=in_path,
-                out_path=out_path,
+                out_base=paths_cfg.output_root,
+                patient_id=patient_id,
+                orig_filename=orig_filename,
                 cfg=cfg,
                 ps3_15_rules=ps3_15_rules,
                 writers=writers,
