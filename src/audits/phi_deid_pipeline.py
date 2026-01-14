@@ -36,7 +36,7 @@ from pydicom.uid import generate_uid
 import cv2
 import pytesseract
 
-from audits import deid_criteria
+import deid_criteria
 
 
 # ----------------------------------------------------------------------
@@ -55,7 +55,7 @@ class DeidConfig:
     overwrite_existing_output: bool = False
     keep_tcai_uids_as_backup: bool = True  # store old UID in private tags if needed
     full_tree_deid: bool = True  # hash patient dir + filename (secure default)
-    deid_criteria: str = deid_criteria.DEID_CRITERIA_NAME  # identifier for de-id completeness logic
+    deid_criteria_version: str = deid_criteria.DEID_CRITERIA_VERSION
 
 
 @dataclass
@@ -696,11 +696,12 @@ def process_instance(
     if private_tags_stripped:
         tags_stripped_eq_max_str_srch_matches = (private_tags_after == 0)
 
-    deidentified = deid_criteria.evaluate_deid(
-        tags_removed_eq_max_rem_srch_matches=tags_removed_eq_max_rem_srch_matches,
-        tags_cleaned_eq_max_cln_srch_matches=tags_cleaned_eq_max_cln_srch_matches,
-        tags_stripped_eq_max_str_srch_matches=tags_stripped_eq_max_str_srch_matches,
-    )
+    flag_bundle = {
+        "tags_removed_eq_max_rem_srch_matches": tags_removed_eq_max_rem_srch_matches,
+        "tags_cleaned_eq_max_cln_srch_matches": tags_cleaned_eq_max_cln_srch_matches,
+        "tags_stripped_eq_max_str_srch_matches": tags_stripped_eq_max_str_srch_matches,
+    }
+    deidentified = deid_criteria.evaluate_deid_from_flags(flag_bundle)
 
     writers.deid_writer.log_instance(
         sop_uid=meta["sop_uid"],
@@ -715,8 +716,7 @@ def process_instance(
         tags_removed_eq_max_rem_srch_matches=tags_removed_eq_max_rem_srch_matches,
         tags_cleaned_eq_max_cln_srch_matches=tags_cleaned_eq_max_cln_srch_matches,
         tags_stripped_eq_max_str_srch_matches=tags_stripped_eq_max_str_srch_matches,
-        deid_criteria=cfg.deid_criteria,
-        deid_criteria_version=deid_criteria.DEID_CRITERIA_VERSION,
+        deid_criteria_version=cfg.deid_criteria_version,
         deid=deidentified,
     )
 
