@@ -36,6 +36,8 @@ from pydicom.uid import generate_uid
 import cv2
 import pytesseract
 
+from audits import deid_criteria
+
 
 # ----------------------------------------------------------------------
 # Configuration containers
@@ -53,6 +55,7 @@ class DeidConfig:
     overwrite_existing_output: bool = False
     keep_tcai_uids_as_backup: bool = True  # store old UID in private tags if needed
     full_tree_deid: bool = True  # hash patient dir + filename (secure default)
+    deid_criteria: str = deid_criteria.DEID_CRITERIA_NAME  # identifier for de-id completeness logic
 
 
 @dataclass
@@ -153,14 +156,18 @@ def load_ps3_15_rules(path: Path) -> Dict[str, Any]:
 # ----------------------------------------------------------------------
 
 
-def remove_phi_tags(ds: Dataset) -> Tuple[List[str], List[str]]:
+def remove_phi_tags(ds: Dataset) -> Tuple[List[str], List[str], List[str], List[str]]:
     """
     Apply HIPAA Safe Harbor PHI removal:
     - Remove/blank direct identifiers and free-text comments.
-    Returns (tags_removed, tags_cleaned) as lists of DICOM keyword strings.
+    Returns (tags_removed, tags_cleaned, matched_remove_keywords,
+    matched_clean_keywords) where the matched lists capture which keywords were
+    present in the original dataset.
     """
     tags_removed: List[str] = []
     tags_cleaned: List[str] = []
+    matched_remove_keywords: List[str] = []
+    matched_clean_keywords: List[str] = []
 
     # Remove/blank fields that should not exist
     # (These are examples; extend to your full policy)
@@ -204,6 +211,7 @@ def remove_phi_tags(ds: Dataset) -> Tuple[List[str], List[str]]:
             # Skip unknown keywords to avoid pydicom warnings
             continue
         if tag in ds:
+            matched_remove_keywords.append(kw)
             del ds[tag]
             tags_removed.append(kw)
 
@@ -213,6 +221,7 @@ def remove_phi_tags(ds: Dataset) -> Tuple[List[str], List[str]]:
         if tag is None:
             continue
         if tag in ds:
+            matched_clean_keywords.append(kw)
             original = str(ds.get(tag, ""))
             if original:
                 # Blank date-like fields to avoid invalid VR warnings (e.g., "2014")
@@ -234,25 +243,31 @@ def remove_phi_tags(ds: Dataset) -> Tuple[List[str], List[str]]:
         if tag is None:
             continue
         if tag in ds:
+            matched_remove_keywords.append(kw)
             del ds[tag]
             tags_removed.append(kw)
 
-    return tags_removed, tags_cleaned
+    return tags_removed, tags_cleaned, matched_remove_keywords, matched_clean_keywords
 
 
-def apply_ps3_15_rules(ds: Dataset, rules: Dict[str, Any]) -> Tuple[List[str], List[str]]:
+def apply_ps3_15_rules(ds: Dataset, rules: Dict[str, Any]) -> Tuple[List[str], List[str], List[str], List[str]]:
     """
     Apply Basic Attribute Confidentiality Profile rules from local JSON.
-    Returns (tags_removed, tags_cleaned) for PS3.15 step.
+    Returns (tags_removed, tags_cleaned, matched_remove_keywords,
+    matched_clean_keywords) where the matched lists capture which PS3.15
+    keywords were present in the dataset.
     """
     tags_removed: List[str] = []
     tags_cleaned: List[str] = []
+    matched_remove_keywords: List[str] = []
+    matched_clean_keywords: List[str] = []
 
     for kw in rules.get("remove", []):
         tag = tag_for_keyword(kw)
         if tag is None:
             continue
         if tag in ds:
+            matched_remove_keywords.append(kw)
             del ds[tag]
             tags_removed.append(kw)
 
@@ -261,6 +276,7 @@ def apply_ps3_15_rules(ds: Dataset, rules: Dict[str, Any]) -> Tuple[List[str], L
         if tag is None:
             continue
         if tag in ds:
+            matched_clean_keywords.append(kw)
             # Implement your specific cleaning logic; here we blank
             ds[tag].value = ""
             tags_cleaned.append(kw)
@@ -271,6 +287,7 @@ def apply_ps3_15_rules(ds: Dataset, rules: Dict[str, Any]) -> Tuple[List[str], L
             continue
         if tag in ds:
             # Zero numeric / length-based fields
+            matched_clean_keywords.append(kw)
             elem = ds[tag]
             try:
                 if isinstance(elem.value, (int, float)):
@@ -285,16 +302,21 @@ def apply_ps3_15_rules(ds: Dataset, rules: Dict[str, Any]) -> Tuple[List[str], L
                 del ds[tag]
                 tags_removed.append(kw)
 
-    return tags_removed, tags_cleaned
+    return tags_removed, tags_cleaned, matched_remove_keywords, matched_clean_keywords
 
 
-def strip_private_tags(ds: Dataset) -> bool:
+def strip_private_tags(ds: Dataset) -> Tuple[bool, int, int]:
     """
-    Strip all private tags.
+    Strip all private tags and report whether anything changed along with
+    before/after private tag counts for audit completeness checks.
     """
-    original_count = len(ds)
+    def count_private_tags(dataset: Dataset) -> int:
+        return sum(1 for elem in dataset.iterall() if elem.tag.is_private)
+
+    before = count_private_tags(ds)
     ds.remove_private_tags()
-    return len(ds) < original_count
+    after = count_private_tags(ds)
+    return after < before, before, after
 
 
 # ----------------------------------------------------------------------
@@ -616,14 +638,13 @@ def process_instance(
     original_uids = extract_uids(ds)
 
     # PHI removal (Safe Harbor)
-    sh_removed, sh_cleaned = remove_phi_tags(ds)
+    sh_removed, sh_cleaned, sh_matched_remove, sh_matched_clean = remove_phi_tags(ds)
 
     # PS3.15 rules
-    ps_removed, ps_cleaned = apply_ps3_15_rules(ds, ps3_15_rules)
+    ps_removed, ps_cleaned, ps_matched_remove, ps_matched_clean = apply_ps3_15_rules(ds, ps3_15_rules)
 
     # Strip private tags
-    strip_private_tags(ds)
-    private_tags_stripped = True
+    private_tags_stripped, private_tags_before, private_tags_after = strip_private_tags(ds)
 
     # Deterministic UID remapping
     new_uids = normalize_uid_graph(ds, original_uids, cfg, writers)
@@ -667,6 +688,19 @@ def process_instance(
     # De-ID audit log
     tags_removed = sh_removed + ps_removed
     tags_cleaned = sh_cleaned + ps_cleaned
+    matched_remove_keywords = sh_matched_remove + ps_matched_remove
+    matched_clean_keywords = sh_matched_clean + ps_matched_clean
+    tags_removed_eq_max_rem_srch_matches = set(matched_remove_keywords).issubset(set(tags_removed))
+    tags_cleaned_eq_max_cln_srch_matches = set(matched_clean_keywords).issubset(set(tags_cleaned))
+    tags_stripped_eq_max_str_srch_matches = None
+    if private_tags_stripped:
+        tags_stripped_eq_max_str_srch_matches = (private_tags_after == 0)
+
+    deidentified = deid_criteria.evaluate_deid(
+        tags_removed_eq_max_rem_srch_matches=tags_removed_eq_max_rem_srch_matches,
+        tags_cleaned_eq_max_cln_srch_matches=tags_cleaned_eq_max_cln_srch_matches,
+        tags_stripped_eq_max_str_srch_matches=tags_stripped_eq_max_str_srch_matches,
+    )
 
     writers.deid_writer.log_instance(
         sop_uid=meta["sop_uid"],
@@ -678,6 +712,12 @@ def process_instance(
         private_tags_stripped=private_tags_stripped,
         burned_in_text_scan=burned_in_status,
         checksum_sha256=checksum,
+        tags_removed_eq_max_rem_srch_matches=tags_removed_eq_max_rem_srch_matches,
+        tags_cleaned_eq_max_cln_srch_matches=tags_cleaned_eq_max_cln_srch_matches,
+        tags_stripped_eq_max_str_srch_matches=tags_stripped_eq_max_str_srch_matches,
+        deid_criteria=cfg.deid_criteria,
+        deid_criteria_version=deid_criteria.DEID_CRITERIA_VERSION,
+        deid=deidentified,
     )
 
     # CT geometry payload for later aggregation

@@ -53,7 +53,7 @@ class DeidAuditWriter:
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
         self.script_version = script_version
         self.ps3_15_profile_version = ps3_15_profile_version
-        self._fh = open(self.output_path, "a", encoding="utf-8")
+        self._fh = open(self.output_path, "w", encoding="utf-8")
 
     def log_instance(
         self,
@@ -66,6 +66,12 @@ class DeidAuditWriter:
         private_tags_stripped: bool,
         burned_in_text_scan: str,
         checksum_sha256: str,
+        tags_removed_eq_max_rem_srch_matches: bool,
+        tags_cleaned_eq_max_cln_srch_matches: bool,
+        tags_stripped_eq_max_str_srch_matches: Optional[bool],
+        deid_criteria: str,
+        deid_criteria_version: str,
+        deid: bool,
     ) -> None:
         record = {
             "sop_uid": sop_uid,
@@ -77,6 +83,12 @@ class DeidAuditWriter:
             "private_tags_stripped": private_tags_stripped,
             "burned_in_text_scan": burned_in_text_scan,
             "checksum_sha256": checksum_sha256,
+            "tags_removed_eq_max_rem_srch_matches": tags_removed_eq_max_rem_srch_matches,
+            "tags_cleaned_eq_max_cln_srch_matches": tags_cleaned_eq_max_cln_srch_matches,
+            "tags_stripped_eq_max_str_srch_matches": tags_stripped_eq_max_str_srch_matches,
+            "deid": deid,
+            "deid_criteria": deid_criteria,
+            "deid_criteria_version": deid_criteria_version,
             "path_token_scheme": "hmac_sha256_v1",
             "script_version": self.script_version,
             "ps3_15_profile_version": self.ps3_15_profile_version,
